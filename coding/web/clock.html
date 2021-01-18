@@ -1,0 +1,562 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Clock"
+path: "Coding/Web/Clock"
+breadcrumbs: "1"
+---
+<hr />
+<style rel="stylesheet">
+	:root {
+	  --quarter-marks-surround: #000000;
+	  --face-color: #c5c5c5;
+	  --second-hand-color: var(--main-color);
+	  --minute-hand-color: #000000;
+	  --hour-hand-color: #000000;
+	  --clock-size: 250px;
+	  --clock-radius: 50%;
+	}
+
+	.clock-border {
+	  width: var(--clock-size);
+	  height: var(--clock-size);
+	  background: var(--quarter-marks-surround);
+	  position: relative;
+	  border-radius: var(--clock-radius);
+	  z-index: 1;
+	}
+
+	.clock-face {
+	  z-index: 5;
+	}
+
+	.clock-face, .clock-one-four, .clock-two-five {
+	  background: transparent;
+	  position: absolute;
+	  width: 95%;
+	  height: 95%;
+	  left: 2.5%;
+	  top: 2.5%;
+	  border-radius: var(--clock-radius);
+	}
+
+	.clock-face::before, .clock-face::after {
+	  width: 2.5%;
+	  margin-left: -1.75%;
+	}
+
+	.clock-face::before, .clock-face::after, .clock-one-four::before, .clock-one-four::after, .clock-two-five::before, .clock-two-five::after {
+	  content: "";
+	  position: absolute;
+	  height: 102%;
+	  background: var(--quarter-marks-surround);
+	  left: 50%;
+	  top: -1%;
+	}
+
+	.clock-face::after, .clock-one-four::after, .clock-two-five::after {
+	  transform: rotate(90deg);
+	}
+
+	.clock-one-four::before, .clock-one-four::after, .clock-two-five::before, .clock-two-five::after {
+	  z-index: 2;
+	  width: 1%;
+	  margin-left: -0.5%;
+	}
+
+	.clock-one-four {
+	  transform: rotate(30deg);
+	  z-index: 2;
+	}
+
+	.clock-two-five {
+	  z-index: 3;
+	  transform: rotate(60deg);
+	}
+
+	.clock-inner-face-one {
+	  border-radius: var(--clock-radius);
+	  background: var(--face-color);
+	  height: 95%;
+	  position: absolute;
+	  width: 95%;
+	  z-index: 1;
+	  left: 2.5%;
+	  top: 2.5%;
+	}
+
+	.clock-inner-face-two {
+	  border-radius: 50%;
+	  background: var(--face-color);
+	  height: 85%;
+	  position: absolute;
+	  width: 85%;
+	  z-index: 4;
+	  left: 7.5%;
+	  top: 7.5%;
+	}
+
+	.clock-inner-face {
+	  border-radius: 50%;
+	  background: var(--face-color);
+	  height: 80%;
+	  position: absolute;
+	  width: 80%;
+	  z-index: 6;
+	  left: 10%;
+	  top: 10%;
+	}
+
+	.minutes-container, .hours-container, .seconds-container, .centerdot-container, .daydate-container, .am_pm-container, .name-container {
+	  position: absolute;
+	  top: 0;
+	  right: 0;
+	  bottom: 0;
+	  left: 0;
+	}
+
+	.name {
+	  left: 30%;
+	  position: absolute;
+	  top: 15%;
+	  font-size: calc(var(--clock-size) / 10);
+	  height: 10%;
+	  width: 40%;
+	  text-align: center;
+	  font-family: Dancing Script;
+	}
+
+	.am_pm {
+	  left: 30%;
+	  position: absolute;
+	  top: 85%;
+	  font-size: calc(var(--clock-size) / 25);
+	  height: 10%;
+	  width: 40%;
+	  text-align: center;
+	}
+
+	.daydate {
+	  left: 55%;
+	  position: absolute;
+	  top: 46.5%;
+	  font-size: calc(var(--clock-size) / 25);
+	  height: 10%;
+	  width: 40%;
+	  text-align: right;
+	}
+
+	.markam_pm, .markdaydate {
+	  color: var(--quarter-marks-surround);
+	  background-color: var(--face-color);
+	  padding: 5%;
+	  border: 1px solid var(--quarter-marks-surround);
+	  box-shadow: 0 0 2px 2px var(--quarter-marks-surround) inset;
+	}
+
+	.centerdot {
+	  background: var(--second-hand-color);
+	  height: 4%;
+	  left: 48%;
+	  position: absolute;
+	  top: 48%;
+	  width: 4%;
+	  border-radius: 50%;
+	}
+
+	.hours {
+	  background: var(--hour-hand-color);
+	  height: 25%;
+	  left: 48.75%;
+	  position: absolute;
+	  top: 25%;
+	  transform-origin: 50% 100%;
+	  width: 2.5%;
+	}
+
+	.minutes {
+	  background: var(--minute-hand-color);
+	  height: 40%;
+	  left: 49%;
+	  position: absolute;
+	  top: 10%;
+	  transform-origin: 50% 100%;
+	  width: 2%;
+	}
+
+	.seconds {
+	  background: var(--second-hand-color);
+	  height: 60%;
+	  left: 49.5%;
+	  position: absolute;
+	  top: 2%;
+	  transform-origin: 50% 80%;
+	  width: 1%;
+	  z-index: 8;
+	}
+
+	@keyframes rotate {
+	  100% {
+		transform: rotateZ(360deg);
+	  }
+	}
+
+	.hours-container {
+	  animation: rotate 43200s infinite linear;
+	}
+
+	.minutes-container {
+	  animation: rotate 3600s infinite linear;
+	}
+
+	.seconds-container {
+	  animation: rotate 60s infinite linear;
+	}
+</style>
+
+<div class="svg-setting center" onclick="toggleModal('settingsClock')"></div>
+<button class="width-auto" onclick="ZeroClocks();">Zero Clocks</button>
+<button class="width-auto" onclick="initLocalClocks();">Current Time</button>
+<button class="width-auto" onclick="ZeroClocks('Timer');">Start Timer</button>
+<button class="width-auto" onclick="ZeroClocks('Pause');">Pause</button>
+<button class="width-auto" onclick="ZeroClocks('Continue');">Continue</button>
+<button class="width-auto" onclick="changeclockSize('small');">Small</button>
+<button class="width-auto" onclick="changeclockSize('medium');">Medium</button>
+<button class="width-auto" onclick="changeclockSize('large');">Large</button>
+<div class="clock-border">
+	<div id="quarterhourmark" class="clock-face"></div>
+	<div id="fiveminmark1" class="clock-one-four"></div>
+	<div id="fiveminmark2" class="clock-two-five"></div>
+	<div class="clock-inner-face-one"></div>
+	<div class="clock-inner-face-two"></div>
+	<article class="clock-inner-face">
+		<div class="name-container">
+			<div id="brandname" class="name">{{ site.author }}</div>
+		</div>
+		<div class="am_pm-container">
+			<div class="am_pm">
+				<mark ID="am_pm"class="markam_pm"></mark>
+			</div>
+		</div>
+		<div class="daydate-container">
+			<div class="daydate">
+				<mark ID="daydate"class="markdaydate"></mark>
+			</div>
+		</div>
+		<div class="hours-container">
+			<div class="hours"></div>
+		</div>
+		<div class="minutes-container">
+			<div id="minuteshand" class="minutes"></div>
+		</div>
+		<div class="seconds-container">
+			<div id="secondshand" class="seconds"></div>
+		</div>
+		<div class="centerdot-container">
+			<div id="centerdot" class="centerdot"></div>
+		</div>
+	</article>
+</div>
+<div id="settingsClock" class="modal" style="width: 0px;">
+	<span class="modal-close svg-cross" onclick="toggleModal('settingsClock')"></span>
+	<div class="modal-content">
+		<label class="half">clock size px</label>
+		<input class="half" type="number" value="250" step="10" min="150" onchange="changeclockSize(this.value);" />
+		<hr />
+		<label class="half">outter radius %</label>
+		<input class="half" type="number" value="50" step="1" min="0" max="50" onchange="document.documentElement.style.setProperty('--clock-radius', this.value + '%');" />
+		<hr />
+		<h2>Colours</h2>
+		<label class="half">border & hour marks</label>
+		<input class="half" type="color" value="#000000" onchange="document.documentElement.style.setProperty('--quarter-marks-surround', this.value);" />
+		<hr />
+		<label class="half">face</label>
+		<input class="half" type="color" value="#c5c5c5" onchange="document.documentElement.style.setProperty('--face-color', this.value);" />
+		<hr />
+		<label class="half">second hand</label>
+		<input class="half" type="color" value="#640000" onchange="document.documentElement.style.setProperty('--second-hand-color', this.value);" />
+		<hr />
+		<label class="half">minute hand</label>
+		<input class="half" type="color" value="#000000" onchange="document.documentElement.style.setProperty('--minute-hand-color', this.value);" />
+		<hr />
+		<label class="half">hour hand</label>
+		<input class="half" type="color" value="#000000" onchange="document.documentElement.style.setProperty('--hour-hand-color', this.value);" />
+		<hr />
+		<h2>Display</h2>
+		<label class="half">show full date				
+			<input class="half" id="chkbxshowdate" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<label class="half">show am pm				
+			<input class="half" id="chkbxshowam_pm" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<label class="half">show seconds				
+			<input class="half" id="chkbxshowsecond" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<label class="half">show minutes				
+			<input class="half" id="chkbxshowminutes" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<label class="half">5 min marks				
+			<input class="half" id="chkbxshowfiveminmark" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<label class="half">1/4 hour marks				
+			<input class="half" id="chkbxshowquarterhourmark" type="checkbox" onchange="displayElements();" checked="checked" />
+		</label>
+		<hr />
+		<label class="half">Brand Name</label>
+		<input class="half" value="{{ site.author }}" type="text" oninput="document.getElementById('brandname').innerHTML = this.value;" checked="checked" />
+	</div>
+</div>
+
+<script>
+	var ClockAdjust = null;
+	
+	docReady(function () {
+		initLocalClocks();
+	});
+
+	function ClockREAdjust() {
+		var date = new Date;
+		var seconds = date.getSeconds();
+		var minutes = date.getMinutes();
+		var miliseconds = date.getMilliseconds();
+		clearInterval(ClockAdjust);
+		//if(seconds == 0 && minutes == 0){
+		//	ClockAdjust = setInterval(function() {
+		//		initLocalClocks();
+		//	}, 3600 * 1000);			
+		//} else 
+		if (seconds == 0) {
+			ClockAdjust = setInterval(function() {
+				initLocalClocks();
+				//ClockREAdjust();
+			}, 60 * 1000);
+		} else if (miliseconds < 100) {
+			ClockAdjust = setInterval(function() {
+				ClockREAdjust();
+			}, 1000);
+		} else {
+			ClockAdjust = setInterval(function() {
+				ClockREAdjust();
+			}, 20);
+		}
+	}
+	window.onresize = function() {
+		changeclockSize('medium');
+	};
+
+	function changeclockSize(size) {
+		size = size || "medium"
+		var maxwidth = window.innerWidth * 0.9
+		var maxheight = window.window.innerHeight * 0.9
+		var maxSize = 0;
+		if (maxwidth > maxheight) {
+			maxSize = maxheight;
+		} else {
+			maxSize = maxwidth;
+		}
+		var minSize = 150;
+		var range = maxSize - minSize;
+		var resizePercent = 1;
+		if (size === "small") {
+			resizePercent = 0.1;
+		}
+		if (size === "medium") {
+			resizePercent = 0.4;
+		}
+		if (size === "large") {
+			resizePercent = 0.7;
+		}
+		if (resizePercent != 1) {
+			size = (resizePercent * range) + minSize;
+		}
+		if (size > maxwidth || size > maxheight) {
+			if (maxwidth > maxheight) {
+				document.documentElement.style.setProperty('--clock-size', maxheight + 'px');
+			} else {
+				document.documentElement.style.setProperty('--clock-size', maxwidth + 'px');
+			}
+		} else {
+			document.documentElement.style.setProperty('--clock-size', size + 'px');
+		}
+		displayElements();
+	}
+
+	function ZeroClocks(type) {
+		var hands = [{
+				handcontainer: 'hours-container',
+				hand: 'hours'
+			},
+			{
+				handcontainer: 'minutes-container',
+				hand: 'minutes'
+			},
+			{
+				handcontainer: 'seconds-container',
+				hand: 'seconds'
+			}
+		];
+
+		for (var j = 0; j < hands.length; j++) {
+			var elements = document.querySelectorAll('.' + hands[j].handcontainer);
+			for (var k = 0; k < elements.length; k++) {
+				if (type != "Pause") {
+					elements[k].style.animation = 'none';
+				}
+				if (type == "Timer" || type == "Clock") {
+					elements[k].offsetHeight; //trigger reflow 
+					elements[k].style.animation = null;
+				}
+				if (type == "Pause") {
+					elements[k].style.animationPlayState = "paused";
+				} else if (type == "Continue") {
+					elements[k].style.animation = null;
+					elements[k].style.animationPlayState = "running";
+				} else {
+					elements[k].style.animationPlayState = "running";
+				}
+			}
+			var elements = document.querySelectorAll('.' + hands[j].hand);
+			for (var k = 0; k < elements.length; k++) {
+				if (type != "Pause" && type != "Continue") {
+					elements[k].style.transform = '';
+					elements[k].offsetHeight; // trigger reflow
+					elements[k].style.animation = null;
+				}
+			}
+		}
+		var daydate = document.getElementById("daydate")
+		var am_pm = document.getElementById("am_pm")
+		am_pm.innerHTML = "";
+		am_pm.classList.remove("markam_pm");
+		daydate.innerHTML = "";
+		daydate.classList.remove("markdaydate");
+		clearInterval(ClockAdjust);
+	}
+
+	function displayElements() {
+		var chkbxshowdate = document.getElementById("chkbxshowdate");
+		var chkbxshowam_pm = document.getElementById("chkbxshowam_pm");
+		var daydate = document.getElementById("daydate");
+		var am_pmElem = document.getElementById("am_pm");
+		daydate.style.display = "none";
+		am_pmElem.style.display = "none";
+		var clocksizepx = getComputedStyle(document.documentElement).getPropertyValue('--clock-size');
+		var clocksize = clocksizepx.substring(0, clocksizepx.length - 2);
+		if (clocksize > 240 && chkbxshowdate.checked) {
+			daydate.style.display = "";
+		}
+		if (clocksize > 240 && chkbxshowam_pm.checked) {
+			am_pmElem.style.display = "";
+
+		}
+		var centerdot = document.getElementById("centerdot");
+		var chkbxshowsecond = document.getElementById("chkbxshowsecond");
+		var secondshand = document.getElementById("secondshand");
+		secondshand.style.height = "1px";
+		secondshand.style.width = "1px";
+		secondshand.style.background = "var(--face-color)";
+		centerdot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--hour-hand-color');
+
+		var chkbxshowminutes = document.getElementById("chkbxshowminutes");
+		var minuteshand = document.getElementById("minuteshand");
+		minuteshand.style.height = "1px";
+		minuteshand.style.width = "1px";
+		minuteshand.style.background = "var(--face-color)";
+		if (chkbxshowminutes.checked) {
+			minuteshand.style.height = "";
+			minuteshand.style.width = "";
+			minuteshand.style.background = "";
+			centerdot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--minute-hand-color');
+		}
+		if (chkbxshowsecond.checked) {
+			secondshand.style.height = "";
+			secondshand.style.width = "";
+			secondshand.style.background = "";
+			centerdot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--second-hand-color');
+		}
+
+		var chkbxshowfiveminmark = document.getElementById("chkbxshowfiveminmark");
+		var chkbxshowquarterhourmark = document.getElementById("chkbxshowquarterhourmark");
+		var fiveminmark1 = document.getElementById("fiveminmark1");
+		var fiveminmark2 = document.getElementById("fiveminmark2");
+		var quarterhourmark = document.getElementById("quarterhourmark");
+
+		fiveminmark1.style.display = "none";
+		fiveminmark2.style.display = "none";
+		quarterhourmark.style.display = "none";
+
+		if (chkbxshowfiveminmark.checked) {
+			fiveminmark1.style.display = "";
+			fiveminmark2.style.display = "";
+		}
+		if (chkbxshowquarterhourmark.checked) {
+			quarterhourmark.style.display = "";
+		}
+
+
+	}
+
+	/* From: cssanimation.rocks/clocks*/
+	function initLocalClocks() {
+		ZeroClocks('Clock');
+		displayElements();
+		// Get the local time using JS
+		var weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		var monthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+		var date = new Date();
+		var miliseconds = date.getMilliseconds();
+		var seconds = date.getSeconds();
+		var minutes = date.getMinutes();
+		var hours = date.getHours();
+		var day = weekday[date.getDay()];
+		var monthday = date.getDate();
+		//var month = date.toLocaleString('default', { month: 'long' });
+		var month = monthName[date.getMonth()];
+		var year = date.getFullYear().toString();
+		var shortyear = year.substring(2, 4);
+		var am_pm = "pm";
+		if (hours < 12) {
+			am_pm = "am"
+		}
+		// Create an object with each hand and it's angle in degrees
+		var hands = [{
+				//handcontainer: 'hours-container',
+				hand: 'hours',
+				angle: ((hours + ((minutes + ((seconds + (miliseconds / 1000)) / 60)) / 60)) * 30)
+			},
+			{
+				//handcontainer: 'minutes-container',
+				hand: 'minutes',
+				angle: ((minutes + ((seconds + (miliseconds / 1000)) / 60)) * 6)
+			},
+			{
+				//handcontainer: 'seconds-container',
+				hand: 'seconds',
+				angle: ((seconds + (miliseconds / 1000)) * 6)
+			}
+		];
+		// Loop through each of these hands to set their angle
+		for (var j = 0; j < hands.length; j++) {
+			//var elements = document.querySelectorAll('.' + hands[j].handcontainer);
+			//for (var k = 0; k < elements.length; k++) {
+			//elements[k].style.animation = null; 
+			//}
+			var elements = document.querySelectorAll('.' + hands[j].hand);
+			for (var k = 0; k < elements.length; k++) {
+				elements[k].style.webkitTransform = 'rotateZ(' + hands[j].angle + 'deg)';
+				elements[k].style.transform = 'rotateZ(' + hands[j].angle + 'deg)';
+			}
+		}
+		var daydate = document.getElementById("daydate");
+		var am_pmElem = document.getElementById("am_pm");
+		am_pmElem.innerHTML = am_pm;
+		am_pmElem.classList.add("markam_pm");
+		daydate.innerHTML = day + " " + monthday + " " + month + " " + shortyear;
+		daydate.classList.add("markdaydate");
+		ClockREAdjust();
+	}
+</script>

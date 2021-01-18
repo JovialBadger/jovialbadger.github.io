@@ -1,0 +1,58 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Range"
+path: "Coding/Web/Range"
+breadcrumbs: "1"
+---
+
+<h4>Multi Handle - With Output</h4>
+<div class="rangeContainer" data-array="[-100, 5, 25, 70, 90, 100]" data-outputelem="valuetest1" data-outputformelem="valuetest" data-handles="3"></div>
+<hr>
+<h4>Single Handle - With Left Progress Indicator - With Text Output</h4>
+<div class="rangeContainer"  data-values='["a", "b"]' data-connect="-1" data-outputelem="valuetest1" data-outputformelem="valuetest" data-start="b"></div>
+<hr>
+<h4>Multi Handle - With Text Output</h4>
+<div class="rangeContainer" data-array="[10, 25, 90, 100]" data-values='["d", "e", "f", "g"]' data-outputelem="valuetest1" data-outputformelem="valuetest" data-handles="2"></div>
+<hr>
+<h4>Single Handle - With Right Progress Indicator - No Output</h4>
+<div class="rangeContainer" data-array="[25, 70, 90, 100]" data-values='["d", "e", "f", "g"]' data-connect="1" data-start="f"></div>
+<hr>
+<h4>Single Handle - Range Set - No Output</h4>
+<div class="rangeContainer" data-array="[25, 70]"></div>
+<hr>
+<h4>Single Handle - No Settings - No Output</h4>
+<div class="rangeContainer"></div>
+<hr><hr><hr>
+<button class="red" onclick="reinitsliders()">Reset Sliders</button>
+<p>Display Output: <span id="valuetest1" class="center" ></span></p>
+<label>Form Update<input id="valuetest" /></label>
+
+<h3>Options</h3>
+<p>Options are set on the HTML div element, no additional javascript is required for the range sliders to display or work. There are several optional data- attributes that can be used for customisation as follows:
+	<ul>
+		<li>array - a numerial javascript array to determin the 'step' points along the slider, can be used to force the values into set positions along the slider - MUST be same length array as -values field if used together</li>
+		<li>values - a text javascript array which will form the output data for the range handles, if not present a fallback to the -array happens - MUST be same length array as -array field if used together</li>
+		<li>connect - value of '-1' OR '1' accepted, -1 being left connect and 1 being right connect, ignored for multiple handles</li>
+		<li>outputelem - HTML element ID accepted, will override the innerHTML of the given element</li>
+		<li>outputformelem - HTML element ID accepted, will override the value of the given element and fire an onchange event if present on the form field</li>
+		<li>start - comma deliminated list accepted, if not enough handles or not enough 'steps' will be ignored, if not present handles will default to lowest steps.</li>
+		<li>handles - positive whole integer accepted, REQUIRES values or array field, if value greater than start items start will be ignored, if not enough 'steps' will revert to one handle</li>
+	</ul>
+	Adjusting the attributes in anyway then reinitialising the slider will force an update of the slider, feel free to play with this in the developers options of your browser and clicking the 'Reset Sliders' button.
+</p>
+
+<script>
+function generateRange(){
+	getElem('rangeGenOutput').value = rangeGenerator(getElem('rangeGenMin').value * 1, getElem('rangeGenMax').value * 1, getElem('rangeGenStepSize').value * 1);
+}
+</script>
+<h3>Range Generation Helper</h3>
+<label>Range Min<input id="rangeGenMin" type="number" value="0"></label>
+<label>Range Max<input id="rangeGenMax" type="number" value="100"></label>
+<label>Range Step Size<input id="rangeGenStepSize" type="number" value="1" min="1"></label>
+<button onclick="generateRange()">Click</button>
+<label>Output Range<textarea id="rangeGenOutput" rows="10"></textarea>

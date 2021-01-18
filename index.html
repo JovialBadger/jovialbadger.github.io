@@ -1,0 +1,107 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Home"
+---
+
+<div>
+	<h2>About</h2>
+	<p>When I first started coding I used open source projects to help me learn and where possible I have always tried to remove bulk and dependancies and just get what was necessary for a given task. I now code regularly and it encorporates most of my work so hopefully I can give back a little with some small projects I put together, also this will be a nice place to not lose things I write in big projects.</p>
+	<p>I also like to do various other things in my free time so there will probably end up being extra sections on here for each, they will probably mostly just be for me, but if others get any use or enjoyment out of it then all the better.</p>
+</div>
+<div>
+	<h2>Projects</h2>
+	<div id="projectLinks"></div>
+</div>
+<div>
+	<h2>Suggestions</h2>
+	<p>If you have any suggestions to any of the projects please feel free to fill out the contact form below, or alternatively submit a pull request on Github. I will review and credit everyone where possible.</p>
+</div>
+<div>
+	<h2>Contact</h2>
+     <script src="https://www.google.com/recaptcha/api.js?onload=createCAPCHA&render=explicit" async defer></script>
+	<script type="text/javascript">
+		function createCAPCHA() {
+			grecaptcha.render('reCaptureTest', {
+				'sitekey': '6LeVwTEaAAAAAGKyViQj1Z9SA5mrfj1lnZn9dEz2',
+				'callback': function (response) {
+					getElem('reCaptureResponse').value = response;
+				},
+				'expired-callback': function () {
+					getElem('reCaptureResponse').value = '';
+				}
+			});
+		}
+		function Post(x){
+			var post = {};
+			var accept = "text/plain";
+			var EmailProject = getElem('slcProjects');
+			var EmailBodyText = getElem('taEmailBody');
+			var EmailGithub = getElem('inpEmailGithub');
+			var EmailReddit = getElem('inpEmailReddit');
+			var EmailEmail = getElem('inpEmailEmail');
+			var EmailreCAPCHA = getElem('reCaptureResponse');		
+			switch(x){
+				case "SendMessage":	
+					var EmailBody = [];
+					if(EmailBodyText.value != ""){EmailBody.push("Suggestion: " + EmailBodyText.value);}
+					if(EmailProject.value == "" || EmailBodyText.value == "" || EmailreCAPCHA.value == "" || EmailBody.length < 1){ alert("Please fill all required fields."); return; }
+					if(EmailGithub.value != ""){EmailBody.push("Github: " + EmailGithub.value);}
+					if(EmailReddit.value != ""){EmailBody.push("Reddit: " + EmailReddit.value);}
+					if(EmailEmail.value != ""){EmailBody.push("Email: " + EmailEmail.value);}
+					post = JSON.stringify({
+						PostType: "EmailForm",
+						EmailSubject: EmailProject.value,
+						EmailreCAPCHA: EmailreCAPCHA.value,
+						EmailBody: EmailBody
+					})		
+					break;
+				default:
+					return;
+			}
+			var jsonString = JSON.stringify(post);
+			const proxyurl = "https://cors-anywhere.herokuapp.com/";
+			var fullurl = proxyurl + 'https://script.google.com/macros/s/AKfycbzBJddka-1UO1sk8wDcUrjgISCHCtu_W40upVHQ0GtDzWevFEVvhCIfqQ/exec';
+			fetch(fullurl, {
+				method: 'post',
+				headers: {
+					'Authorization': '',
+					'Accept': accept,
+					'Content-type': 'application/json'
+					},
+				body: post
+				})
+				.then(response=>response.text())
+				.then(function (data) {
+					if(data == "Email Sent."){				
+						EmailProject.value = "";
+						EmailBodyText.value = "";
+						EmailGithub.value = "";
+						EmailReddit.value = "";
+						EmailEmail.value = "";
+					}
+					alert(data);
+				})
+				.catch(function (error) {
+					alert("Failed");
+				});				
+		}
+	</script>
+	<form  onsubmit="return false">
+		<label>Project*:</label><select id="slcProjects" required></select><hr />
+		<label>Message*:</label><textarea id="taEmailBody" rows="5" required></textarea><hr />
+		<label>Github:</label><input id="inpEmailGithub" /><hr />
+		<label>Reddit:</label><input id="inpEmailReddit" /><hr />
+		<label>Email:</label><input id="inpEmailEmail" /><hr />
+		<div id="reCaptureTest" class="padding"></div>
+		<textarea id="reCaptureResponse" style="display: none;"></textarea>
+		<button class="green"  onclick="Post('SendMessage')">Submit</button>
+	</form>
+</div>
+<div>
+	<h2>Support</h2>
+	<p>If anything here has been useful or you have used it in your own projects please give me a thanks by referencing this site, and if you want you can <a target="_blank" href="{{ site.buymeacoffee_url }}">buy me a cup of tea.</a></p>
+</div>

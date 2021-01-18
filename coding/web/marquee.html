@@ -1,0 +1,57 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Marquee"
+path: "Coding/Web/Marquee"
+breadcrumbs: "1"
+---
+
+<style>
+	.marquee {
+		width: 100%;
+		line-height: 50px;
+		background-color: red;
+		color: white;
+		white-space: nowrap;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+	.marquee .marquee-content {
+		font-weight: 500;
+		font-size: 12px;
+		font-family: Arial, Helvetica, sans-serif;
+		display: inline-block;
+		padding-left: 100%;
+		/*animation: marquee 30s linear infinite;*/
+	}
+	@keyframes marquee {
+		0%   { transform: translate(0, 0); }
+		100% { transform: translate(-100%, 0); }
+	}
+</style>
+
+<script>
+	function marqueeSpeed(){
+		adjustSpeed();
+		function adjustSpeed(){
+			var x = getClass('marquee');
+			for (var i=0; i<x.length; i++){
+				y = getClass('marquee-content', x[i])[0];
+				//y.style.animation = null;
+				var speed = ((x[i].offsetWidth + getTextWidth(y.innerText, getComputedStylePropertyByElem(y, "font-weight") + " " + getComputedStylePropertyByElem(y, "font-size") + " " + getComputedStylePropertyByElem(y, "font-family"))) / 40);
+				y.style.animation = "marquee " + speed + "s linear infinite";
+			}
+		}
+		window.addEventListener('resize', adjustSpeed);
+	}
+	docReady(function () {
+		marqueeSpeed();
+	});
+</script>
+
+<div class="marquee">
+	<p class="marquee-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>

@@ -1,0 +1,38 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Dropdown"
+path: "Coding/Web/Dropdown"
+breadcrumbs: "1"
+---
+
+<h4>No Options</h4>
+<select id="test"><option value="1">test1</option><option value="2">test2</option></select>
+<h4>Deselectable</h4>
+<select id="test1" data-deselectable="1"><option selected disabled></option><option value="1">test1</option><option value="2">test2</option></select>
+<h4>Searchable</h4>
+<select id="test2"><option selected disabled></option><option value="1">test1</option><option value="2">test2</option><option value="3">test3</option><option value="4">test4</option><option value="5">test5</option><option value="6">test6</option><option value="7">test7</option><option value="8">test8</option><option value="9">test9</option><option value="10">test10</option><option value="11">test11</option><option value="12">test12</option></select>
+<h4>Disabled</h4>
+<select id="test3" disabled><option selected value="1">test1</option><option value="2">test2</option></select>
+<h4>OnChange</h4>
+<select id="test4" onchange="getElem('outputOnChange').innerHTML = this.value"><option selected disabled></option><option value="1">test1</option><option value="2">test2</option></select>
+<span>Output for onchange event: <span id="outputOnChange"></span></span>
+
+<h3>Options & Rules</h3>
+<p>Options are set on the HTML div element, no additional javascript is required for the custom drop down to display or work. There are several optional data- attributes that can be used for customisation as follows:</p>
+<ul>
+	<li>deselectable - value of '0' OR '1' accepted, 0 being default and not deselectable and 1 being deselectable</li>
+	<li>placeholder* - default will be "Select An Option..." or whatever is in the placeholder attribute of the select element</li>
+</ul>
+<p>
+	* To get a placeholder element to work add a blank option field that is selected and disable otherwise the first option will shown. e.g.
+</p>
+	<pre><code>&lt;select id="test">&lt;option selected disabled>&lt;/option>&lt;option value="1">test1&lt;/option>&lt;option value="2">test2&lt;/option>&lt;/select></code></pre>
+<p>
+	** All select fields must have an id to work.<br />
+	*** Search will automatically be added for more than 8 options<br />
+	**** If the base select field contains a onchange event this will be fired.
+</p>

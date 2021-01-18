@@ -1,0 +1,138 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Contact Form"
+path: "Coding/Google_Script/Contact_Form"
+breadcrumbs: "1"
+---
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<p>A contact form is a useful way to get feedback on a website, but most solutions are tricky or require payment, a nice work around is using <a href="https://script.google.com" target="_blank">google scripts</a> and a little javascript to get what you need.</p>
+<h4>Google Script Code</h4>
+<pre>
+	<code>
+var emailAddress = 'some@email.com';
+
+//special method to handle POST requests
+function doPost(request) {
+  var x = ProcessRequest(request, "POST");
+  return x;
+};
+
+//special method to handle GET requests
+function doGet(request) {
+  var x = ProcessRequest(request, "GET");
+  return x;
+};
+
+//some function to handle the request
+function ProcessRequest(request, Method) {
+  var lock = LockService.getPublicLock();
+  //a lock wil stop requests blocking the service this is in miliseconds, so here it is 30 seconds
+  lock.waitLock(30000);
+  try {
+    var x = "";
+    if (Method === "GET") {
+      //get requests aren't required for form submits so throw an error.
+      return ContentService.createTextOutput("Error");
+    }
+    if (Method === "POST") {
+      var jsonString = request.postData.getDataAsString();
+      var jsonvalues = JSON.parse(jsonString);
+      switch (jsonvalues.PostType) {
+        case "EmailForm":
+          //server side check all fields are filled, stops people messing with client side javascript.
+          if (jsonvalues.EmailAddress == "" || jsonvalues.EmailSubject == "" || jsonvalues.EmailBody.length < 1) {
+            return ContentService.createTextOutput("Email Missing Info.");
+          }
+          //put all responce fields on seperate lines for ease of reading.
+          var EmailBody = "";
+          for (var i = 0; i < jsonvalues.EmailBody.length; i++) {
+            EmailBody += jsonvalues.EmailBody[i] + "\n";
+          }
+          //send email and add a subject block 'web enquiry' so we can see where it is from
+          MailApp.sendEmail(emailAddress, emailAddress, "[Web Enquiry] " + jsonvalues.EmailSubject, EmailBody);
+          x = ContentService.createTextOutput("Email Sent.");
+          break;
+        default:
+          return ContentService.createTextOutput("Error.");
+          break;
+      }
+      return x;
+    }
+  } catch (request) {
+    //just in case send an error
+    return "Email Failed";
+  } finally {
+    //release the lock to enable the next message
+    lock.releaseLock();
+  }
+}
+	</code>
+</pre>
+
+<h4>Javascript Code</h4>
+<pre>
+	<code>
+var googleScriptID = "someIDfromgoogle";
+
+function Post(x) {
+  var post = {};
+  var accept = "text/plain";
+  switch (x) {
+    case "SendMessage":
+      var EmailAddress = document.getElementById('fromEmailAddress').value;
+      var EmailSubject = document.getElementById('EmailSubject').value;
+      var EmailMessage = document.getElementById('EmailMessage').value;
+      //use an array for the email body as you may have muiltiple fields that need sending
+      var EmailBody = [];
+      if (EmailMessage != "") {
+        EmailBody.push(EmailMessage);
+      }
+      //check all fields are filled you want filled
+      if (EmailAddress == "" || EmailSubject == "" || EmailBody.length < 1) {
+        alert("Error, fill out all fields.");
+        return;
+      }
+      post = JSON.stringify({
+        PostType: "EmailForm",
+        EmailAddress: EmailAddress,
+        EmailSubject: EmailSubject,
+        EmailBody: EmailBody
+      })
+      break;
+    default:
+      return;
+  }
+  var jsonString = JSON.stringify(post);
+  var url = 'https://script.google.com/macros/s/' + googleScriptID + '/exec';
+  fetch(url, {
+      method: 'post',
+      headers: {
+        'Authorization': '',
+        'Accept': accept,
+        'Content-type': 'application/json'
+      },
+      body: post
+    })
+    .then(response => response.text())
+    .then(function(data) {
+      if (data == "Email Sent.") {
+        document.getElementById('fromEmailAddress').value = "";
+        document.getElementById('EmailSubject').value = "";
+        document.getElementById('EmailMessage').value = "";
+      }
+      alert(data);
+    })
+    .catch(function(error) {
+      alert("Message failed please try again, or contact me via x.");
+    });
+
+}
+	</code>
+</pre>

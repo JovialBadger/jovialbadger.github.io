@@ -1,0 +1,53 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Dynamic Navigation"
+path: "Coding/Web/Dynamic_Nav"
+breadcrumbs: "1"
+---
+
+<link rel="stylesheet" type="text/css" href="css/dynamic_nav.css">
+<script src="javascript/dynamic_nav.js"></script>
+<h4>Hard Coded HTML</h4>
+<div>
+	<span class="dynamicNavMenu" onclick="dynamicNavOpen()">=</span>
+	<span class="dynamicNavExtra">some random right floating text</span>
+	<ul class="dynamicNav">
+		<li><a href="#">some link 1</a></li>
+		<li><a href="#">some link 2</a></li>
+		<li><span onclick="dynamicNavOpen('sub')">some dropdown nav 1</span>
+			<ul>
+				<li><a href="#">dropdown link 1</a></li>
+				<li><a href="#">dropdown link 2</a></li>
+			</ul>
+		</li>
+		<li><span onclick="dynamicNavOpen('sub')">some dropdown nav 2</span>
+			<ul>
+				<li><a href="#">dropdown link 3</a></li>			
+				<li><span onclick="dynamicNavOpen('sub')">some dropdown nav 3</span>
+					<ul>
+						<li><a href="#">dropdown link 4</a></li>
+						<li><a href="#">dropdown link 5</a></li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>	
+</div>
+
+<h4>Javascript Generated HTML From JSON Array</h4>
+<div id="divNavFromArray"></div>
+
+<script>
+
+
+var dynamicNavItems = [ {Name:'1',URL:'/'},{Name:'2',URLS:[{Name:'3',URL:'/'}, {Name:'4',URL:'/'}]},{Name:'5',URLS:[{Name:'6',URLS:[{Name:'7',URL:'/'}, {Name:'8',URL:'/'}]},{Name:'9',URLS:[{Name:'10',URLS:[{Name:'11',URL:'/'}, {Name:'12',URL:'/'}]},{Name:'13',URLS:[{Name:'14',URLS:[{Name:'15',URL:'/'}, {Name:'16',URL:'/'}]},{Name:'17',URLS:[{Name:'18',URLS:[{Name:'19',URL:'/'}, {Name:'20',URL:'/'}]},{Name:'21',URL:'/'}]}]}]}]},{Name:'22',URL:'/'},{Name:'23',URL:'/'},{Name:'24',URL:'/'}]; 
+docReady(function () {
+	dynamicNavInit('divNavFromArray', dynamicNavItems, '<div>test</div>');
+	dynamicNavResize();
+});
+
+</script>

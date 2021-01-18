@@ -1,0 +1,281 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Converter"
+path: "Coding/Web/Converter"
+breadcrumbs: "1"
+---
+<div class="half padding">
+	<label class="fixed-half">Conversion Type</label>
+	<select class="fixed-half" id="selectConversionType" onchange="CreateInputFields(this.value)" placeholder="Choose Conversion Type">
+		<option value="" disabled selected>Choose Conversion Type</option>
+	</select>
+</div>
+<div class="half padding">
+	<label class="fixed-half">Significant Figures</label>
+	<input class="fixed-half" id="inputSigFig" type="number" placeholder="Significant Figures" value="5" min="1" max="15"  step="1">
+</div>
+<hr />
+<h1 id="ConversionType"></h1>
+<div class="half padding">
+	<label class="fixed-third">From</label>
+	<select class="fixed-two-third" id="FromUnit" onchange="moveItemToTop(this.id, this.value)" data-deselectable="1"></select>
+</div>
+<div class="half padding" id="divFrom"></div>
+<input style="display:none;" id="inpCurrentFrom" />
+<hr />
+<div class="half padding">
+	<label class="fixed-third">To</label>
+	<select class="fixed-two-third" id="ToUnit" onchange="moveItemToTop(this.id, this.value)" data-deselectable="1"></select>
+</div>
+<div class="half padding" id="divTo"></div>
+<input style="display:none;" id="inpCurrentTo" />
+<hr />
+<p>Type a value in any of the fields to convert between measurements.</p>
+<div id="ConversionInputContainer" style="clear:both;"></div>
+
+<hr />
+<script>	
+	docReady(function () {
+		CreateCompoundConversions();
+		var selectConversionType = document.getElementById('selectConversionType');
+		var Inputs = Array.from(new Set(Conversions.map(function (item) {
+			return item.Type;
+		})));
+		CreateDropDown(selectConversionType, Inputs);
+	});
+	
+	var Conversions = [
+		{Type: "Weights",       Unit: "Daltons", 			ToSI: (1.6605390666050 / 1E27), 			        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "NanoGrams", 			ToSI: (1E-12), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "MicroGrams", 		ToSI: (1E-9), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "MilliGrams", 		ToSI: (1E-6), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Grams", 				ToSI: (1E-3), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "KiloGrams", 			ToSI: 1, 									        isSI: true,     ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Tonnes", 			ToSI: (1E3), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Grains", 			ToSI: (64.79891 / 1E6), 					        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Ounces", 			ToSI: (0.45359237 / 16), 					        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Pounds", 			ToSI: 0.45359237, 							        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Stones", 			ToSI: (0.45359237 * 14), 					        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Weights",       Unit: "Carats", 			ToSI: (1E-6 * 200), 						        isSI: false,    ToSIAdjust: (0)},
+
+		{Type: "Temperatures",  Unit: "Kelvin",             ToSI: (1),                                          isSI: true,     ToSIAdjust: (0)},
+		{Type: "Temperatures",  Unit: "Celsius",            ToSI: (1),                                          isSI: false,    ToSIAdjust: (-273.15)},
+		{Type: "Temperatures",  Unit: "Fahrenheit",         ToSI: (5/9),                                        isSI: false,    ToSIAdjust: (-459.67)},
+
+		{Type: "Time",          Unit: "FemtoSecond",        ToSI: (1E-15),                                      isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "PicoSecond",         ToSI: (1E-12),                                      isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "NanoSecond",         ToSI: (1E-9),                                       isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "MicroSecond",        ToSI: (1E-6),                                       isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "MilliSecond",        ToSI: (1E-3),                                       isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Second",             ToSI: (1),                                          isSI: true,     ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Minute",             ToSI: (60),                                         isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Hour",               ToSI: (60 * 60),                                    isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Day",                ToSI: (60 * 60 * 24),                               isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Week",               ToSI: (60 * 60 * 24 * 7),                           isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Fortnight",          ToSI: (60 * 60 * 24 * 14),                          isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Month",              ToSI: (60 * 60 * 24 * 30.4375),                     isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Year",               ToSI: (60 * 60 * 24 * 365.25),                      isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Decade",             ToSI: (60 * 60 * 24 * 365.25 * 10),                 isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Century",            ToSI: (60 * 60 * 24 * 365.25 * 100),                isSI: false,    ToSIAdjust: (0)},
+		{Type: "Time",          Unit: "Millennium",         ToSI: (60 * 60 * 24 * 365.25 * 1000),               isSI: false,    ToSIAdjust: (0)},
+		
+		{Type: "Lengths",       Unit: "NanoMeters", 		ToSI: (1E-9), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "MicroMeters", 		ToSI: (1E-6), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "MilliMeters", 		ToSI: (1E-3), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "CentiMeters", 		ToSI: (1E-2), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Decimeters",         ToSI: (1E-1), 								        isSI: false,    ToSIAdjust: (0)}, 
+		{Type: "Lengths",       Unit: "Meters", 			ToSI: (1), 									        isSI: true,     ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "KiloMeters", 		ToSI: (1E3), 								        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Inches", 			ToSI: (0.0254), 							        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Feet", 				ToSI: (0.0254 * 12), 						        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Yards", 				ToSI: (0.0254 * 12 * 3), 					        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Chains", 			ToSI: (0.0254 * 12 * 3 * 22), 				        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Furlongs", 			ToSI: (0.0254 * 12 * 3 * 22 * 10), 			        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Miles", 				ToSI: (0.0254 * 12 * 3 * 22 * 10 * 8), 		        isSI: false,    ToSIAdjust: (0)},
+		{Type: "Lengths",       Unit: "Leagues", 			ToSI: (0.0254 * 12 * 3 * 22 * 10 * 8 * 3),	        isSI: false,    ToSIAdjust: (0)},
+		
+		{Type: "Volumes",       Unit: "MicroLiters",		ToSI: (1E-6 ** 3), 								    isSI: false,    ToSIAdjust: (0)},
+		{Type: "Volumes",       Unit: "MilliLiters", 		ToSI: (1E-3 ** 3), 								    isSI: false,    ToSIAdjust: (0)},
+		{Type: "Volumes",       Unit: "CentiLiters", 		ToSI: (1E-2 ** 3), 								    isSI: false,    ToSIAdjust: (0)},
+		{Type: "Volumes",       Unit: "Liters",				ToSI: (1E-1 ** 3), 									isSI: false,    ToSIAdjust: (0)}, 
+		{Type: "Volumes",       Unit: "Pint-UK",			ToSI: (5.6826125 / 1E7),							isSI: false,    ToSIAdjust: (0)},
+	];
+	
+	function CreateCompoundConversions(){
+		for (var i = 0; i < Conversions.length; i++){
+			if(Conversions[i].Type == "Lengths"){				
+				var newVolume = {};
+				newVolume.Type = "Volumes";
+				newVolume.Unit = Conversions[i].Unit + "^3";
+				newVolume.ToSI = Conversions[i].ToSI ** 3;
+				newVolume.isSI = Conversions[i].isSI;
+				newVolume.ToSIAdjust = 0;
+				Conversions.push(newVolume);
+				
+				var newArea = {};
+				newArea.Type = "Areas";
+				newArea.Unit = Conversions[i].Unit + "^2";
+				newArea.ToSI = Conversions[i].ToSI ** 2;
+				newArea.isSI = Conversions[i].isSI;
+				newArea.ToSIAdjust = 0;
+				Conversions.push(newArea);
+				
+				for (var j = 0; j < Conversions.length; j++){
+					if(Conversions[j].Type == "Time"){
+						var newSpeed = {};
+						newSpeed.Type = "Speeds";
+						newSpeed.Unit = Conversions[i].Unit + "/" + Conversions[j].Unit;
+						newSpeed.ToSI = Conversions[i].ToSI / Conversions[j].ToSI;
+						var isSpeedSI = false;
+						if(Conversions[i].isSI && Conversions[j].isSI){isSpeedSI = true;}
+						newSpeed.isSI = isSpeedSI;
+						newSpeed.ToSIAdjust = 0;
+						Conversions.push(newSpeed);
+					}
+				}
+			}
+		}
+	}
+
+	function CreateDropDown(selectElem, Array) {
+		if (Array.length > 0) {
+			for (var i = 0; i < Array.length; i++) {
+				var div = document.createElement('div');
+				div.innerHTML = '<option value="' + Array[i].replace("/", "_") + '">' + Array[i] + '</option>';
+				selectElem.appendChild(div.children[0]);
+			}
+		}		
+	}
+	
+	function CreateInputFields(type) {
+		moveItemToTop("FromUnit");
+		moveItemToTop("ToUnit");
+		var FromUnit = document.getElementById('FromUnit');
+		var ToUnit = document.getElementById('ToUnit');
+		FromUnit.innerHTML = "<option disabled selected></option>";
+		ToUnit.innerHTML = "<option disabled selected></option>";
+		var ConversionType = document.getElementById('ConversionType');
+		var ConversionInputContainer = document.getElementById('ConversionInputContainer');
+		var inputSigFig = document.getElementById("inputSigFig");
+		var Inputs = null;
+		var CallFunction = "";
+		var SIUnit = "";
+		ConversionType.innerHTML = type;
+		ConversionInputContainer.innerHTML = "";
+		var Inputs = Conversions.filter(function (item) {
+			return item.Type == type;
+		}).map(function (item) {
+			return item.Unit;
+		});
+		CreateDropDown(FromUnit, Inputs);
+		CreateDropDown(ToUnit, Inputs);
+		inputSigFig.setAttribute("oninput", "Converter(this.id,this.value)");
+		inputSigFig.setAttribute("onchange", "Converter(this.id,this.value)");
+
+		if(Inputs.length > 0){
+			for (var i = 0; i < Inputs.length; i++){
+				var div = document.createElement('div');
+				var id = "input" + Inputs[i];
+				div.innerHTML = '<div class="half padding" id="div' + Inputs[i].replace("/","_") + '"><span class="fixed-two-fifth"><label>' + Inputs[i] + '</label></span><span class="fixed-two-fifth"><input id="' + id + '" type="number" placeholder="' + Inputs[i] + '" step="any" oninput="Converter(this.id,this.value,this.placeholder)" onchange="Converter(this.id,this.value,this.placeholder)"></span><span class="fixed-fifth padding-left"><button class="submit-button" onclick="CopyToClipboard(&#39;' + id + '&#39;)">Copy</button></span></div>';	
+				ConversionInputContainer.appendChild(div.children[0]);	
+			}	
+		}
+		initiDropdowns();
+	}
+	
+	//var FunctionString = "function NAME(){DOSTUFF}";
+	//registerFunction(FunctionString);
+	function registerFunction(functionBody) {
+		document.getElementById("DynamicScript").outerHTML = "";
+		"use strict";
+		var script = document.createElement("script");
+		script.id = "DynamicScript";
+		script.innerHTML = functionBody;
+		document.body.appendChild(script);
+	}
+		
+	function CopyToClipboard(id) {
+		var copyText = document.getElementById(id);
+		copyText.select();
+		document.execCommand("copy");
+		//alert("Copied the text: " + copyText.value);
+	}
+		
+	function Converter(source, valNum, name) {
+		valNum = parseFloat(valNum);
+		var inputSigFig = document.getElementById('inputSigFig');
+		var SigFig = inputSigFig.value;
+		var SIvalue = 0;
+		var selectConversionType = document.getElementById('selectConversionType');
+		var FindSenderConversion = Conversions.filter(function (item) {
+			return item.Unit == name;
+		});
+		if (FindSenderConversion.length > 0) {
+			SIvalue = ((valNum - FindSenderConversion[0].ToSIAdjust) * FindSenderConversion[0].ToSI) ;
+		} else {
+			var FindSIElement = Conversions.filter(function (item) {
+				return item.Type == selectConversionType.value  &&  item.isSI == true;
+			});
+			inputSIName = "input" + FindSIElement[0].Unit;
+			SIvalue = document.getElementById(inputSIName).value;
+		}
+		var FindConversionElements = Conversions.filter(function (item) {
+			return item.Type == selectConversionType.value;
+		});
+		for(var i = 0; i < FindConversionElements.length; i++){
+			inputName = "input" + FindConversionElements[i].Unit;
+			if (source != inputName) {
+				var input = document.getElementById(inputName);
+				input.value = ((SIvalue / FindConversionElements[i].ToSI) + FindConversionElements[i].ToSIAdjust).toPrecision(SigFig)
+			}
+		};
+	}
+
+	function moveItemToTop(id, moveitem){
+		moveitem = moveitem || "";
+		var container = document.getElementById("div" + id.replace("Unit", ""));
+		var previousMoved = document.getElementById("inpCurrent" + id.replace("Unit", ""));
+		var tempVal = "";
+		if(previousMoved.value != ""){
+			var previosuElem = document.getElementById("div" + previousMoved.value);
+			tempVal = container.getElementsByTagName("INPUT")[0].value;
+			previosuElem.innerHTML = container.innerHTML;			
+			previosuElem.getElementsByTagName("INPUT")[0].value = tempVal;
+			previosuElem.style.display = "";
+			tempVal = "";
+		}
+		previousMoved.value = moveitem;
+		if(moveitem == ""){
+			container.innerHTML = "";		
+		} else{		
+			var itemToMove = document.getElementById("div" + moveitem);
+			tempVal = itemToMove.getElementsByTagName("INPUT")[0].value;
+			container.innerHTML = itemToMove.innerHTML;
+			container.getElementsByTagName("INPUT")[0].value = tempVal;
+			itemToMove.innerHTML = "";
+			itemToMove.style.display = "none";
+		}
+		var x = null
+		if(id == "FromUnit"){
+			x = document.getElementById("ToUnit");
+		} else{
+			x = document.getElementById("FromUnit");			
+		}
+		var options = getTags("OPTION", x);
+		for (var i = 0; i < options.length; i++){
+			if(options[i].innerHTML != ""){
+				options[i].removeAttribute('disabled');
+			}
+			if(options[i].value == moveitem && moveitem != ""){
+				options[i].setAttribute("disabled", "disabled");				
+			}
+		}
+	}
+	
+</script>
+<script id="DynamicScript">
+</script>

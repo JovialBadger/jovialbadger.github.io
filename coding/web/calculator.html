@@ -1,0 +1,255 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Calculator"
+path: "Coding/Web/Calculator"
+breadcrumbs: "1"
+---
+<style type="text/css">
+	.calc span:hover {
+		background-color: lightgrey;
+	}
+	.calc input {
+		font-size: 25px; 
+		font-weight: bold;
+	}
+
+	#shiftBtn {
+		background-color: green;
+	}
+
+	.calc sup{
+		font-size: 10px;
+	}	
+
+	.calc .row {
+		width: 100%;
+		display: block;
+		max-width: 800px;
+		margin: 0 auto;
+		clear:both;
+		border-radius: 5px;
+		text-align: center;
+	}
+	.calc .row span {
+		width: 20%;
+		display: flex;
+		height: 11vh;
+		max-height: 50px;
+		float: left;
+		align-items: center;
+		justify-content: center;    
+		min-height: 25px;
+		border-radius: 5px;
+	}
+</style>
+<script type="text/javascript">
+function input(add) {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value += add ;
+    y.innerHTML += add ;
+}
+function factorial(fact) {
+    if (Number.isInteger(fact)) {
+        if (fact < 2) return 1 ;
+        return fact * factorial(fact - 1) ;
+    }
+}
+function sqrt() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value += "sqrt(" ;
+    y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+    " * Math.sqrt(" : "Math.sqrt(" ;
+}
+function leftParen() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value += "(" ;
+    y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+    " * (" : "(" ;
+}
+function piOrE(pii) {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    if (pii == "pi") {
+        x.value += "\u03C0" ;
+        y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+        " * Math.PI" : "Math.PI" ;
+    } else {
+        x.value += "\u0065" ;
+        y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+        " * Math.E" : "Math.E" ;
+    }
+}
+function log(logfn) {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    if (logfn == 1) {
+        x.value += "log(" ;
+        y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+        " * Math.log10(" : "Math.log10(" ;
+    } else {
+        x.value += "ln(" ;
+        y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+        " * Math.log(" : "Math.log(" ;
+    }
+}
+function solve(calculate) {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value += calculate + "(" ;
+    y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+    " * Math." + calculate + "(Math.PI / 180 * " : "Math." + calculate + "(Math.PI / 180 * " ;
+}
+function solve1(calculateB) {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value += calculateB + "\u207B\u00B9("
+    y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+    " * 180 / Math.PI * Math.a" + calculateB + "(" : "180 / Math.PI * Math.a" + calculateB + "(" ;
+}
+function del() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    var z = document.getElementById("Answer") ;
+    if (x.value.slice(-3) == "Ans") {
+        y.innerHTML = (/[\d)IE]/.test(x.value.slice(-4, -3))) ? 
+        y.innerHTML.slice(0, -(z.innerHTML.length + 3)) : y.innerHTML.slice(0, -(z.innerHTML.length)) ;
+        x.value = x.value.slice(0, -3) ;
+    } else if (x.value == "Error!") {
+        ac() ;
+    } else {
+        switch (y.innerHTML.slice(-2)) {
+            case "* ": // sin cos tan
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-5, -4))) ? 
+            y.innerHTML.slice(0, -28) : y.innerHTML.slice(0, -25) ;
+            x.value = x.value.slice(0, -4) ;
+            break ;
+            case "n(":
+            case "s(": // asin acos atan
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-7, -6))) ? 
+            y.innerHTML.slice(0, -29) : y.innerHTML.slice(0, -26) ;
+            x.value = x.value.slice(0, -6) ;
+            break ;
+            case "0(": // log
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-5, -4))) ? 
+            y.innerHTML.slice(0, -14) : y.innerHTML.slice(0, -11) ;
+            x.value = x.value.slice(0, -4) ;
+            break ;
+            case "g(": // ln
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-4, -3))) ? 
+            y.innerHTML.slice(0, -12) : y.innerHTML.slice(0, -9) ;
+            x.value = x.value.slice(0, -3) ;
+            break ;
+            case "t(": // sqrt
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-6, -5))) ? 
+            y.innerHTML.slice(0, -13) : y.innerHTML.slice(0, -10) ;
+            x.value = x.value.slice(0, -5) ;
+            break ;
+            case "PI": // pi
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-2, -1))) ? 
+            y.innerHTML.slice(0, -10) : y.innerHTML.slice(0, -7) ;
+            x.value = x.value.slice(0, -1) ;
+            break ;
+            case ".E": // e
+            y.innerHTML = (/[\d)IE]/.test(x.value.slice(-2, -1))) ? 
+            y.innerHTML.slice(0, -9) : y.innerHTML.slice(0, -6) ;
+            x.value = x.value.slice(0, -1) ;
+            break ;
+            default:
+            y.innerHTML = y.innerHTML.slice(0, -1) ;
+            x.value = x.value.slice(0, -1) ;
+        } ;
+    }
+}
+function ac() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    x.value = y.innerHTML = "" ;
+}
+
+function ans() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    var z = document.getElementById("Answer") ;
+    x.value += "Ans" ;
+    y.innerHTML += (/[\d)IE]/.test(y.innerHTML.slice(-1))) ? 
+    " * " + z.innerHTML : z.innerHTML ;
+}
+
+function equal() {
+    var x = document.getElementById("result") ;
+    var y = document.getElementById("area") ;
+    var z = document.getElementById("Answer") ;
+    for (var i = 0; i < x.value.split("(").length - x.value.split(")").length; i++) {
+        y.innerHTML += ")" ;
+    }
+    if (y.innerHTML != "") {
+        x.value = y.innerHTML = z.innerHTML = eval(y.innerHTML
+        .replace(/(\(?[^(]*\)?)\^(\(?.*\)?)/, "Math.pow($1, $2)")
+        .replace(/(\d+\.?\d*)\!/g, "factorial($1)")
+        ) ;
+    }
+    if (!isFinite(x.value)) x.value = "Error!" ;
+}
+</script>
+<div class="calc">
+	<span class="row">formula:<u id="area"></u></span>
+	<span class="row">answer:<u id="Answer"></u></span>
+    <span class="row"><input id=result readonly></span>
+    <span class="row">
+		<span id=shiftBtn>:)</span>
+		<span onclick="solve('sin')">sin</span>
+		<span onclick="solve('cos')">cos</span>
+		<span onclick="solve('tan')">tan</span>
+		<span onclick="input('!')">!</span>
+    </span>
+    <span class="row">
+		<span onclick="input('^(')">^</span>
+		<span onclick="sqrt()">sqrt</span>
+		<span onclick="leftParen()">(</span>
+		<span onclick="input(')')">)</span>
+		<span onclick="log(1)">log</span>
+    </span>
+    <span class="row">
+		<span onclick="input('7')">7</span>
+		<span onclick="input('8')">8</span>
+		<span onclick="input('9')">9</span>
+		<span onclick="del()">DEL</span>
+		<span onclick="ac()">AC</span>
+    </span>
+    <span class="row">
+		<span onclick="input('4')">4</span>
+		<span onclick="input('5')">5</span>
+		<span onclick="input('6')">6</span>
+		<span onclick="input('*')">*</span>
+		<span onclick="input('/')">/</span>
+    </span>    
+    <span class="row">
+		<span onclick="input('1')">1</span>
+		<span onclick="input('2')">2</span>
+		<span onclick="input('3')">3</span>
+		<span onclick="input('+')">+</span>
+		<span onclick="input('-')">-</span>
+    </span>    
+    <span class="row">
+		<span onclick="input('0')">0</span>
+		<span onclick="input('.')">.</span>
+		<span onclick="piOrE('pi')">&#x03C0;</span>
+		<span onclick="ans()">Ans</span>
+		<span onclick="equal()">=</span>
+    </span>
+    <span class="row">
+		<span onclick="log(0)">ln</span>
+		<span onclick="solve1('sin')">sin<sup>-1</sup></span>
+		<span onclick="solve1('cos')">cos<sup>-1</sup></span>
+		<span onclick="solve1('tan')">tan<sup>-1</sup></span>
+		<span onclick="piOrE('e')">e</span>
+    </span>
+</div>
+<hr />

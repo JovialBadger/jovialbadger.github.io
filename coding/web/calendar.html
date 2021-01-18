@@ -1,0 +1,179 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Calendar"
+path: "Coding/Web/Calendar"
+breadcrumbs: "1"
+---
+<div id="monthCal" class="sticky-first-column"></div>
+</div>
+<div id="yearCal" class="sticky-first-column"></div>
+<style>
+	:root{
+		--first-col-size: 70px;
+	}
+	.dateIsToday{
+		background-color: blue;
+		color: white;		
+	}
+	.weekendHighlight{
+		background-color: darkslategrey;
+		color: white;
+	}
+	@media(max-width:900px) {
+		.hideCollapse{
+			/*display:none;*/
+		}
+	}
+	#yearCal > table tbody, #yearCal > table td, #yearCal > table th, #monthCal > table tbody, #monthCal > table td, #monthCal > table th {
+		padding: 5px 3px;
+	}	
+	/*@media(min-width:901px) {*/
+		 .sticky-first-column > table {
+			margin-left: var(--first-col-size);
+		}
+		.sticky-first-column > table > * > tr > th:first-child,
+		.sticky-first-column > table > * > tr > td:first-child {
+			position: absolute;
+			top: auto;
+			width: var(--first-col-size);
+			margin-left: calc(-1 * var(--first-col-size));
+			background-color: #000;
+			color: #ccc;
+			z-index: 5;
+		}
+		.sticky-first-column > table{
+			width: calc(100% - var(--first-col-size));
+		}
+		.sticky-first-column {
+			overflow-x: auto;
+		}
+	/*}*/
+</style>
+<script>
+	var MonthsList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+	var WeekDayList = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+	var calObj = [];
+	var maxMonthLength = 0;
+	
+	function getYear(year){
+		for(var i = 0; i < 12; i++){
+			var monthObj = {};
+			var dates = [];
+			monthObj.Month = MonthsList[i];
+			var days = daysInMonth(year, i);
+			var startDay = getDayOfWeek(year, i, 1);
+			for(var j = 0; j < startDay; j++){
+				dates.push("");
+			}
+			for(var k = 1; k < (days + 1); k++){
+				dates.push(new Date(year, i, k));
+			}
+			if(dates.length > maxMonthLength){maxMonthLength = dates.length;}
+			monthObj.Dates = dates
+			calObj.push(monthObj);
+		}
+		console.log(calObj);
+		//displayYearView();
+		displayMonthView(new Date().getMonth());
+	}
+	
+	function displayYearView(){
+		getElem("monthCal").innerHTML = "";
+		var html = "<table>";
+		html += "<thead><tr><th>" + calObj[0].Dates[15].getFullYear() + "</th>";
+		for(var k = 0; k< maxMonthLength; k++){			
+			html += "<th>" + WeekDayList[k % 7].substring(0,3) + "</th>";
+		}
+		html += "</tr></thead>";
+		html += "<tbody>";
+		for(var i = 0; i < calObj.length; i++){			
+			html += "<tr><td onclick='displayMonthView(" + i + ")'>" + calObj[i].Month.substring(0,3) + "</td>";
+			for(var j = 0; j < maxMonthLength; j++){
+				var dayOfWeek = (calObj[i].Dates.length > j && calObj[i].Dates[j] != "") ? getDayOfWeekByDate(calObj[i].Dates[j]) : -1;
+				var _class = (dayOfWeek == 5 || dayOfWeek == 6) ? "weekendHighlight" : "";
+				var _todayClass = (calObj[i].Dates.length > j && calObj[i].Dates[j] != "" && dateIsToday(calObj[i].Dates[j])) ? "dateIsToday" : "";
+				html += "<td class='" + _class + " " + _todayClass + "'>";
+				if(calObj[i].Dates.length > j && calObj[i].Dates[j] != ""){
+					html += calObj[i].Dates[j].getDate();
+				} else{
+					
+				}
+				html += "</td>";
+			}
+			html += "</tr>";
+		}
+		html += "</tbody>";
+		getElem("yearCal").innerHTML = html + "</table>";
+		updateTableStriping(getTags("table", getElem("yearCal"))[0]);
+	}
+	
+	function displayMonthView(month){
+		getElem("yearCal").innerHTML = "";
+		var monthObj = calObj[month];
+		var html = "<h4 onclick='displayYearView()'>" + monthObj.Dates[15].getFullYear() + "</h4><h5>" + monthObj.Month + "</h5><table>";
+		html += "<thead><tr><th>Week</th>";
+		for(var k = 0; k< 7; k++){			
+			html += "<th>" + WeekDayList[k % 7].substring(0,3) + "</th>";
+		}
+		html += "</tr></thead>";
+		html += "<tbody>";
+		html += "<tr>"		
+		for(var i = 0; i < monthObj.Dates.length; i++){		
+			if(i%7 == 0 && monthObj.Dates[i] != ""){
+				html += "<td>" + getWeekNumber(monthObj.Dates[i]) + "</td>";
+			} else if(i==0 && monthObj.Dates[i] == ""){
+				html += "<td>" + getWeekNumber(new Date(monthObj.Dates[15].getFullYear(), monthObj.Dates[15].getMonth(), 1)) + "</td>";				
+			} 
+			
+			var dayOfWeek = (monthObj.Dates[i] != "") ? getDayOfWeekByDate(monthObj.Dates[i]) : -1;
+			var _class = (dayOfWeek == 5 || dayOfWeek == 6) ? "weekendHighlight" : "";
+			var _todayClass = (monthObj.Dates[i] != "" && dateIsToday(monthObj.Dates[i])) ? "dateIsToday" : "";
+			html += "<td class='" + _class + " " + _todayClass + "'>" + ((monthObj.Dates[i] != "") ? monthObj.Dates[i].getDate() : "") + "</td>";						
+
+			if(i%7 == 6 && i != (monthObj.Dates.length -1)){
+				html += "</tr><tr>";
+			}
+		}
+		html += "</tr>";
+		html += "</tbody>";
+		getElem("monthCal").innerHTML = html + "</table>";
+		updateTableStriping(getTags("table", getElem("monthCal"))[0]);
+	}
+	
+	function daysInMonth(year, month){
+		var d = new Date(year, month + 1, 0);
+		return d.getDate();
+	}
+	
+	function getDayOfWeekByDate(d){
+		return (d.getDay() == 0) ? 6 : (d.getDay() - 1);
+	}
+	
+	function getDayOfWeek(year, month, day){
+		var d = new Date(year, month, day);
+		return (d.getDay() == 0) ? 6 : (d.getDay() - 1);
+	}
+	
+	function getWeekNumber(_date){
+		var d = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate()));
+		var dayNum = d.getUTCDay() || 7;
+		d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+		var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+		return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+	};
+	
+	function dateIsToday(_date){
+		if(!_date.getFullYear){return false;}
+		var d = new Date();
+		if(_date.getFullYear() == d.getFullYear() && _date.getMonth() == d.getMonth() && _date.getDate() == d.getDate()){
+			return true;
+		}
+		return false;
+	};
+	
+	getYear(new Date().getFullYear());
+</script>
