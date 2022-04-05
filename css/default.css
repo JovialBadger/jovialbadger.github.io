@@ -351,3 +351,7 @@ input[type="color"]::-webkit-color-swatch {
 	padding: calc(var(--padding) * 3);
 	border: 1px solid var(--white-color);
 }
+
+.opacity50{
+	opacity: 0.5;
+}

@@ -16,7 +16,7 @@ function tableCollapse(pageLoad, table){
 	pageLoad = pageLoad || false;
 	table = table || null;
 	var tables = [];
-	if(table != null){tables.push(table)} else{tables = getTags("TABLE");}
+	if(table != null){tables.push(table)} else{tables = getClass("break-table");}
 	for (var i = 0; i < tables.length; i++) {
 		var thead = getTags("THEAD", tables[i])[0];
 		var headers = getTags("th", thead);
@@ -35,7 +35,8 @@ function tableCollapse(pageLoad, table){
     }
 }
 
-function filterTable(tableid, columnid, search) {
+function filterTable(tableid, columnid, search, matchType) {
+	matchType = matchType || 0;
     var filter, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow;
     filter = search.toUpperCase();
     table = getElem(tableid); 
@@ -51,7 +52,7 @@ function filterTable(tableid, columnid, search) {
                 txtValue = getClass("tablerowcontent", cell)[0].innerHTML || cell.textContent || cell.innerText;
 				var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
 				removeClasses(cell, classesRemove)
-                if (txtValue.toUpperCase().indexOf(filter) > -1 && search != "") {
+                if (txtValue.toUpperCase().indexOf(filter) > -1 && search != "" && ((matchType == 0) || (matchType == 1 && txtValue.toUpperCase() == filter))) {
                     cell.className += " FilterMatch";
                 } else if (search != "") {
                     cell.className += " FilterNoMatch";
@@ -75,8 +76,9 @@ function filterTable(tableid, columnid, search) {
 }
 
 function updateTableStriping(table){
-	tbody = getTags("tbody", table)[0];
-	trows = getTags("tr", tbody);
+	tbody = getTags("tbody", table);
+	if(tbody.length == 0){return;}
+	trows = getTags("tr", tbody[0]);
 	var visibleRows = 0;
 	for (i = 0; i < trows.length; i++) {
 		trows[i].classList.remove("treven");

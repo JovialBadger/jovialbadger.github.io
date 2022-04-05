@@ -1,0 +1,103 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Round Robin"
+path: "Coding/Web/Round_Robin"
+breadcrumbs: "1"
+---
+
+<script>
+
+const DUMMY = -1;
+// returns an array of round representations (array of player pairs).
+// http://en.wikipedia.org/wiki/Round-robin_tournament#Scheduling_algorithm
+function robin (n, ps) {  // n = num players
+  const rs = [];                  // rs = round array
+  if (!ps) {
+    ps = [];
+    for (let k = 1; k <= n; k += 1) {
+      ps.push(k);
+    }
+  } else {
+    ps = ps.slice();
+  }
+
+  if (n % 2 === 1) {
+    ps.push(DUMMY); // so we can match algorithm for even numbers
+    n += 1;
+  }
+  rs.push(createRobin(n,ps));
+  ps.reverse();
+  rs.push(createRobin(n,ps));
+
+  return rs;
+};
+
+function createRobin(n, ps)
+{
+const rs = [];
+  for (let j = 0; j < n - 1; j += 1) {
+    rs[j] = []; // create inner match array for round j
+    for (let i = 0; i < n / 2; i += 1) {
+      const o = n - 1 - i;
+      if (ps[i] !== DUMMY && ps[o] !== DUMMY) {
+        // flip orders to ensure everyone gets roughly n/2 home matches
+        const isHome = i === 0 && j % 2 === 1;
+        // insert pair as a match - [ away, home ]
+        rs[j].push([isHome ? ps[o] : ps[i], isHome ? ps[i] : ps[o]]);
+      }
+    }
+    ps.splice(1, 0, ps.pop()); // permutate for next round
+  }
+  shuffle(rs);
+  return rs
+}
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
+
+//var robin = require('roundrobin');
+
+//console.log(robin(9));
+var numberofteams = 9;
+var isdouble = 1;
+function init(_numberofteams, _isdouble) {
+numberofteams = _numberofteams;
+isdouble = _isdouble
+var rob = robin(_numberofteams);
+var combine = rob[0];
+var comb2 = rob[1];
+var x = _isdouble ==1 ? combine.concat(comb2) : combine;
+	createTable(objectToTwodArray(x), "test");
+	console.log(x)
+}
+
+function changeDouble(id) {
+id = id*1;
+	init(numberofteams, id);
+}
+function changeTeams(id) {
+id = id*1;
+	init( id, isdouble);
+}
+
+docReady(function () {
+init(numberofteams, isdouble)
+});
+</script>
+<label>If each team plays each once set to 0, if twice set to 1: 
+<input min="0" max="1" step="1" type="number" value="1" onchange="changeDouble(this.value)"></label>
+<label>Number of players/Teams
+<input min="0" max="100" step="1" type="number" value="9" onchange="changeTeams(this.value)"></label>
+<p>A league scheduler based on the round robin format; outputted so each round is a row with the home player/team as the first number (if doubling the plays otherwise it is arbitrary).</p><p>To do:<ul><li>Add abilibty to state team/player names</li></ul></p>
+<table id="test"></table>

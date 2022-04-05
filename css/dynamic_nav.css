@@ -13,6 +13,10 @@ layout: blank
 	--dynamic-nav-hover-background: #555;	
 }
 
+.dynamicNav > li > span{
+	display: inline-flex;
+}
+
 .dynamicNav li{
 	display: none;
 }

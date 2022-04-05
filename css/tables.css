@@ -41,7 +41,7 @@ table tbody {
 table tbody .treven {
     background-color: var(--table-border-color);
 }
-table tr:hover {
+table.break-table tr:hover {
     background-color: var(--table-text-color);
     color: var(--table-background-color);
 }

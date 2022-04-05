@@ -8,20 +8,73 @@ title: "Calendar"
 path: "Coding/Web/Calendar"
 breadcrumbs: "1"
 ---
-<div id="monthCal" class="sticky-first-column"></div>
+<div style="text-align:center;">
+	Year:&emsp;<span style="display:inline-block;"><input id="inpChosenYear" type="number" step="1" min="-271821" max="275760" /></span>&emsp;
+	<span style="display:inline-block;"><button onclick="goToYear()">Go To Year</button></span>
+	<br />
+	Month:&emsp;<span style="display:inline-block;"><input id="inpChosenMonth" type="number" step="1" min="1" max="12" value="1" /></span>&emsp;
+	<span style="display:inline-block;"><button onclick="goToMonth()">Go To Month</button></span>
+	<br />
+	Week:&emsp;<span style="display:inline-block;"><input id="inpChosenWeek" type="number" step="1" min="1" max="53" value="1" /></span>&emsp;
+	<span style="display:inline-block;"><button onclick="goToWeek()">Go To Week</button></span>
+	<br />
+	<span style="display:inline-block;"><button onclick="thisYear()">This Year</button></span>
+	<span style="display:inline-block;"><button onclick="thisMonth()">This Month</button></span>
+	<span style="display:inline-block;"><button onclick="thisWeek()">This Week</button></span>
+</div>
+<div id="divCalendarControls"></div>
+<div id="monthWeekDayCal" class="sticky-first-column"></div>
 </div>
 <div id="yearCal" class="sticky-first-column"></div>
 <style>
 	:root{
-		--first-col-size: 70px;
+		--first-col-size: 50px;
+	}
+	.weekendHighlight{
+		background-color: darkslategrey;
+		color: white;
 	}
 	.dateIsToday{
 		background-color: blue;
 		color: white;		
 	}
-	.weekendHighlight{
-		background-color: darkslategrey;
-		color: white;
+	
+	#monthWeekDayCal td, #yearCal td {
+		height: 100px;
+	}
+	#monthWeekDayCal td > div, #yearCal td > div {
+		height: 90px;
+		overflow-y: hidden;
+		font-weight: bolder;
+	}
+	#monthWeekDayCal td > div > div, #yearCal td > div > div {		
+		text-align: left;
+		overflow-x: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	#monthWeekDayCal table {		
+		/*table-layout: fixed;*/
+	}
+	#monthWeekDayCal colgroup col {		
+		width: calc(1/7*100%);
+	}
+	#yearCal colgroup col{
+		width:calc(1/37*100%);		
+	}
+	#monthWeekDayCal colgroup col, #yearCal colgroup col{
+		min-width: 50px;
+		max-width: 60px;
+	}
+	#yearCal colgroup col:first-child, #monthWeekDayCal colgroup col:first-child {
+		width:0px;
+		max-width: 0px;
+		min-width: 0px;
+	}
+	
+	table tbody, table td, table th {
+		vertical-align: top;
+		padding: 0
 	}
 	@media(max-width:900px) {
 		.hideCollapse{
@@ -59,7 +112,50 @@ breadcrumbs: "1"
 	var calObj = [];
 	var maxMonthLength = 0;
 	
+	function calMatchYear(year){
+		if(calObj.length == 0 || calObj[0].Dates[15].getYear != year){
+			return false;
+		}
+		return true;
+	}
+	
+	function checkYearMonthValid(year,month){
+		if(year > -271821 && year < 275760 && month > -1 && month < 12){
+			return true;
+		}
+		alert("Incorrect Format Of Year Or Date")
+		return false;
+	}
+	
+	function goToWeek(){
+		var year = getElem("inpChosenYear").value;
+		var week = getElem("inpChosenWeek").value;
+		if(week < 54){
+			displayWeekView(year, week);
+		} else{
+			alert("Invalid week number.");
+		}
+	}
+	
+	function goToMonth(){
+		var year = getElem("inpChosenYear").value;
+		var month = getElem("inpChosenMonth").value - 1;
+		displayMonthView(year, month);
+	}
+	
+	function goToYear(){
+		displayYearView(getElem("inpChosenYear").value);
+	}
+	
 	function getYear(year){
+		if(!checkYearMonthValid(year,0)){
+			return;
+		}
+		getElem("inpChosenYear").value = year;
+		if(calMatchYear(year)){
+			return;
+		}
+		calObj = [];
 		for(var i = 0; i < 12; i++){
 			var monthObj = {};
 			var dates = [];
@@ -76,72 +172,140 @@ breadcrumbs: "1"
 			monthObj.Dates = dates
 			calObj.push(monthObj);
 		}
-		console.log(calObj);
-		//displayYearView();
-		displayMonthView(new Date().getMonth());
+		//console.log(calObj);
 	}
 	
-	function displayYearView(){
-		getElem("monthCal").innerHTML = "";
-		var html = "<table>";
-		html += "<thead><tr><th>" + calObj[0].Dates[15].getFullYear() + "</th>";
+	function displayYearView(year){
+		year = year *1;
+		getYear(year);
+		getElem("monthWeekDayCal").innerHTML = "";
+		getElem("divCalendarControls").innerHTML = "<h4><span onclick='displayYearView(" + (year - 1) + ")'>&lt;</span>&emsp;" + year + "&emsp;<span onclick='displayYearView(" + (year + 1) + ")'>&gt;</span></h4>";
+		var html = "<table><colgroup>"
+		for(var k = 0; k< maxMonthLength; k++){			
+			html += "<col>";
+		}
+		html += "</colgroup><thead><tr><th>-</th>";
 		for(var k = 0; k< maxMonthLength; k++){			
 			html += "<th>" + WeekDayList[k % 7].substring(0,3) + "</th>";
 		}
-		html += "</tr></thead>";
-		html += "<tbody>";
+		html += "</tr></thead><tbody>";
 		for(var i = 0; i < calObj.length; i++){			
-			html += "<tr><td onclick='displayMonthView(" + i + ")'>" + calObj[i].Month.substring(0,3) + "</td>";
+			html += "<tr><td onclick='displayMonthView(" + year + "," +  i + ")'>" + calObj[i].Month.substring(0,3) + "</td>";
 			for(var j = 0; j < maxMonthLength; j++){
 				var dayOfWeek = (calObj[i].Dates.length > j && calObj[i].Dates[j] != "") ? getDayOfWeekByDate(calObj[i].Dates[j]) : -1;
 				var _class = (dayOfWeek == 5 || dayOfWeek == 6) ? "weekendHighlight" : "";
 				var _todayClass = (calObj[i].Dates.length > j && calObj[i].Dates[j] != "" && dateIsToday(calObj[i].Dates[j])) ? "dateIsToday" : "";
-				html += "<td class='" + _class + " " + _todayClass + "'>";
+				html += "<td class='" + _class + " " + _todayClass + "'><div>";
 				if(calObj[i].Dates.length > j && calObj[i].Dates[j] != ""){
 					html += calObj[i].Dates[j].getDate();
 				} else{
 					
 				}
-				html += "</td>";
+				html += "</div></td>"; //add cal events here as divs within the initial div	
 			}
 			html += "</tr>";
 		}
-		html += "</tbody>";
-		getElem("yearCal").innerHTML = html + "</table>";
+		html += "</tbody></table>";
+		getElem("yearCal").innerHTML = html;
 		updateTableStriping(getTags("table", getElem("yearCal"))[0]);
+		getElem("yearCal").click();
+		getElem("monthWeekDayCal").click();
 	}
 	
-	function displayMonthView(month){
+	function displayMonthView(year, month){
+		year = year *1;
+		month = month *1;
+		if(!checkYearMonthValid(year,month)){
+			return;
+		}
+		getElem("inpChosenMonth").value = month + 1;
+		getElem("inpChosenWeek").value = getWeekNumber(new Date(year, month, 1));
+		getYear(year);		
 		getElem("yearCal").innerHTML = "";
 		var monthObj = calObj[month];
-		var html = "<h4 onclick='displayYearView()'>" + monthObj.Dates[15].getFullYear() + "</h4><h5>" + monthObj.Month + "</h5><table>";
-		html += "<thead><tr><th>Week</th>";
+		var monthminusone = ((month == 0) ? ((year - 1) + "," + 11) : (year + "," + (month - 1)));
+		var monthplusone = ((month == 11) ? ((year + 1) + "," + 0) : (year + "," + (month + 1)));
+		getElem("divCalendarControls").innerHTML = "<h4><span onclick='displayMonthView(" + (year-1) + "," + month + ")'>&lt;</span>&emsp;<span onclick='displayYearView(" + year + ")'>" + year + "</span>&emsp;<span onclick='displayMonthView(" + (year+1) + "," + month + ")'>&gt;</span></h4><h5><span onclick='displayMonthView(" + monthminusone + ")'>&lt;</span><span style='min-width:200px; display:inline-block'>" + monthObj.Month + "</span><span onclick='displayMonthView(" + monthplusone + ")'>&gt;</span></h5>";
+		var html = "<table><colgroup><col><col><col><col><col><col><col><col></colgroup><thead><tr><th style='padding-left: 1px;padding-right: 1px;'>Week</th>";
 		for(var k = 0; k< 7; k++){			
 			html += "<th>" + WeekDayList[k % 7].substring(0,3) + "</th>";
 		}
-		html += "</tr></thead>";
-		html += "<tbody>";
-		html += "<tr>"		
-		for(var i = 0; i < monthObj.Dates.length; i++){		
-			if(i%7 == 0 && monthObj.Dates[i] != ""){
-				html += "<td>" + getWeekNumber(monthObj.Dates[i]) + "</td>";
-			} else if(i==0 && monthObj.Dates[i] == ""){
-				html += "<td>" + getWeekNumber(new Date(monthObj.Dates[15].getFullYear(), monthObj.Dates[15].getMonth(), 1)) + "</td>";				
-			} 
+		html += "</tr></thead><tbody><tr>";
+		var firstWeekDay = getDayOfWeekByDate(new Date(year, month, 1));
+		var lastDayPreviousMonth = new Date(year, month, 0).getDate();
+		var previousMonthStartDay = lastDayPreviousMonth - firstWeekDay + 1;
+		var nextMonthStartDay = 1;
+		var x =(((monthObj.Dates.length)%7) == 0 ? 0: (7-((monthObj.Dates.length)%7)))+monthObj.Dates.length;
+		for(var i = 0; i < x; i++){		
+			var currentDay = -1;
+			var currentDate = -1;
+			var _class = ((i+1)%7 == 0 || (i+2)%7 == 0) ? "weekendHighlight" : "";
+			if(i<monthObj.Dates.length){
+				currentDay = (monthObj.Dates[i] != "") ? monthObj.Dates[i].getDate() : previousMonthStartDay;
+				currentDate = (monthObj.Dates[i] != "") ? monthObj.Dates[i] : new Date((month>0?year:(year-1)), (month>0?month-1:11), previousMonthStartDay);			 
+				if(monthObj.Dates[i] == ""){	
+					previousMonthStartDay++;
+					_class += " opacity50"
+				}
+			}
+			else{
+				currentDay = nextMonthStartDay;
+				currentDate = new Date((month==11?year+1:year), (month==11?0:month+1), nextMonthStartDay);
+				nextMonthStartDay++;
+				_class += " opacity50"
+			}
+			if(i%7 == 0){
+				html += "<td onclick='displayWeekView(" + currentDate.getFullYear() + "," + getWeekNumber(currentDate) + ")'>" + getWeekNumber(currentDate) + "</td>";
+			}
+			_class += dateIsToday(currentDate) ? " dateIsToday" : "";
+			html += "<td class='" + _class + "'><div>" + currentDay + "</div></td>";	//add cal events here as divs within the initial div	
+		
 			
-			var dayOfWeek = (monthObj.Dates[i] != "") ? getDayOfWeekByDate(monthObj.Dates[i]) : -1;
-			var _class = (dayOfWeek == 5 || dayOfWeek == 6) ? "weekendHighlight" : "";
-			var _todayClass = (monthObj.Dates[i] != "" && dateIsToday(monthObj.Dates[i])) ? "dateIsToday" : "";
-			html += "<td class='" + _class + " " + _todayClass + "'>" + ((monthObj.Dates[i] != "") ? monthObj.Dates[i].getDate() : "") + "</td>";						
-
 			if(i%7 == 6 && i != (monthObj.Dates.length -1)){
 				html += "</tr><tr>";
 			}
 		}
-		html += "</tr>";
-		html += "</tbody>";
-		getElem("monthCal").innerHTML = html + "</table>";
-		updateTableStriping(getTags("table", getElem("monthCal"))[0]);
+		html += "</tr></tbody></table>";
+		getElem("monthWeekDayCal").innerHTML = html;
+		updateTableStriping(getTags("table", getElem("monthWeekDayCal"))[0]);
+		getElem("yearCal").click();
+		getElem("monthWeekDayCal").click();
+	}
+	
+	function displayWeekView(year, week){
+		year = year *1;
+		week = week *1;
+		if(!checkYearMonthValid(year,0)){
+			return;
+		}
+		var date = getDateByWeek(year, week);
+		week = getWeekNumber(date);
+		year = date.getFullYear();
+		getElem("inpChosenMonth").value = date.getMonth() + 1;
+		getElem("inpChosenWeek").value = week;
+		getYear(year);		
+		getElem("yearCal").innerHTML = "";
+		getElem("divCalendarControls").innerHTML = "<h4 onclick='displayYearView(" + year + ")'>" + year + "</h4><h5><span onclick='displayWeekView(" + addDays(date,-7).getFullYear() + "," + getWeekNumber(addDays(date,-7)) + ")'>&lt;</span>&emsp;Week: " + week + "&emsp;<span onclick='displayWeekView(" + addDays(date,7).getFullYear()  + "," + getWeekNumber(addDays(date,7)) + ")'>&gt;</span></h5>";
+		var html = "<table><colgroup><col><col><col><col><col><col><col><col></colgroup><thead><tr><th style='background: transparent; border: none;'></th>";
+		for(var k = 0; k< 7; k++){	
+			var _class = (k == 5 || k == 6) ? "weekendHighlight" : "";
+			_class += dateIsToday(date) ? " dateIsToday" : "";
+			html += "<th class='" + _class + "'>" + WeekDayList[k % 7].substring(0,3) + "<br />" + MonthsList[date.getMonth()].substring(0,3) + "<br />" + date.getDate() + "</th>";
+			date = addDays(date, 1);
+		}
+		html += "</tr></thead><tbody><tr>";
+		for(var i = 0; i < 24; i++){
+			html += "<td>" + ((i < 10)?"0"+i:i) + ":00</td>";
+			for(var j = 0;j < 7; j++){
+				html += "<td><div></div></td>";		//add cal events here as divs within the initial div	
+			}
+			html += "</tr><tr>";
+		}
+		html += "</tr></tbody></table>";
+		getElem("monthWeekDayCal").innerHTML = html;
+		updateTableStriping(getTags("table", getElem("monthWeekDayCal"))[0]);
+		getElem("yearCal").click();
+		getElem("monthWeekDayCal").click();
 	}
 	
 	function daysInMonth(year, month){
@@ -164,7 +328,15 @@ breadcrumbs: "1"
 		d.setUTCDate(d.getUTCDate() + 4 - dayNum);
 		var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
 		return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
-	};
+	}
+	
+	function getDateByWeek( y ,w) {
+		var date = new Date(y, 0, 1);
+		var day = getDayOfWeekByDate(date);
+		date = day > 3 ? addDays(date, 7 - day) : date;
+		day = getDayOfWeekByDate(date);
+		return addDays(date, (7*(w-1))-day);
+	}
 	
 	function dateIsToday(_date){
 		if(!_date.getFullYear){return false;}
@@ -175,5 +347,95 @@ breadcrumbs: "1"
 		return false;
 	};
 	
-	getYear(new Date().getFullYear());
+	var Moon = {
+		phases: ['new-moon', 'waxing-crescent-moon', 'quarter-moon', 'waxing-gibbous-moon', 'full-moon', 'waning-gibbous-moon', 'last-quarter-moon', 'waning-crescent-moon'],
+		phase: function (year, month, day) {
+			let c = e = jd = b = 0;
+
+			if (month < 3) {
+				year--;
+				month += 12;
+			}
+
+			++month;
+			c = 365.25 * year;
+			e = 30.6 * month;
+			jd = c + e + day - 694039.09; // jd is total days elapsed
+			jd /= 29.5305882; // divide by the moon cycle
+			b = parseInt(jd); // int(jd) -> b, take integer part of jd
+			jd -= b; // subtract integer part to leave fractional part of original jd
+			b = Math.round(jd * 8); // scale fraction from 0-8 and round
+
+			if (b >= 8) b = 0; // 0 and 8 are the same so turn 8 into 0
+			return {phase: b, name: Moon.phases[b]};
+		}
+	};
+	
+	function addDays(date, days){
+		var d = date.getTime();
+		var n = d + days * 24 * 3600 * 1000;
+		return new Date(n);
+	}
+	
+	function isFullMoon(year, month, day){
+		Moon.phase(year, month, day) == 'full-moon' ? true : false;
+	}
+	
+	function thisYear(){
+		displayYearView(new Date().getFullYear());	
+	}
+	
+	function thisMonth(){
+		var x = new Date()
+		displayMonthView(x.getFullYear(), x.getMonth());	
+	}
+	
+	function thisWeek(){
+		var x = new Date()
+		displayWeekView(x.getFullYear(), getWeekNumber(x));	
+	}
+	
+	
+	function DoubleScroll(element) {
+            var scrollbar= document.createElement('div');
+            scrollbar.appendChild(document.createElement('div'));
+            scrollbar.style.overflow= 'auto';
+            scrollbar.style.overflowY= 'hidden';
+            scrollbar.style.lineheight= '0px';
+            scrollbar.firstChild.style.width= element.scrollWidth+'px';
+            scrollbar.firstChild.style.paddingTop= '1px';
+            //scrollbar.firstChild.style.lineHeight= '0px';
+            scrollbar.firstChild.appendChild(document.createTextNode('\xA0'));
+            var running = false;
+            scrollbar.onscroll= function() {
+                if(running) {
+                    running = false;
+                    return;
+                }
+                running = true;
+                element.scrollLeft= scrollbar.scrollLeft;
+            };
+            element.onscroll= function() {
+                if(running) {
+                    running = false;
+                    return;
+                }
+                running = true;
+                scrollbar.scrollLeft= element.scrollLeft;
+            };
+            element.parentNode.insertBefore(scrollbar, element);
+			//window.onresize = resizeDoubleScroll;
+			
+			window.addEventListener("resize", resizeDoubleScroll);
+			element.addEventListener("click", resizeDoubleScroll);
+			function resizeDoubleScroll(){		
+				scrollbar.firstChild.style.width= element.scrollWidth+'px';
+			}
+        }
+
+    DoubleScroll(getElem('yearCal'));
+    DoubleScroll(getElem('monthWeekDayCal'));
+	thisYear();
+	
+	
 </script>
