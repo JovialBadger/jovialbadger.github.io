@@ -1,0 +1,198 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Word Finder"
+path: "Games/Word_Finder"
+breadcrumbs: "1"
+---
+<script src="javascript/words.js"></script>
+<style>
+	#grid-guess>div {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		gap: 3px;
+		background-color: var(--main-color);
+		padding: 3px;
+		max-width:1000px;
+		margin: auto;
+	}
+
+	#grid-guess>div>div, #grid-container>div {
+		background-color: rgba(255, 255, 255, 0.8);
+		text-align: center;
+		padding: 10px 0;
+		font-size: 30px;
+	}
+	#grid-container {
+		max-width:1500px;
+		margin: auto;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		gap: 3px;
+		background-color: var(--main-color);
+		padding: 3px;
+	}
+</style>
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="init()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
+		<hr/>
+		<input id="inputFocus" style="height:1px;width:1px;position:absolute;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
+		<div onclick="focusInput()">
+		<div id="grid-guess"></div>
+		<hr/>
+		<div id="grid-container"></div>
+		</div>
+		<script>
+			var sucess = false;
+			var chosenWord = "";
+			var currentGuess = 0;
+			var currentLetter = 0;
+			var guessedLetters = [];
+			var wins = 0;
+			var losses = 0;
+			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
+
+			function focusInput(){
+				inputFocus.focus();
+			}
+
+			function init() {
+				numberLosses.innerHTML = losses;
+				numberWins.innerHTML = wins;
+				focusInput();
+				sucess = false;
+				guessedLetters = [];
+				chosenWord = "";
+				currentGuess = 0;
+				currentLetter = 0;
+				var x = words.filter(function(t) {
+					return t.L == 5
+				});
+				x = x.concat(wordDelta.filter(function(t) {
+					return t.L == 5
+				}));
+				//console.log(x);
+				chosenWord = x[Math.floor(Math.random() * x.length)].W;
+				//console.log(chosenWord);
+				var y = document.getElementById('grid-guess');
+				var d = "";
+				for (var a = 0; a < 6; a++) {
+					d += "<div id='guess-word-" + a + "'>";
+					for (var b = 0; b < 5; b++) {
+						d += "<div class='letter-" + b + "'>&nbsp;</div>";
+					}
+					d += "</div>";
+				}
+				y.innerHTML = d;
+				makeKeyBoard();
+			}
+			
+			function makeKeyBoard(){
+				var wordChars = chosenWord.toUpperCase().split("");
+				var z = document.getElementById('grid-container');
+				var e = "";
+				for (var c = 0; c < keyBoard.length; c++) {
+					var thisLetter = keyBoard[c].L.toUpperCase();
+					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? "#0f0":"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
+				}
+				z.innerHTML = e;			
+			}
+			
+			function keyboardCapture(e){
+				var key=e.keyCode || e.which;
+				switch(key){
+					case 13:
+						enterKey(":)");
+						break;
+					case 8:
+						enterKey("<=");
+						break;
+					default:
+						enterKey(String.fromCharCode(key).toUpperCase());
+						break;
+				}
+				inputFocus.value = "";
+			}
+			
+			function enterKey(letter){
+				numberLosses.innerHTML = losses;
+				numberWins.innerHTML = wins;
+				var ok = false;
+				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
+				if(letters.length > 0){
+					if(sucess == true){
+						alert("sucess, please start new game")
+						return;
+					}
+					if(currentGuess == 6){
+						alert("Failed, please start new game. Word: " + chosenWord);
+						return;
+					}
+					var elem = document.getElementById('guess-word-' + currentGuess);
+					ok = true;
+					switch(letter){
+						case ":)":
+							if(currentLetter == 5){
+								var word = "";
+								for (var b = 0; b < 5; b++) {
+									word += elem.getElementsByClassName("letter-" + b)[0].innerHTML;
+								}
+								var x = words.filter(function(t) {
+									return t.L == 5
+								});
+								x = x.concat(wordDelta.filter(function(t) {
+									return t.L == 5
+								}));
+								var isWord = x.filter(function (item) {return item.W.toUpperCase() == word;});
+								if(isWord.length > 0){						
+									guessedLetters = guessedLetters.concat(word.split(""));
+									makeKeyBoard();
+									if(word == chosenWord.toUpperCase()){								
+										for (var z = 0; z < 5; z++) {
+											elem.getElementsByClassName("letter-" + z)[0].style.background = "#0f0";
+										}
+										sucess = true;
+										wins++;
+										alert("correct");
+									} else{			
+										var wordChars = chosenWord.toUpperCase().split("");
+										for (var z = 0; z < 5; z++) {
+											var letterElem = elem.getElementsByClassName("letter-" + z)[0];
+											var lettercheck = letterElem.innerHTML;
+											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
+										}
+										if(currentGuess ==5){
+											losses++;
+											alert("Failed! Word: " + chosenWord);
+										} else{
+											alert("try again");
+										}
+										currentGuess++;
+										currentLetter = 0;
+									}
+								} else{
+									alert("no such word!");
+								}
+							} else{alert("please fill all letters");}
+							break;
+						case "<=":
+							currentLetter--;
+							currentLetter = currentLetter < 0 ? 0 : currentLetter;
+							var letterelem = elem.getElementsByClassName("letter-" + currentLetter);
+							letterelem[0].innerHTML = "&nbsp;";
+							break;
+						default:
+							if(currentLetter < 5){
+								var letterelem = elem.getElementsByClassName("letter-" + currentLetter);
+								letterelem[0].innerHTML = letter;
+								currentLetter++;
+								currentLetter = currentLetter > 5 ? 5 : currentLetter;
+							}
+							break;
+					}
+				}
+			}
+			init();
+		</script>
