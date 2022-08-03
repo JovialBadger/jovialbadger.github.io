@@ -38,12 +38,12 @@ breadcrumbs: "1"
 </style>
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="init()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
 		<hr/>
-		<input id="inputFocus" style="height:1px;width:1px;position:absolute;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
 		<div onclick="focusInput()">
-		<div id="grid-guess"></div>
-		<hr/>
-		<div id="grid-container"></div>
+			<div id="grid-guess"></div>
+			<hr/>
+			<div id="grid-container"></div>
 		</div>
+		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
 		<script>
 			var sucess = false;
 			var chosenWord = "";
