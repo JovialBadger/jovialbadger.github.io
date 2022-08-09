@@ -85,6 +85,21 @@ function initNav(page){
 	}
 }
 
+function getSubArray(subPath){
+	subPath = subPath || "";
+	var div = document.createElement("DIV");
+	div.innerHTML = links;
+	if(subPath == ""){
+		return getTags("UL", div)[0];
+	} else{
+		var linkElems = getTags("A", div);
+		for (var i = 0; i < linkElems.length; i++){
+			if(linkElems[i].href.toUpperCase().endsWith(subPath.toUpperCase())){
+				return getTags("UL", linkElems[i].parentElement)[0];
+			}
+		}
+	}
+}
 function createSubNav(currentLocation){
 	var Elem = getElem("projectLinks");
 	if(Elem != null){
@@ -111,21 +126,6 @@ function createBreadCrumbs(currentLocation){
 	}
 }
 
-function getSubArray(subPath){
-	subPath = subPath || "";
-	var div = document.createElement("DIV");
-	div.innerHTML = links;
-	if(subPath == ""){
-		return getTags("UL", div)[0];
-	} else{
-		var linkElems = getTags("A", div);
-		for (var i = 0; i < linkElems.length; i++){
-			if(linkElems[i].href.toUpperCase().endsWith(subPath.toUpperCase())){
-				return getTags("UL", linkElems[i].parentElement)[0];
-			}
-		}
-	}
-}
 
 var arr = [];
 function convertJson(){
