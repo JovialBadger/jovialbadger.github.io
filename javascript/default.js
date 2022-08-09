@@ -103,7 +103,8 @@ function getSubArray(subPath){
 function createSubNav(currentLocation){
 	var Elem = getElem("projectLinks");
 	if(Elem != null){
-		Elem.innerHTML = getSubArray(currentLocation).outerHTML;
+		var x = getSubArray(currentLocation);
+		Elem.innerHTML = x.outerHTML;
 	}
 }
 
