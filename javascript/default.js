@@ -142,11 +142,11 @@ function convertJson(){
 		arr[i].complete = false;
         projectOptions += "<option value='" + url + "'>" + StringReplaceAll(url, "_", " ") + "</option>";
 	}
-	var ul = document.createElement("UL");
+	//var ul = document.createElement("UL");
 	customNavCreate("",arr.slice(1,arr.length));
-	ul.innerHTML = links;
-	test2.appendChild(ul);
-	test.innerHTML = navItems;console.log(linkProjectsDynamic);
+	//ul.innerHTML = links;
+	//test2.appendChild(ul);
+	//test.innerHTML = navItems;console.log(linkProjectsDynamic);
 }
 
 function customNavCreate(str, navList, str2){
