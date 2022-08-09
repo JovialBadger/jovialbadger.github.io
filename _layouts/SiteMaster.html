@@ -22,8 +22,8 @@
 		<link rel="icon" type="image/png" href="images/favicon.png">
 		<script>
 			docReady(function () {
-				var currentLocation = "";
-				createSubNav(currentLocation);
+				//var currentLocation = "";
+				//createSubNav(currentLocation);
 				var slcElem = getElem("slcProjects");
 				if(slcElem != null){
 					slcElem.innerHTML = "<option disabled selected value=''>Please Choose</option>" + projectOptions + "<option value='Other'>Other</option>";
@@ -60,7 +60,7 @@
 					<script>
 						docReady(function () {
 							var currentLocation = "{{ page.path }}";
-							createSubNav(currentLocation);
+							//createSubNav(currentLocation);
 							createBreadCrumbs(currentLocation);
 						});
 					</script>
