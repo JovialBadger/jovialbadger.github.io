@@ -87,6 +87,7 @@ function initNav(page){
 
 function getSubArray(subPath){
 	subPath = subPath || "";
+	subPath = subPath.toLowerCase() == "index.html" ? "" : subPath.toLowerCase();
 	var div = document.createElement("DIV");
 	div.innerHTML = links;
 	if(subPath == ""){
@@ -94,7 +95,9 @@ function getSubArray(subPath){
 	} else{
 		var linkElems = getTags("A", div);
 		for (var i = 0; i < linkElems.length; i++){
-			if(linkElems[i].href.toUpperCase().endsWith(subPath.toUpperCase())){
+			var url = linkElems[i].URL.startsWith("/") ? linkElems[i].URL.substring(1) : linkElems[i].URL;
+			url = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
+			if(linkElems[i].href.toLowerCase().endsWith(subPath)){
 				return getTags("UL", linkElems[i].parentElement)[0];
 			}
 		}
@@ -162,9 +165,9 @@ function customNavCreate(str, navList, str2){
 					arr[j].complete = true;
 					navList[i].complete = true;
 					var subList = checkSubs(navList[i], arr);
-					var tempStr = "<li><a href='" + navList[i].URL + "'>" + navList[i].Name;
+					var tempStr = "<li><a href='" + navList[i].URL + "'>" + navList[i].Name + "</a>";
 					if(subList.length > 0){
-						links += tempStr + "</a><ul>";
+						links += tempStr + "<ul>";
 						navItems += tempStr + "<span onclick='toggleNavSubMenu(this);'>" + wrapPath(iconDownArrow) + "</span>" + "<ul style='display:none;'>";						
 						customNavCreate(links, subList, navItems)
 						links += "</ul></li>";
