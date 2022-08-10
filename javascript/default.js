@@ -95,9 +95,9 @@ function getSubArray(subPath){
 	} else{
 		var linkElems = getTags("A", div);
 		for (var i = 0; i < linkElems.length; i++){
-			var url = linkElems[i].URL.startsWith("/") ? linkElems[i].URL.substring(1) : linkElems[i].URL;
+			var url = linkElems[i].href.startsWith("/") ? linkElems[i].href.substring(1) : linkElems[i].href;
 			url = url.endsWith("/") ? url.substring(0, url.length - 1) : url;
-			if(linkElems[i].href.toLowerCase().endsWith(subPath)){
+			if(url.toLowerCase().endsWith(subPath)){
 				return getTags("UL", linkElems[i].parentElement)[0];
 			}
 		}
