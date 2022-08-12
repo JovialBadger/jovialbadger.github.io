@@ -55,12 +55,12 @@ breadcrumbs: "1"
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
 
 			function focusInput(){
-				inputFocus.focus();
+				getElem('inputFocus').focus();
 			}
 
-			function init() {
-				numberLosses.innerHTML = losses;
-				numberWins.innerHTML = wins;
+			function initWordFinder() {
+				getElem('numberLosses').innerHTML = losses;
+				getElem('numberWins').innerHTML = wins;
 				focusInput();
 				sucess = false;
 				guessedLetters = [];
@@ -68,15 +68,15 @@ breadcrumbs: "1"
 				currentGuess = 0;
 				currentLetter = 0;
 				var x = words.filter(function(t) {
-					return t.L == 5
+					return t.L == 5;
 				});
 				x = x.concat(wordDelta.filter(function(t) {
-					return t.L == 5
+					return t.L == 5;
 				}));
 				//console.log(x);
 				chosenWord = x[Math.floor(Math.random() * x.length)].W;
 				//console.log(chosenWord);
-				var y = document.getElementById('grid-guess');
+				var y = getElem('grid-guess');
 				var d = "";
 				for (var a = 0; a < 6; a++) {
 					d += "<div id='guess-word-" + a + "'>";
@@ -91,7 +91,7 @@ breadcrumbs: "1"
 			
 			function makeKeyBoard(){
 				var wordChars = chosenWord.toUpperCase().split("");
-				var z = document.getElementById('grid-container');
+				var z = getElem('grid-container');
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
@@ -113,45 +113,45 @@ breadcrumbs: "1"
 						enterKey(String.fromCharCode(key).toUpperCase());
 						break;
 				}
-				inputFocus.value = "";
+				getElem('inputFocus').value = "";
 			}
 			
 			function enterKey(letter){
-				numberLosses.innerHTML = losses;
-				numberWins.innerHTML = wins;
+				getElem('numberLosses').innerHTML = losses;
+				getElem('numberWins').innerHTML = wins;
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
 				if(letters.length > 0){
 					if(sucess == true){
-						alert("sucess, please start new game")
+						alert("sucess, please start new game");
 						return;
 					}
 					if(currentGuess == 6){
 						alert("Failed, please start new game. Word: " + chosenWord);
 						return;
 					}
-					var elem = document.getElementById('guess-word-' + currentGuess);
+					var elem = getElem('guess-word-' + currentGuess);
 					ok = true;
 					switch(letter){
 						case ":)":
 							if(currentLetter == 5){
 								var word = "";
 								for (var b = 0; b < 5; b++) {
-									word += elem.getElementsByClassName("letter-" + b)[0].innerHTML;
+									word += getClass("letter-" + b,elem)[0].innerHTML;
 								}
 								var x = words.filter(function(t) {
-									return t.L == 5
+									return t.L == 5;
 								});
 								x = x.concat(wordDelta.filter(function(t) {
-									return t.L == 5
+									return t.L == 5;
 								}));
 								var isWord = x.filter(function (item) {return item.W.toUpperCase() == word;});
 								if(isWord.length > 0){						
 									guessedLetters = guessedLetters.concat(word.split(""));
 									makeKeyBoard();
 									if(word == chosenWord.toUpperCase()){								
-										for (var z = 0; z < 5; z++) {
-											elem.getElementsByClassName("letter-" + z)[0].style.background = "#0f0";
+										for (var y = 0; y < 5;y++) {
+											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
 										sucess = true;
 										wins++;
@@ -159,7 +159,7 @@ breadcrumbs: "1"
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
 										for (var z = 0; z < 5; z++) {
-											var letterElem = elem.getElementsByClassName("letter-" + z)[0];
+											var letterElem = getClass("letter-" + z,elem)[0];
 											var lettercheck = letterElem.innerHTML;
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
@@ -180,19 +180,21 @@ breadcrumbs: "1"
 						case "<=":
 							currentLetter--;
 							currentLetter = currentLetter < 0 ? 0 : currentLetter;
-							var letterelem = elem.getElementsByClassName("letter-" + currentLetter);
-							letterelem[0].innerHTML = "&nbsp;";
+							getClass("letter-" + currentLetter,elem)[0].innerHTML = "&nbsp;";
 							break;
 						default:
 							if(currentLetter < 5){
-								var letterelem = elem.getElementsByClassName("letter-" + currentLetter);
-								letterelem[0].innerHTML = letter;
+								getClass("letter-" + currentLetter,elem)[0].innerHTML = letter;
 								currentLetter++;
 								currentLetter = currentLetter > 5 ? 5 : currentLetter;
 							}
 							break;
-					}
+					}					
+					getElem('numberLosses').innerHTML = losses;
+					getElem('numberWins').innerHTML = wins;
 				}
 			}
-			init();
+			docReady(function () {
+				initWordFinder();
+			});
 		</script>
