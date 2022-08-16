@@ -148,3 +148,23 @@ function StringReplaceAll(str, search, replacement) {
 	str = str.toString();
     return str.replace(new RegExp(search, 'g'), replacement);
 }
+
+function getLocal(id){
+	id = id || ""
+	if (id != "" && localStorage.getItem(id) != null) {
+		return localStorage.getItem(id);
+	} else{
+		return null;
+	}
+}
+
+function setLocal(id, value){
+	id = id || "";
+	if(id == ""){
+		return 0;
+	} else{
+		value = value || null;
+		localStorage.setItem(id, value)
+		return 1;
+	}
+}

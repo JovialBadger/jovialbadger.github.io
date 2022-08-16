@@ -12,7 +12,7 @@ breadcrumbs: "1"
 <style>
 	#grid-guess>div {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+		/*grid-template-columns: 1fr 1fr 1fr 1fr 1fr;*/
 		gap: 3px;
 		background-color: var(--main-color);
 		padding: 3px;
@@ -36,7 +36,8 @@ breadcrumbs: "1"
 		padding: 3px;
 	}
 </style>
-		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="init()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
+		Word Length: <input type="number" min="4" max="9" value="5" onchange="changeWordLength(this.value)">
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
 		<hr/>
 		<div onclick="focusInput()">
 			<div id="grid-guess"></div>
@@ -45,6 +46,8 @@ breadcrumbs: "1"
 		</div>
 		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
 		<script>
+			var resettable = true;
+			var wordLengths = 5; //min 4 max 9
 			var sucess = false;
 			var chosenWord = "";
 			var currentGuess = 0;
@@ -53,40 +56,57 @@ breadcrumbs: "1"
 			var wins = 0;
 			var losses = 0;
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
-
+			
 			function focusInput(){
 				getElem('inputFocus').focus();
 			}
-
-			function initWordFinder() {
-				getElem('numberLosses').innerHTML = losses;
-				getElem('numberWins').innerHTML = wins;
-				focusInput();
-				sucess = false;
-				guessedLetters = [];
-				chosenWord = "";
-				currentGuess = 0;
-				currentLetter = 0;
-				var x = words.filter(function(t) {
-					return t.L == 5;
-				});
-				x = x.concat(wordDelta.filter(function(t) {
-					return t.L == 5;
-				}));
-				//console.log(x);
-				chosenWord = x[Math.floor(Math.random() * x.length)].W;
-				//console.log(chosenWord);
-				var y = getElem('grid-guess');
-				var d = "";
-				for (var a = 0; a < 6; a++) {
-					d += "<div id='guess-word-" + a + "'>";
-					for (var b = 0; b < 5; b++) {
-						d += "<div class='letter-" + b + "'>&nbsp;</div>";
-					}
-					d += "</div>";
+			
+			function changeWordLength(val){
+				val = (val * 1) || 5;
+				if(resettable){
+					wordLengths = val;
+					initWordFinder();
 				}
-				y.innerHTML = d;
-				makeKeyBoard();
+			}
+
+			function initWordFinder() {		
+				if(resettable){
+					losses = getLocal("wordFinderLosses") ? getLocal("wordFinderLosses") : losses;
+					wins = getLocal("wordFinderWins") ? getLocal("wordFinderWins") : wins;
+					resettable = false;
+					setResults();
+					focusInput();
+					sucess = false;
+					guessedLetters = [];
+					chosenWord = "";
+					currentGuess = 0;
+					currentLetter = 0;
+					var x = words.filter(function(t) {
+						return t.L == wordLengths;
+					});
+					x = x.concat(wordDelta.filter(function(t) {
+						return t.L == wordLengths;
+					}));
+					//console.log(x);
+					chosenWord = x[Math.floor(Math.random() * x.length)].W;
+					//console.log(chosenWord);
+					var y = getElem('grid-guess');
+					var d = "";
+					var frames = "";
+					for (var a = 0; a < (wordLengths + 1); a++) {
+						d += "<div id='guess-word-" + a + "'>";
+						for (var b = 0; b < wordLengths; b++) {
+							d += "<div class='letter-" + b + "'>&nbsp;</div>";
+							if(a == 0){
+								frames += " 1fr";
+							}
+						}
+						d += "</div>";
+					}
+					y.innerHTML = d;
+					getElem('adjustWordsTable').innerHTML = "#grid-guess>div {grid-template-columns:" + frames + ";}"
+					makeKeyBoard();
+				}
 			}
 			
 			function makeKeyBoard(){
@@ -116,66 +136,74 @@ breadcrumbs: "1"
 				getElem('inputFocus').value = "";
 			}
 			
-			function enterKey(letter){
+			function setResults(){
 				getElem('numberLosses').innerHTML = losses;
 				getElem('numberWins').innerHTML = wins;
+				setLocal("wordFinderLosses", losses);
+				setLocal("wordFinderWins", wins);
+			}
+			
+			function enterKey(letter){
+				setResults();
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
 				if(letters.length > 0){
 					if(sucess == true){
-						alert("sucess, please start new game");
+						toastyMake("sucess, please start new game");
 						return;
 					}
-					if(currentGuess == 6){
-						alert("Failed, please start new game. Word: " + chosenWord);
+					if(currentGuess == (wordLengths + 1)){
+						toastyMake("Failed, please start new game. Word: " + chosenWord);
 						return;
 					}
 					var elem = getElem('guess-word-' + currentGuess);
 					ok = true;
 					switch(letter){
 						case ":)":
-							if(currentLetter == 5){
+							if(currentLetter == wordLengths){
 								var word = "";
-								for (var b = 0; b < 5; b++) {
+								for (var b = 0; b < wordLengths; b++) {
 									word += getClass("letter-" + b,elem)[0].innerHTML;
 								}
 								var x = words.filter(function(t) {
-									return t.L == 5;
+									return t.L == wordLengths;
 								});
 								x = x.concat(wordDelta.filter(function(t) {
-									return t.L == 5;
+									return t.L == wordLengths;
 								}));
 								var isWord = x.filter(function (item) {return item.W.toUpperCase() == word;});
 								if(isWord.length > 0){						
 									guessedLetters = guessedLetters.concat(word.split(""));
 									makeKeyBoard();
 									if(word == chosenWord.toUpperCase()){								
-										for (var y = 0; y < 5;y++) {
+										for (var y = 0; y < wordLengths;y++) {
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
 										sucess = true;
 										wins++;
-										alert("correct");
+										resettable = true;
+										toastyMake("correct");
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
-										for (var z = 0; z < 5; z++) {
+										for (var z = 0; z < wordLengths; z++) {
 											var letterElem = getClass("letter-" + z,elem)[0];
 											var lettercheck = letterElem.innerHTML;
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
-										if(currentGuess ==5){
+										if(currentGuess == wordLengths){ 
 											losses++;
-											alert("Failed! Word: " + chosenWord);
+											resettable = true;
+											toastyMake("Failed! Word: " + chosenWord);
 										} else{
-											alert("try again");
+											toastyMake("try again");
 										}
 										currentGuess++;
 										currentLetter = 0;
 									}
 								} else{
-									alert("no such word!");
+									toastyMake("no such word!");
 								}
-							} else{alert("please fill all letters");}
+							} else{toastyMake("please fill all letters");}
 							break;
 						case "<=":
 							currentLetter--;
@@ -183,18 +211,19 @@ breadcrumbs: "1"
 							getClass("letter-" + currentLetter,elem)[0].innerHTML = "&nbsp;";
 							break;
 						default:
-							if(currentLetter < 5){
+							if(currentLetter < wordLengths){
 								getClass("letter-" + currentLetter,elem)[0].innerHTML = letter;
 								currentLetter++;
-								currentLetter = currentLetter > 5 ? 5 : currentLetter;
+								currentLetter = currentLetter > wordLengths ? wordLengths : currentLetter;
 							}
 							break;
 					}					
-					getElem('numberLosses').innerHTML = losses;
-					getElem('numberWins').innerHTML = wins;
+					setResults();
 				}
 			}
 			docReady(function () {
 				initWordFinder();
 			});
 		</script>
+		<style id="adjustWordsTable">
+		</style>

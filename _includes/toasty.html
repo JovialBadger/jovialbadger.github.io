@@ -1,0 +1,49 @@
+<style>
+#toastyContainer {
+	text-align: center;
+	position: fixed;
+	z-index: 1;
+	right: 30px;
+	bottom: 30px;
+	color: #fff;
+}
+.toasty{
+	font-size: 17px;
+	border-radius: 5px;
+	background-color: #333;
+	width: 250px;
+	max-width: 250px;
+	word-wrap: break-word;
+	margin-top: 3px;
+	position:relative;
+}
+.toastyText{
+	padding: 16px;
+	display: inline-block;
+}
+.toastyClose{
+	top: 10px;
+	position: absolute;
+	right: 10px;
+}
+</style>
+<div id="toastyContainer"></div>
+<script>
+function toastyMake(txt) {
+	var close = false;
+	var bgColour = "";
+	var txtColour = "";
+	var timeClose = 0;
+	txt = txt || "";
+	if(txt != ""){
+		var x = document.getElementById("toastyContainer");
+		var toast = document.createElement("div");
+		toast.innerHTML = "<span class='toastyText' style='" + (txtColour != "" ? "color:" + txtColour + ";" : "") +  (close ? "padding-right:50px;" : "") + "'>" + txt + "</span>" + (close ? "<span class='toastyClose' onclick='this.parentNode.remove()'>&#10005;</span>" : "");
+		toast.className = "toasty";
+		bgColour != "" ? toast.style.background = bgColour : "";
+		close ? null : toast.setAttribute("onclick","this.remove()");
+		x.appendChild(toast);
+		setTimeout(function(){ toast.remove(); }, (timeClose == 0 ? (close ? 10000 : 3000) : timeClose));
+	}
+}
+</script>
