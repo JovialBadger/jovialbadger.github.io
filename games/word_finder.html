@@ -74,8 +74,8 @@ breadcrumbs: "1"
 
 			function initWordFinder() {		
 				if(resettable){
-					losses = getLocal("wordFinderLosses") ? getLocal("wordFinderLosses") : losses;
-					wins = getLocal("wordFinderWins") ? getLocal("wordFinderWins") : wins;
+					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
+					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
 					resettable = false;
 					setResults();
 					focusInput();
@@ -144,8 +144,8 @@ breadcrumbs: "1"
 			function setResults(){
 				getElem('numberLosses').innerHTML = losses;
 				getElem('numberWins').innerHTML = wins;
-				losses == 0 ? null : setLocal("wordFinderLosses", losses);
-				wins == 0 ? null : setLocal("wordFinderWins", wins);
+				losses == 0 ? null : setLocal("wordFinderLosses" + wordLengths, losses);
+				wins == 0 ? null : setLocal("wordFinderWins" + wordLengths, wins);
 			}
 			
 			function enterKey(letter){
