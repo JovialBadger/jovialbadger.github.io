@@ -64,6 +64,8 @@ breadcrumbs: "1"
 			function changeWordLength(val){
 				val = (val * 1) || 5;
 				if(resettable){
+					wins = 0;
+					losses = 0;
 					wordLengths = val;
 					initWordFinder();
 				}else{
