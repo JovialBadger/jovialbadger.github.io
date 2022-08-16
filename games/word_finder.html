@@ -63,7 +63,7 @@ breadcrumbs: "1"
 			
 			function changeWordLength(val){
 				val = (val * 1) || 5;
-				if(resettable){
+				if(resettable || (currentGuess == 0 && currentLetter == 0)){
 					wins = 0;
 					losses = 0;
 					wordLengths = val;
