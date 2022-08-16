@@ -36,7 +36,7 @@ breadcrumbs: "1"
 		padding: 3px;
 	}
 </style>
-		Word Length: <input type="number" min="4" max="9" value="5" onchange="changeWordLength(this.value)">
+		Word Length: <input id="inpWordLength" type="number" min="4" max="9" value="5" onblur="changeWordLength(this.value)">
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
 		<hr/>
 		<div onclick="focusInput()">
@@ -66,6 +66,9 @@ breadcrumbs: "1"
 				if(resettable){
 					wordLengths = val;
 					initWordFinder();
+				}else{
+					getElem("inpWordLength").value = wordLengths;
+					toastyMake("finishGameFirst");
 				}
 			}
 
@@ -106,6 +109,8 @@ breadcrumbs: "1"
 					y.innerHTML = d;
 					getElem('adjustWordsTable').innerHTML = "#grid-guess>div {grid-template-columns:" + frames + ";}"
 					makeKeyBoard();
+				} else{
+					toastyMake("finishGameFirst");
 				}
 			}
 			
@@ -139,8 +144,8 @@ breadcrumbs: "1"
 			function setResults(){
 				getElem('numberLosses').innerHTML = losses;
 				getElem('numberWins').innerHTML = wins;
-				setLocal("wordFinderLosses", losses);
-				setLocal("wordFinderWins", wins);
+				losses == 0 ? null : setLocal("wordFinderLosses", losses);
+				wins == 0 ? null : setLocal("wordFinderWins", wins);
 			}
 			
 			function enterKey(letter){
