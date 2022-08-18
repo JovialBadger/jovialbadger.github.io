@@ -66,6 +66,14 @@
 					</script>
 					<div id="breadCrumbs"></div>
 				{% endif %}
+				{% if page.hasfocusmode == "1" %}	
+					<div style="text-align: center;">
+						<span style="float: right;">
+							<span style="padding: 10px;">Focus Mode: </span>
+							<span id="focusModeSwitch" onclick="switchFocusMode()" style="background: red;padding: 10px;color: white;font-weight: bolder;">Off</span>
+						</span>
+					</div>
+				{% endif %}
 				<h1>{{ page.title }}</h1>
 				{% if page.subnav == "1" %}
 					<script>

@@ -288,3 +288,20 @@ function decimalCount(val) {
   }
   return 0;
 }
+
+function switchFocusMode(){
+	var x = getElem("focusModeSwitch");
+	if(x.innerHTML.toLowerCase() == "off"){
+		displayNoneByID("headerContainer");
+		displayNoneByID("footerContainer");
+		x.innerHTML = "ON";
+		x.style.background = "#0f0";
+		x.style.color = "#000";
+	} else {		
+		displayBlockByID("headerContainer");
+		displayBlockByID("footerContainer");
+		x.innerHTML = "OFF";
+		x.style.background = "#f00";
+		x.style.color = "#fff";
+	}
+}
