@@ -83,6 +83,7 @@ hasfocusmode: "1"
 
 			function initWordFinder() {		
 				if(resettable){
+					getElem("wordFinderDefinition").innerHTML = "";
 					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
 					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
 					resettable = false;
