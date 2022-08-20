@@ -43,6 +43,8 @@ hasfocusmode: "1"
 		<div onclick="focusInput()">
 			<div id="grid-guess"></div>
 			<hr/>
+			<div id="wordFinderDefinition" style="text-align:center;"></div>
+			<hr/>
 			<div id="grid-container"></div>
 		</div>
 		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
@@ -64,6 +66,9 @@ hasfocusmode: "1"
 			
 			function changeWordLength(val){
 				val = (val * 1) || 5;
+				val = val < 4 ? 4 : val;
+				val = val > 9 ? 9 : val
+				getElem("inpWordLength").value = val;
 				if(resettable || (currentGuess == 0 && currentLetter == 0)){
 					wins = 0;
 					losses = 0;
@@ -153,18 +158,18 @@ hasfocusmode: "1"
 			}
 			
 			function enterKey(letter){
+				if(sucess == true){
+					toastyMake("sucess, please start new game");
+					return;
+				}
+				if(currentGuess == (wordLengths + 1)){
+					toastyMake("Failed, please start new game. Word: " + chosenWord);
+					return;
+				}
 				setResults();
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
 				if(letters.length > 0){
-					if(sucess == true){
-						toastyMake("sucess, please start new game");
-						return;
-					}
-					if(currentGuess == (wordLengths + 1)){
-						toastyMake("Failed, please start new game. Word: " + chosenWord);
-						return;
-					}
 					var elem = getElem('guess-word-' + currentGuess);
 					ok = true;
 					switch(letter){
@@ -191,6 +196,7 @@ hasfocusmode: "1"
 										sucess = true;
 										wins++;
 										resettable = true;
+										findDefinition();
 										toastyMake("correct");
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
@@ -202,6 +208,7 @@ hasfocusmode: "1"
 										if(currentGuess == wordLengths){ 
 											losses++;
 											resettable = true;
+											findDefinition();
 											toastyMake("Failed! Word: " + chosenWord);
 										} else{
 											toastyMake("try again");
@@ -229,6 +236,9 @@ hasfocusmode: "1"
 					}					
 					setResults();
 				}
+			}
+			function findDefinition(){
+				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
 			docReady(function () {
 				initWordFinder();
