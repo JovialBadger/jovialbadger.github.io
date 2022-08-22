@@ -38,7 +38,7 @@ hasfocusmode: "1"
 	}
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="9" value="5" onblur="changeWordLength(this.value)">
-		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">Reset</span> <span style="float:right;padding:10px;">Wins:<span id="numberWins"></span> Losses:<span id="numberLosses"></span></span></div>
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">Reset</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
 		<hr/>
 		<div onclick="focusInput()">
 			<div id="grid-guess"></div>
@@ -58,6 +58,10 @@ hasfocusmode: "1"
 			var guessedLetters = [];
 			var wins = 0;
 			var losses = 0;
+			var totWins = 0;
+			var totLosses = 0;
+			var winStreak = 0;
+			var totWinStreak = 0;
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
 			
 			function focusInput(){
@@ -67,7 +71,7 @@ hasfocusmode: "1"
 			function changeWordLength(val){
 				val = (val * 1) || 5;
 				val = val < 4 ? 4 : val;
-				val = val > 9 ? 9 : val
+				val = val > 12 ? 12 : val
 				getElem("inpWordLength").value = val;
 				if(resettable || (currentGuess == 0 && currentLetter == 0)){
 					wins = 0;
@@ -77,7 +81,7 @@ hasfocusmode: "1"
 					initWordFinder();
 				}else{
 					getElem("inpWordLength").value = wordLengths;
-					toastyMake("finishGameFirst");
+					toastyMake("Finish Game First");
 				}
 			}
 
@@ -86,6 +90,10 @@ hasfocusmode: "1"
 					getElem("wordFinderDefinition").innerHTML = "";
 					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
 					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
+					totWins = getLocal("wordFinderTotWins") ? getLocal("wordFinderTotWins") : totWins;
+					totLosses = getLocal("wordFinderTotLosses") ? getLocal("wordFinderTotLosses") : totLosses;
+					winStreak = getLocal("wordFinderWinStreak" + wordLengths) ? getLocal("wordFinderWinStreak" + wordLengths) : winStreak;
+					totWinStreak = getLocal("wordFinderTotWinStreak") ? getLocal("wordFinderTotWinStreak") : totWinStreak;
 					resettable = false;
 					setResults();
 					focusInput();
@@ -120,7 +128,7 @@ hasfocusmode: "1"
 					getElem('adjustWordsTable').innerHTML = "#grid-guess>div {grid-template-columns:" + frames + ";}"
 					makeKeyBoard();
 				} else{
-					toastyMake("finishGameFirst");
+					toastyMake("Finish Game First");
 				}
 			}
 			
@@ -152,10 +160,13 @@ hasfocusmode: "1"
 			}
 			
 			function setResults(){
-				getElem('numberLosses').innerHTML = losses;
-				getElem('numberWins').innerHTML = wins;
+				getElem('gameStats').innerHTML = "Wins: " + wins + " | Losses: " + losses + "<br/>Tot Wins: " + totWins + " | Tot Losses: " + totLosses + "<br/>Streak: " + winStreak + " | Tot Streak: " + totWinStreak;
 				losses == 0 ? null : setLocal("wordFinderLosses" + wordLengths, losses);
 				wins == 0 ? null : setLocal("wordFinderWins" + wordLengths, wins);
+				totWins == 0 ? null :  setLocal("wordFinderTotWins", totWins);
+				totLosses == 0 ? null : setLocal("wordFinderTotLosses", totLosses);
+				setLocal("wordFinderWinStreak" + wordLengths, winStreak);
+				setLocal("wordFinderTotWinStreak", totWinStreak);
 			}
 			
 			function enterKey(letter){
@@ -196,9 +207,12 @@ hasfocusmode: "1"
 										}
 										sucess = true;
 										wins++;
+										totWins++;
+										totWinStreak++;
+										winStreak++;
 										resettable = true;
 										findDefinition();
-										toastyMake("correct");
+										toastyMake("Correct :)");
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
 										for (var z = 0; z < wordLengths; z++) {
@@ -208,19 +222,22 @@ hasfocusmode: "1"
 										}
 										if(currentGuess == wordLengths){ 
 											losses++;
+											totLosses++;
+											totWinStreak = 0;
+											winStreak = 0;
 											resettable = true;
 											findDefinition();
 											toastyMake("Failed! Word: " + chosenWord);
 										} else{
-											toastyMake("try again");
+											toastyMake("Try Again");
 										}
 										currentGuess++;
 										currentLetter = 0;
 									}
 								} else{
-									toastyMake("no such word!");
+									toastyMake("Word Not Found!");
 								}
-							} else{toastyMake("please fill all letters");}
+							} else{toastyMake("Please Fill All Letters");}
 							break;
 						case "<=":
 							currentLetter--;
