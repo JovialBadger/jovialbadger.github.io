@@ -167,8 +167,8 @@ hasfocusmode: "1"
 				wins == 0 ? null : setLocal("wordFinderWins" + wordLengths, wins);
 				totWins == 0 ? null :  setLocal("wordFinderTotWins", totWins);
 				totLosses == 0 ? null : setLocal("wordFinderTotLosses", totLosses);
-				setLocal("wordFinderWinStreak" + wordLengths, winStreak);
-				setLocal("wordFinderTotWinStreak", totWinStreak);
+				winStreak == 0 ? null : setLocal("wordFinderWinStreak" + wordLengths, winStreak);
+				totWinStreak == 0 ? null : setLocal("wordFinderTotWinStreak", totWinStreak);
 			}
 			
 			function enterKey(letter){
@@ -227,6 +227,8 @@ hasfocusmode: "1"
 											totLosses++;
 											totWinStreak = 0;
 											winStreak = 0;
+											delLocal("wordFinderWinStreak");
+											delLocal("wordFinderTotWinStreak");											
 											resettable = true;
 											findDefinition();
 											toastyMake("Failed! Word: " + chosenWord);

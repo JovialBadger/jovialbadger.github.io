@@ -168,3 +168,7 @@ function setLocal(id, value){
 		return 1;
 	}
 }
+
+function delLocal(id){
+	localStorage.removeItem(id);
+}
