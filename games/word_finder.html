@@ -38,7 +38,7 @@ hasfocusmode: "1"
 	}
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
-		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">Reset</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span> <span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder(true)">Daily Word</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
 		<hr/>
 		<div onclick="focusInput()">
 			<div id="grid-guess"></div>
@@ -49,6 +49,7 @@ hasfocusmode: "1"
 		</div>
 		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
 		<script>
+			var isDaily = false;
 			var resettable = true;
 			var wordLengths = 5; //min 4 max 9
 			var sucess = false;
@@ -86,7 +87,8 @@ hasfocusmode: "1"
 				}
 			}
 
-			function initWordFinder() {		
+			function initWordFinder(fromSeed) {		
+				fromSeed = fromSeed || false;
 				if(resettable){
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
@@ -101,6 +103,7 @@ hasfocusmode: "1"
 					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
 						wordLengths = chosenWord.split("").length;
+						isDaily = gameState.IsDaily;
 					}
 					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
 					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
@@ -123,7 +126,16 @@ hasfocusmode: "1"
 							return t.L == wordLengths;
 						}));
 						//console.log(x);
-						chosenWord = x[Math.floor(Math.random() * x.length)].W;
+						var lastDaily = new Date(getLocal("wordFinderLastDaily") ? getLocal("wordFinderLastDaily") : 0);
+						var today = new Date(UTCString());
+						if(fromSeed && lastDaily < today){
+							isDaily = true;
+							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))];
+						}else{
+							isDaily = false;
+							chosenWord = x[Math.floor(Math.random() * x.length)].W;
+						}
+						gameState.IsDaily = isDaily;
 					}
 					//console.log(chosenWord);
 					var y = getElem('grid-guess');
@@ -233,6 +245,7 @@ hasfocusmode: "1"
 										for (var y = 0; y < wordLengths;y++) {
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
+										isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
 										gameState = {"state":0};
 										sucess = true;
 										wins++;
@@ -250,6 +263,7 @@ hasfocusmode: "1"
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
 										if(currentGuess == wordLengths){ 
+											isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
 											gameState = {"state":0};
 											losses++;
 											totLosses++;
