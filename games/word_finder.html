@@ -363,9 +363,9 @@ hasfocusmode: "1"
 				var letter = 0;
 				for (j = 0; j < 3; j++) {
 					for (i = 0; i < 10; i++) {
-						var thisLetter = keyBoard[letter].L;
-						thisLetter = thisLetter.replace(":)"," ").replace("<="," ");
 						if(keyBoard.length - 1 > (letter)){
+							var thisLetter = keyBoard[letter].L;
+							thisLetter = thisLetter.replace(":)"," ").replace("<="," ");
 							var multi = (chosenWord.toUpperCase().match(new RegExp(thisLetter.toUpperCase(), "g")) || []).length > 1;
 							ctx.fillStyle = guessedLetters.indexOf(thisLetter) > -1 ? (wordletters.indexOf(thisLetter) > -1 ? (multi ? "rgba(255,127.5,0,1)" : "rgba(0,150,0,1)") : "rgba(255,0,0,1)") : "rgba(0,0,0,1)";
 						} else{
@@ -374,7 +374,7 @@ hasfocusmode: "1"
 						ctx.beginPath();
 						var wid = (wordlength * rectWidth) / 10;
 						ctx.rect(i * wid, (j + totHeight) * rectHeight, wid, rectHeight);
-						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : thisLetter, (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
+						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L, (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
 						ctx.stroke();
 						letter++;
 					}
