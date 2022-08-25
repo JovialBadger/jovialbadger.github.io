@@ -249,8 +249,8 @@ hasfocusmode: "1"
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
 										isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
-										gameState = {"state":0};
 										createCanvasImage();
+										gameState = {"state":0};
 										displayBlockByID("downloadGame");
 										sucess = true;
 										wins++;
@@ -269,8 +269,8 @@ hasfocusmode: "1"
 										}
 										if(currentGuess == wordLengths){ 
 											isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
-											gameState = {"state":0};
 											createCanvasImage();
+											gameState = {"state":0};
 											displayBlockByID("downloadGame");
 											losses++;
 											totLosses++;
