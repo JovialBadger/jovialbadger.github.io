@@ -148,14 +148,13 @@ hasfocusmode: "1"
 					toastyMake("Finish Game First");
 				}
 			}
-			//console.log((); //logs 4
+			
 			function makeKeyBoard(){
 				var wordChars = chosenWord.toUpperCase().split("");
 				var z = getElem('grid-container');
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
-					var col =   ? 
 					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.toUpperCase().match(new RegExp(thisLetter, "g")) || []).length > 1 ? "#f80" : "#0f0"):"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
 				}
 				z.innerHTML = e;			
