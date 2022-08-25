@@ -90,7 +90,7 @@ hasfocusmode: "1"
 				if(resettable){
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
-					if(typeof gameState.ChosenWord != "undefined"){
+					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
 						wordLengths = chosenWord.split("").length;
 					}
@@ -135,7 +135,7 @@ hasfocusmode: "1"
 					y.innerHTML = d;
 					getElem('adjustWordsTable').innerHTML = "#grid-guess>div {grid-template-columns:" + frames + ";}"
 					makeKeyBoard();
-					if((typeof gameState.Words != "undefined")  && gameState.Words.length > 0){
+					if(("Words" in gameState)  && gameState.Words.length > 0){
 						for (var i = 0; i < gameState.Words.length; i++) {
 							var inputWordLetters = gameState.Words[i].split("");
 							for (var j = 0; j < inputWordLetters.length; j++) {
@@ -209,7 +209,7 @@ hasfocusmode: "1"
 								for (var b = 0; b < wordLengths; b++) {
 									word += getClass("letter-" + b,elem)[0].innerHTML;
 								}
-								if(!gameState.Words){gameState.Words = [];}								
+								if(!("Words" in gameState)){gameState.Words = [];}								
 								gameState.Words[currentGuess] = word;
 								gameState.ChosenWord = window.btoa(chosenWord);
 								var x = words.filter(function(t) {
