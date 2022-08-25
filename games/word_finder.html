@@ -90,7 +90,7 @@ hasfocusmode: "1"
 				if(resettable){
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
-					if(gameState.ChosenWord){
+					if(typeof gameState.ChosenWord != "undefined"){
 						chosenWord = window.atob(gameState.ChosenWord);
 						wordLengths = chosenWord.split("").length;
 					}
