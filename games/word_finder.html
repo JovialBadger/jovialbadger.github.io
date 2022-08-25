@@ -90,6 +90,13 @@ hasfocusmode: "1"
 				if(resettable){
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
+					gameState = {"state":0};
+					losses = 0;
+					wins = 0;
+					totWins = 0;
+					totLosses = 0;
+					winStreak = 0;
+					totWinStreak = 0;
 					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : gameState;
 					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
