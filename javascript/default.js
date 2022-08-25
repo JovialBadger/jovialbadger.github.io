@@ -291,17 +291,21 @@ function decimalCount(val) {
 
 function switchFocusMode(){
 	var x = getElem("focusModeSwitch");
+	var y = -1;
 	if(x.innerHTML.toLowerCase() == "off"){
+		y = 1;
 		displayNoneByID("headerContainer");
 		displayNoneByID("footerContainer");
 		x.innerHTML = "ON";
 		x.style.background = "#0f0";
 		x.style.color = "#000";
 	} else {		
+		y=0;
 		displayBlockByID("headerContainer");
 		displayBlockByID("footerContainer");
 		x.innerHTML = "OFF";
 		x.style.background = "#f00";
 		x.style.color = "#fff";
 	}
+	setLocal("FocusMode", y);
 }

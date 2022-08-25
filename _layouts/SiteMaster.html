@@ -70,9 +70,18 @@
 					<div style="text-align: center;">
 						<span style="float: right;">
 							<span style="padding: 10px;">Focus Mode: </span>
-							<span id="focusModeSwitch" onclick="switchFocusMode()" style="background: red;padding: 10px;color: white;font-weight: bolder;">Off</span>
+							<span id="focusModeSwitch" onclick="switchFocusMode()" style="background: red;padding: 10px;color: white;font-weight: bolder;">OFF</span>
 						</span>
 					</div>
+					<script>					
+						docReady(function () {
+							var focusMode = getLocal("FocusMode") ? getLocal("FocusMode") : -1;
+							if(focusMode > -1){
+								getElem("focusModeSwitch").innerHTML = (focusMode == 0 ? "ON" : "OFF");
+								switchFocusMode();
+							}
+						});
+					</script>
 				{% endif %}
 				<h1>{{ page.title }}</h1>
 				{% if page.subnav == "1" %}
