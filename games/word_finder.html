@@ -89,6 +89,11 @@ hasfocusmode: "1"
 			function initWordFinder() {		
 				if(resettable){
 					getElem("wordFinderDefinition").innerHTML = "";
+					chosenWord = "";
+					if(gameState.ChosenWord){
+						chosenWord = window.atob(gameState.ChosenWord);
+						wordLengths = chosenWord.split("").length;
+					}
 					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
 					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
 					totWins = getLocal("wordFinderTotWins") ? getLocal("wordFinderTotWins") : totWins;
@@ -101,13 +106,9 @@ hasfocusmode: "1"
 					focusInput();
 					sucess = false;
 					guessedLetters = [];
-					chosenWord = "";
 					currentGuess = 0;
 					currentLetter = 0;
-					if(gameState.ChosenWord){
-						chosenWord = window.atob(gameState.ChosenWord);
-						wordLengths = chosenWord.split("").length;
-					} else{
+					if(chosenWord == ""){
 						var x = words.filter(function(t) {
 							return t.L == wordLengths;
 						});
@@ -154,7 +155,7 @@ hasfocusmode: "1"
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
-					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? "#0f0":"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
+					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? (chosenWord.match(new RegExp(thisLetter, "g").length > 1 ? "#f80" : "#0f0"):"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
 				}
 				z.innerHTML = e;			
 			}
