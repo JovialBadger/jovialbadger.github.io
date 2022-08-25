@@ -345,7 +345,7 @@ hasfocusmode: "1"
 				for (j = 0; j < words; j++) {
 					var text = gameState.Words[j];
 					for (i = 0; i < wordlength; i++) {
-						ctx.fillStyle = text[i] == wordletters[i] ? "rgba(0,150,0,1)" : "rgba(255,0,0,1)";
+						ctx.fillStyle = text[i] == wordletters[i].toUpperCase() ? "rgba(0,150,0,1)" : wordletters.toUpperCase().indexOf(text[i]) > -1 ? "rgba(255,255,0,1)" : "rgba(255,0,0,1)";
 						ctx.beginPath();
 						ctx.rect(i * rectWidth, j * rectHeight, rectWidth, rectHeight);
 						ctx.fillText(text[i], i * rectWidth + (rectWidth / 2), ((rectHeight / 2) + rectHeight * j) + rectHeight / 4);
@@ -367,7 +367,7 @@ hasfocusmode: "1"
 							var thisLetter = keyBoard[letter].L;
 							thisLetter = thisLetter.replace(":)"," ").replace("<="," ");
 							var multi = (chosenWord.toUpperCase().match(new RegExp(thisLetter.toUpperCase(), "g")) || []).length > 1;
-							ctx.fillStyle = guessedLetters.indexOf(thisLetter) > -1 ? (wordletters.indexOf(thisLetter) > -1 ? (multi ? "rgba(255,127.5,0,1)" : "rgba(0,150,0,1)") : "rgba(255,0,0,1)") : "rgba(0,0,0,1)";
+							ctx.fillStyle = guessedLetters.indexOf(thisLetter.toUpperCase()) > -1 ? (wordletters.indexOf(thisLetter) > -1 ? (multi ? "rgba(255,127.5,0,1)" : "rgba(0,150,0,1)") : "rgba(255,0,0,1)") : "rgba(0,0,0,1)";
 						} else{
 							ctx.fillStyle = "rbga(0,0,0,1)"
 						}
