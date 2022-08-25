@@ -63,6 +63,7 @@ hasfocusmode: "1"
 			var winStreak = 0;
 			var totWinStreak = 0;
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
+			var gameState = {"state":0};
 			
 			function focusInput(){
 				getElem('inputFocus').focus();
@@ -94,6 +95,7 @@ hasfocusmode: "1"
 					totLosses = getLocal("wordFinderTotLosses") ? getLocal("wordFinderTotLosses") : totLosses;
 					winStreak = getLocal("wordFinderWinStreak" + wordLengths) ? getLocal("wordFinderWinStreak" + wordLengths) : winStreak;
 					totWinStreak = getLocal("wordFinderTotWinStreak") ? getLocal("wordFinderTotWinStreak") : totWinStreak;
+					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : gameState;
 					resettable = false;
 					setResults();
 					focusInput();
@@ -102,14 +104,19 @@ hasfocusmode: "1"
 					chosenWord = "";
 					currentGuess = 0;
 					currentLetter = 0;
-					var x = words.filter(function(t) {
-						return t.L == wordLengths;
-					});
-					x = x.concat(wordDelta.filter(function(t) {
-						return t.L == wordLengths;
-					}));
-					//console.log(x);
-					chosenWord = x[Math.floor(Math.random() * x.length)].W;
+					if(gameState.ChosenWord){
+						chosenWord = window.atob(gameState.ChosenWord);
+						wordLengths = chosenWord.split("").length;
+					} else{
+						var x = words.filter(function(t) {
+							return t.L == wordLengths;
+						});
+						x = x.concat(wordDelta.filter(function(t) {
+							return t.L == wordLengths;
+						}));
+						//console.log(x);
+						chosenWord = x[Math.floor(Math.random() * x.length)].W;
+					}
 					//console.log(chosenWord);
 					var y = getElem('grid-guess');
 					var d = "";
@@ -127,6 +134,15 @@ hasfocusmode: "1"
 					y.innerHTML = d;
 					getElem('adjustWordsTable').innerHTML = "#grid-guess>div {grid-template-columns:" + frames + ";}"
 					makeKeyBoard();
+					if((typeof gameState.Words != "undefined")  && gameState.Words.length > 0){
+						for (var i = 0; i < gameState.Words.length; i++) {
+							var inputWordLetters = gameState.Words[i].split("");
+							for (var j = 0; j < inputWordLetters.length; j++) {
+								enterKey(inputWordLetters[j]);
+							}
+							enterKey(":)");
+						}
+					}
 				} else{
 					toastyMake("Finish Game First");
 				}
@@ -167,6 +183,7 @@ hasfocusmode: "1"
 				totLosses == 0 ? null : setLocal("wordFinderTotLosses", totLosses);
 				winStreak == 0 ? null : setLocal("wordFinderWinStreak" + wordLengths, winStreak);
 				totWinStreak == 0 ? null : setLocal("wordFinderTotWinStreak", totWinStreak);
+				setLocal("wordFinderGameState",  JSON.stringify(gameState));
 			}
 			
 			function enterKey(letter){
@@ -191,6 +208,9 @@ hasfocusmode: "1"
 								for (var b = 0; b < wordLengths; b++) {
 									word += getClass("letter-" + b,elem)[0].innerHTML;
 								}
+								if(!gameState.Words){gameState.Words = [];}								
+								gameState.Words[currentGuess] = word;
+								gameState.ChosenWord = window.btoa(chosenWord);
 								var x = words.filter(function(t) {
 									return t.L == wordLengths;
 								});
@@ -205,6 +225,7 @@ hasfocusmode: "1"
 										for (var y = 0; y < wordLengths;y++) {
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
+										gameState = {"state":0};
 										sucess = true;
 										wins++;
 										totWins++;
@@ -221,6 +242,7 @@ hasfocusmode: "1"
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
 										if(currentGuess == wordLengths){ 
+											gameState = {"state":0};
 											losses++;
 											totLosses++;
 											totWinStreak = 0;
