@@ -132,6 +132,7 @@ hasfocusmode: "1"
 							isDaily = true;
 							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))].W;
 						}else{
+							fromSeed ? toastyMake("Daily Word Complete") : null;
 							isDaily = false;
 							chosenWord = x[Math.floor(Math.random() * x.length)].W;
 						}
