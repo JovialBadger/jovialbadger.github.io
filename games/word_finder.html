@@ -128,7 +128,7 @@ hasfocusmode: "1"
 						//console.log(x);
 						var lastDaily = new Date(getLocal("wordFinderLastDaily") ? getLocal("wordFinderLastDaily") : 0);
 						var today = new Date(UTCString());
-						if(fromSeed && lastDaily < today){
+						if(fromSeed && lastDaily.getTime() < today.getTime()){
 							isDaily = true;
 							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))].W;
 						}else{
