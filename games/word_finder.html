@@ -130,7 +130,7 @@ hasfocusmode: "1"
 						var today = new Date(UTCString());
 						if(fromSeed && lastDaily < today){
 							isDaily = true;
-							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))];
+							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))].W;
 						}else{
 							isDaily = false;
 							chosenWord = x[Math.floor(Math.random() * x.length)].W;
@@ -305,7 +305,7 @@ hasfocusmode: "1"
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
 			docReady(function () {
-				initWordFinder();
+				initWordFinder(true);
 			});
 		</script>
 		<style id="adjustWordsTable">
