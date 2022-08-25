@@ -155,7 +155,7 @@ hasfocusmode: "1"
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
-					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? (chosenWord.match(new RegExp(thisLetter, "g")).length > 1 ? "#f80" : "#0f0"):"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
+					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.split(thisLetter).length - 1) > 1 ? "#f80" : "#0f0"):"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
 				}
 				z.innerHTML = e;			
 			}
