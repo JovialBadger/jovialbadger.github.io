@@ -48,6 +48,7 @@ hasfocusmode: "1"
 			<div id="grid-container"></div>
 		</div>
 		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
+		<span id="downloadGame" style="padding:10px;display:inline-block; background-color:#0f0;display:none;" onclick="candown('canvasWordFinderExport', 'png')">Download Finished Game</span>
 		<script>
 			var isDaily = false;
 			var resettable = true;
@@ -90,6 +91,7 @@ hasfocusmode: "1"
 			function initWordFinder(fromSeed) {		
 				fromSeed = fromSeed || false;
 				if(resettable){
+					displayNoneByID("downloadGame");
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
 					gameState = {"state":0};
@@ -248,6 +250,8 @@ hasfocusmode: "1"
 										}
 										isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
 										gameState = {"state":0};
+										createCanvasImage();
+										displayBlockByID("downloadGame");
 										sucess = true;
 										wins++;
 										totWins++;
@@ -266,6 +270,8 @@ hasfocusmode: "1"
 										if(currentGuess == wordLengths){ 
 											isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
 											gameState = {"state":0};
+											createCanvasImage();
+											displayBlockByID("downloadGame");
 											losses++;
 											totLosses++;
 											totWinStreak = 0;
@@ -308,6 +314,79 @@ hasfocusmode: "1"
 			docReady(function () {
 				initWordFinder(true);
 			});
+			function candown(target, type) {
+				let canvas = getElem(target);
+				let anchor = document.createElement("a");
+				anchor.download = "download." + type;
+				anchor.href = canvas.toDataURL("image/" + type);
+				// (B3) "FORCE DOWNLOAD"
+				anchor.click();
+				anchor.remove();
+				// (B4) SAFER ALTERNATIVE - LET USER CLICK ON LINK
+				//anchor.innerHTML = "Download";
+				//document.body.appendChild(anchor);
+			}
+			function createCanvasImage() {
+				var canvas = getElem("canvasWordFinderExport");
+				var ctx = canvas.getContext('2d');
+				var wordlength = gameState.Words[0].split("").length;
+				var words = gameState.Words.length;
+				var size = 80;
+				var rectWidth = size;
+				var rectHeight = size;
+				canvas.setAttribute("width", (wordlength) * rectWidth + "px");
+				canvas.setAttribute("height", (words + 5) * rectHeight + "px");
+				ctx.font = (size / 2) + "px Impact";
+				ctx.textAlign = "center";
+				var totHeight = 0;
+				var wordletters = chosenWord.split("");
+				ctx.fillStyle = "rgba(200,200,200,1)";
+				ctx.fillRect(0, 0, (wordlength) * rectWidth, (words + 5) * rectHeight);
+				for (j = 0; j < words; j++) {
+					var text = gameState.Words[j];
+					for (i = 0; i < wordlength; i++) {
+						ctx.fillStyle = text[i] == wordletters[i] ? "rgba(0,150,0,1)" : "rgba(255,0,0,1)";
+						ctx.beginPath();
+						ctx.rect(i * rectWidth, j * rectHeight, rectWidth, rectHeight);
+						ctx.fillText(text[i], i * rectWidth + (rectWidth / 2), ((rectHeight / 2) + rectHeight * j) + rectHeight / 4);
+						ctx.stroke();
+					}
+					totHeight++;
+				}
+				ctx.font = (size / 4) + "px Impact";
+				ctx.fillStyle = "rgba(0,0,0,1)";
+				ctx.beginPath();
+				ctx.fillText(chosenWord, ((wordlength * rectWidth) / 2), ((rectHeight / 2) + rectHeight * (totHeight)) + rectHeight / 4);
+				ctx.stroke();
+				ctx.font = (size / 2) + "px Impact";
+				totHeight++;
+				var letter = 0;
+				for (j = 0; j < 3; j++) {
+					for (i = 0; i < 10; i++) {
+						if(keyBoard.length - 1 > (letter)){
+							var multi = (chosenWord.toUpperCase().match(new RegExp(keyBoard[letter].L.toUpperCase(), "g")) || []).length > 1;
+							ctx.fillStyle = guessedLetters.indexOf(keyBoard[letter].L) > -1 ? (wordletters.indexOf(keyBoard[letter].L) > -1 ? (multi ? "rgba(255,127.5,0,1)" : "rgba(0,150,0,1)") : "rgba(255,0,0,1)") : "rgba(0,0,0,1)";
+						} else{
+							ctx.fillStyle = "rbga(0,0,0,1)"
+						}
+						ctx.beginPath();
+						var wid = (wordlength * rectWidth) / 10;
+						ctx.rect(i * wid, (j + totHeight) * rectHeight, wid, rectHeight);
+						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L, (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
+						ctx.stroke();
+						letter++;
+					}
+				}
+				totHeight++;
+				totHeight++;
+				totHeight++;
+				ctx.font = (size / 4) + "px Impact";
+				ctx.fillStyle = "rgba(0,0,0,1)";
+				ctx.beginPath();
+				ctx.fillText(window.location.protocol + "//" + window.location.hostname + window.location.pathname, ((wordlength * rectWidth) / 2), ((rectHeight / 2) + rectHeight * (totHeight)) + rectHeight / 4);
+				ctx.stroke();
+			}
 		</script>
 		<style id="adjustWordsTable">
 		</style>
+		<canvas id="canvasWordFinderExport" style="border:1px solid;display:none;"></canvas>
