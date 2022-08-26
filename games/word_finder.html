@@ -374,7 +374,7 @@ hasfocusmode: "1"
 						ctx.beginPath();
 						var wid = (wordlength * rectWidth) / 10;
 						ctx.rect(i * wid, (j + totHeight) * rectHeight, wid, rectHeight);
-						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L, (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
+						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L.replace(":)"," ").replace("<="," "), (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
 						ctx.stroke();
 						letter++;
 					}
