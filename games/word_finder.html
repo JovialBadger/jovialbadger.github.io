@@ -128,7 +128,7 @@ hasfocusmode: "1"
 							return t.L == wordLengths;
 						}));
 						//console.log(x);
-						var lastDaily = new Date(getLocal("wordFinderLastDaily") ? getLocal("wordFinderLastDaily") : 0);
+						var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
 						var today = new Date(UTCString());
 						if(fromSeed && lastDaily.getTime() < today.getTime()){
 							isDaily = true;
@@ -248,7 +248,7 @@ hasfocusmode: "1"
 										for (var y = 0; y < wordLengths;y++) {
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
-										isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
+										isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
 										createCanvasImage();
 										gameState = {"state":0};
 										displayBlockByID("downloadGame");
@@ -268,7 +268,7 @@ hasfocusmode: "1"
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
 										if(currentGuess == wordLengths){ 
-											isDaily ? setLocal("wordFinderLastDaily",  UTCString()) : null;
+											isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
 											createCanvasImage();
 											gameState = {"state":0};
 											displayBlockByID("downloadGame");
