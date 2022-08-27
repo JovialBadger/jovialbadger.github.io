@@ -40,6 +40,7 @@ hasfocusmode: "1"
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span> <span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder(true)">Daily Word</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
 		<hr/>
+		<div id="dailyFlag" style="text-align: center;padding-bottom: 5px;"><b><i><u>Daily Word</u></i></b></div>
 		<div onclick="focusInput()">
 			<div id="grid-guess"></div>
 			<hr/>
@@ -48,7 +49,7 @@ hasfocusmode: "1"
 			<div id="grid-container"></div>
 		</div>
 		<input id="inputFocus" style="height:1px;width:1px;border:none;top:0;right:0;padding:0; opacity:0;" readonly onkeyup="keyboardCapture(event)">
-		<span id="downloadGame" style="padding:10px;display:inline-block; background-color:#0f0;display:none;" onclick="candown('canvasWordFinderExport', 'png')">Download Finished Game</span>
+		<span id="downloadGame" style="text-align:center; padding:10px;display:inline-block; background-color:#0f0;display:none;cursor:pointer;" onclick="candown('canvasWordFinderExport', 'png')">Download Finished Game</span>
 		<script>
 			var isDaily = false;
 			var resettable = true;
@@ -140,6 +141,11 @@ hasfocusmode: "1"
 						}
 						gameState.IsDaily = isDaily;
 					}
+					if(isDaily){
+						displayBlockByID("dailyFlag");
+					} else{
+						displayNoneByID("dailyFlag");
+					}
 					//console.log(chosenWord);
 					var y = getElem('grid-guess');
 					var d = "";
@@ -222,6 +228,7 @@ hasfocusmode: "1"
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
 				if(letters.length > 0){
+					var finishedGame = false;
 					var elem = getElem('guess-word-' + currentGuess);
 					ok = true;
 					switch(letter){
@@ -248,17 +255,12 @@ hasfocusmode: "1"
 										for (var y = 0; y < wordLengths;y++) {
 											getClass("letter-" + y,elem)[0].style.background = "#0f0";
 										}
-										isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
-										createCanvasImage();
-										gameState = {"state":0};
-										displayBlockByID("downloadGame");
+										finishedGame = true;
 										sucess = true;
 										wins++;
 										totWins++;
 										totWinStreak++;
 										winStreak++;
-										resettable = true;
-										findDefinition();
 										toastyMake("Correct :)");
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
@@ -268,18 +270,13 @@ hasfocusmode: "1"
 											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
 										}
 										if(currentGuess == wordLengths){ 
-											isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
-											createCanvasImage();
-											gameState = {"state":0};
-											displayBlockByID("downloadGame");
+											finishedGame = true;
 											losses++;
 											totLosses++;
 											totWinStreak = 0;
 											winStreak = 0;
 											delLocal("wordFinderWinStreak");
-											delLocal("wordFinderTotWinStreak");											
-											resettable = true;
-											findDefinition();
+											delLocal("wordFinderTotWinStreak");
 											toastyMake("Failed! Word: " + chosenWord);
 										} else{
 											toastyMake("Try Again");
@@ -304,7 +301,15 @@ hasfocusmode: "1"
 								currentLetter = currentLetter > wordLengths ? wordLengths : currentLetter;
 							}
 							break;
-					}					
+					}		
+					if(finishedGame){
+						isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
+						createCanvasImage();
+						gameState = {"state":0};
+						displayBlockByID("downloadGame");
+						resettable = true;
+						findDefinition();
+					}
 					setResults();
 				}
 			}
