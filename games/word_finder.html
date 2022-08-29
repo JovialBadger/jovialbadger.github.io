@@ -260,7 +260,7 @@ hasfocusmode: "1"
 										}
 										finishedGame = true;
 										sucess = true;
-										var timeTaken =  UTCString(true).getTime() - new Date(gameState.StartTime).getTime();
+										var timeTaken =  new Date(UTCString(true)).getTime() - new Date(gameState.StartTime).getTime();
 										fastestWin = (timeTaken < fastestWin || fastestWin == 0) ? timeTaken : fastestWin;
 										wins++;
 										totWins++;
