@@ -42,7 +42,7 @@ hasfocusmode: "1"
 		<hr/>
 		<div id="dailyFlag" style="text-align: center;padding-bottom: 5px;"><b><i><u>Daily Word</u></i></b></div>
 		<div onclick="focusInput()">
-			<div id="grid-guess"></div>
+			<div id="grid-guess" style="max-height: calc(100vh - 250px);overflow-y: auto;"></div>
 			<hr/>
 			<div id="wordFinderDefinition" style="text-align:center;"></div>
 			<hr/>
@@ -60,6 +60,7 @@ hasfocusmode: "1"
 			var currentLetter = 0;
 			var guessedLetters = [];
 			var wins = 0;
+			var fastestWin = 0;
 			var losses = 0;
 			var totWins = 0;
 			var totLosses = 0;
@@ -133,12 +134,13 @@ hasfocusmode: "1"
 						var today = new Date(UTCString());
 						if(fromSeed && lastDaily.getTime() < today.getTime()){
 							isDaily = true;
-							chosenWord = x[Math.floor(randSeed(UTCString()) * (x.length + 1))].W;
+							chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths) * (x.length + 1))].W;
 						}else{
 							fromSeed ? toastyMake("Daily Word Complete") : null;
 							isDaily = false;
 							chosenWord = x[Math.floor(Math.random() * x.length)].W;
 						}
+						gameState.StartTime = UTCString(true);
 						gameState.IsDaily = isDaily;
 					}
 					if(isDaily){
@@ -205,13 +207,14 @@ hasfocusmode: "1"
 			}
 			
 			function setResults(){
-				getElem('gameStats').innerHTML = "Wins: " + wins + " | Losses: " + losses + "<br/>Tot Wins: " + totWins + " | Tot Losses: " + totLosses + "<br/>Streak: " + winStreak + " | Tot Streak: " + totWinStreak;
+				getElem('gameStats').innerHTML = "Wins: " + wins + " | Losses: " + losses + "<br/>Tot Wins: " + totWins + " | Tot Losses: " + totLosses + "<br/>Streak: " + winStreak + " | Tot Streak: " + totWinStreak + "<br/>" + "Fastest: "+ msToTime(fastestWin);
 				losses == 0 ? null : setLocal("wordFinderLosses" + wordLengths, losses);
 				wins == 0 ? null : setLocal("wordFinderWins" + wordLengths, wins);
 				totWins == 0 ? null :  setLocal("wordFinderTotWins", totWins);
 				totLosses == 0 ? null : setLocal("wordFinderTotLosses", totLosses);
 				winStreak == 0 ? null : setLocal("wordFinderWinStreak" + wordLengths, winStreak);
 				totWinStreak == 0 ? null : setLocal("wordFinderTotWinStreak", totWinStreak);
+				fastestWin == 0 ? null : setLocal("wordFinderFastestWin" + wordLengths, fastestWin);
 				setLocal("wordFinderGameState",  JSON.stringify(gameState));
 			}
 			
@@ -257,6 +260,8 @@ hasfocusmode: "1"
 										}
 										finishedGame = true;
 										sucess = true;
+										var timeTaken =  UTCString(true).getTime() - new Date(gameState.StartTime).getTime();
+										fastestWin = (timeTaken < fastestWin || fastestWin == 0) ? timeTaken : fastestWin;
 										wins++;
 										totWins++;
 										totWinStreak++;
@@ -303,7 +308,7 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
-						isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  UTCString()) : null;
+						isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  gameState.StartTime) : null;
 						createCanvasImage();
 						gameState = {"state":0};
 						displayBlockByID("downloadGame");

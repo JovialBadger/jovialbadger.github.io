@@ -219,9 +219,10 @@ function sfc32(a, b, c, d) {
     }
 }
 
-function UTCString(){
-	const date = new Date();
-	return (date.getUTCFullYear()+"-"+addLeadingZeros(date.getUTCMonth()+1,2)+"-"+addLeadingZeros(date.getUTCDate(),2));
+function UTCString(incTime){
+	incTime = incTime || false;
+	const d = new Date();
+	return (d.getUTCFullYear()+"-"+addLeadingZeros(d.getUTCMonth()+1,2)+"-"+addLeadingZeros(d.getUTCDate(),2)) + "T"  + (incTime ? (addLeadingZeros(d.getUTCHours(),2) + ":" + addLeadingZeros(d.getUTCMinutes(),2) + ":" + addLeadingZeros(d.getUTCSeconds(),2)) : "00:00:00") + "Z";
 }
 
 function addLeadingZeros(num, totalLength) {
@@ -230,4 +231,21 @@ function addLeadingZeros(num, totalLength) {
     return '-' + withoutMinus.padStart(totalLength, '0');
   }
   return String(num).padStart(totalLength, '0');
+}
+
+function msToTime(duration) {
+	var x = "-";
+	var milliseconds = Math.floor((duration % 1000) / 100),
+	seconds = Math.floor((duration / 1000) % 60),
+	minutes = Math.floor((duration / (1000 * 60)) % 60),
+	hours = Math.floor((duration / (1000 * 60 * 60)) % 24),
+	days = Math.floor((duration / (1000 * 60 * 60 * 24)));
+	hours = (hours < 10) ? "0" + hours : hours;
+	minutes = (minutes < 10) ? "0" + minutes : minutes;
+	seconds = (seconds < 10) ? "0" + seconds : seconds;
+	x = seconds > 0 ? (seconds + "s") : x;
+	x = minutes > 0 ? (minutes + "m" + seconds + "s") : x;
+	x = hours > 0 ? (hours + "h" + minutes + "m" + seconds + "s") : x;
+	x = days > 0 ? (days + "d" + hours + "h" + minutes + "m" + seconds + "s") : x;
+	return x;
 }
