@@ -102,6 +102,7 @@ hasfocusmode: "1"
 					totWins = 0;
 					totLosses = 0;
 					winStreak = 0;
+					fastestWin = 0;
 					totWinStreak = 0;
 					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : gameState;
 					if("ChosenWord" in gameState){
@@ -115,6 +116,7 @@ hasfocusmode: "1"
 					totLosses = getLocal("wordFinderTotLosses") ? getLocal("wordFinderTotLosses") : totLosses;
 					winStreak = getLocal("wordFinderWinStreak" + wordLengths) ? getLocal("wordFinderWinStreak" + wordLengths) : winStreak;
 					totWinStreak = getLocal("wordFinderTotWinStreak") ? getLocal("wordFinderTotWinStreak") : totWinStreak;
+					fastestWin = getLocal("wordFinderFastestWin" + wordLengths) ? getLocal("wordFinderFastestWin" + wordLengths) : fastestWin;
 					resettable = false;
 					setResults();
 					focusInput();
