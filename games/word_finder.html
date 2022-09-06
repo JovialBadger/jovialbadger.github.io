@@ -38,7 +38,7 @@ hasfocusmode: "1"
 	}
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
-		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span> <span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder(true)">Daily Word</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
 		<hr/>
 		<div id="dailyFlag" style="text-align: center;padding-bottom: 5px;"><b><i><u>Daily Word</u></i></b></div>
 		<div onclick="focusInput()">
@@ -108,6 +108,7 @@ hasfocusmode: "1"
 					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
 						wordLengths = chosenWord.split("").length;
+						getElem("inpWordLength").value = wordLengths;
 						isDaily = gameState.IsDaily;
 					}
 					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
