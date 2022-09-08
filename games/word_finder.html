@@ -313,7 +313,7 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
-						var history = getLocal("wordFinderHistory") ? getLocal("wordFinderHistory") : {};
+						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 						if(!(gameState.StartTime in history)){history[gameState.StartTime] = [];}
 						history[gameState.StartTime].W = chosenWord;
 						history[gameState.StartTime].D = isDaily;
@@ -324,7 +324,7 @@ hasfocusmode: "1"
 								delete history[key];
 							}
 						}
-						setLocal("wordFinderHistory", history);
+						setLocal("wordFinderHistory", JSON.stringify(history));
 						isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  gameState.StartTime) : null;
 						createCanvasImage();
 						gameState = {"state":0};
@@ -336,7 +336,7 @@ hasfocusmode: "1"
 				}
 			}
 			function seeHistory(){
-				var history = getLocal("wordFinderHistory") ? getLocal("wordFinderHistory") : {};
+				var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 				var zz = "";
 				for(var key in history){
 					zz += key + ' - Wins: ' + history[key].filter(function (item) { return item.S ==1; }).length + "/" + history[key].length;
