@@ -38,7 +38,8 @@ hasfocusmode: "1"
 	}
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
-		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
+		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span>
+		<span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="seeHistory()">History</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
 		<hr/>
 		<div id="dailyFlag" style="text-align: center;padding-bottom: 5px;"><b><i><u>Daily Word</u></i></b></div>
 		<div onclick="focusInput()">
@@ -230,6 +231,7 @@ hasfocusmode: "1"
 					toastyMake("Failed, please start new game. Word: " + chosenWord);
 					return;
 				}
+				var timeTaken = 0;
 				setResults();
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
@@ -263,7 +265,7 @@ hasfocusmode: "1"
 										}
 										finishedGame = true;
 										sucess = true;
-										var timeTaken =  new Date(UTCString(true)).getTime() - new Date(gameState.StartTime).getTime();
+										timeTaken =  new Date(UTCString(true)).getTime() - new Date(gameState.StartTime).getTime();
 										fastestWin = (timeTaken < fastestWin || fastestWin == 0) ? timeTaken : fastestWin;
 										wins++;
 										totWins++;
@@ -311,6 +313,18 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
+						var history = getLocal("wordFinderHistory") ? getLocal("wordFinderHistory") : {};
+						if(!(gameState.StartTime in history)){history[gameState.StartTime] = [];}
+						history[gameState.StartTime].W = chosenWord;
+						history[gameState.StartTime].D = isDaily;
+						history[gameState.StartTime].S = sucess;
+						history[gameState.StartTime].T = timeTaken;			
+						for(var key in history){		
+							if((new Date(UTCString()).getTime() - new Date(key).getTime()) > (1000*60*60*24*7)){
+								delete history[key];
+							}
+						}
+						setLocal("wordFinderHistory", history);
 						isDaily ? setLocal("wordFinderLastDaily" + wordLengths,  gameState.StartTime) : null;
 						createCanvasImage();
 						gameState = {"state":0};
@@ -320,6 +334,18 @@ hasfocusmode: "1"
 					}
 					setResults();
 				}
+			}
+			function seeHistory(){
+				var history = getLocal("wordFinderHistory") ? getLocal("wordFinderHistory") : {};
+				var zz = "";
+				for(var key in history){
+					zz += key + ' - Wins: ' + history[key].filter(function (item) { return item.S ==1; }).length + "/" + history[key].length;
+					for(var i = 0; i<history[key].length; i++){
+						zz += "<br /><span style='color:" + (history[key][i].S ? "#0f0'" : "#f00" ) + "'>" + history[key][i].W + " - " + msToTime(history[key][i].T) + (history[key][i].D ? " - Daily" : "")  + "</span>";
+					}
+					zz += "<br />";
+				}
+				message(zz,"History");
 			}
 			function findDefinition(){
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
