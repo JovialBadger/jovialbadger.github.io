@@ -339,7 +339,7 @@ hasfocusmode: "1"
 				for(var key in history){
 					zz += key.split("T")[0] + ' - Wins: ' + history[key].filter(function (item) { return item.S ==1; }).length + "/" + history[key].length;
 					for(var i = 0; i<history[key].length; i++){
-						zz += "<br /><span style='color:" + (history[key][i].S ? "#0f0'" : "#f00" ) + "'>" + history[key][i].W + " - " + msToTime(history[key][i].T) + (history[key][i].D ? " - Daily" : "")  + "</span>";
+						zz += "<br /><span style='color:" + (history[key][i].S ? "#0f0'" : "#f00" ) + "'>" + history[key][i].W.toUpperCase() + " - " + msToTime(history[key][i].T) + (history[key][i].D ? " - Daily" : "")  + "</span>";
 					}
 					zz += "<br />";
 				}
@@ -393,7 +393,7 @@ hasfocusmode: "1"
 				ctx.font = (size / 4) + "px Impact";
 				ctx.fillStyle = "rgba(0,0,0,1)";
 				ctx.beginPath();
-				ctx.fillText(chosenWord, ((wordlength * rectWidth) / 2), ((rectHeight / 2) + rectHeight * (totHeight)) + rectHeight / 4);
+				ctx.fillText(chosenWord.toUpperCase(), ((wordlength * rectWidth) / 2), ((rectHeight / 2) + rectHeight * (totHeight)) + rectHeight / 4);
 				ctx.stroke();
 				ctx.font = (size / 2) + "px Impact";
 				totHeight++;
@@ -411,7 +411,7 @@ hasfocusmode: "1"
 						ctx.beginPath();
 						var wid = (wordlength * rectWidth) / 10;
 						ctx.rect(i * wid, (j + totHeight) * rectHeight, wid, rectHeight);
-						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L.replace(":)"," ").replace("<="," "), (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
+						ctx.fillText(keyBoard.length - 1 < (letter) ? "" : keyBoard[letter].L.toUpperCase().replace(":)"," ").replace("<="," "), (i) * wid + (wid / 2), ((rectHeight / 2) + rectHeight * (j + totHeight)) + rectHeight / 4);
 						ctx.stroke();
 						letter++;
 					}
