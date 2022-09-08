@@ -313,12 +313,10 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
+						var todayTimeZero = UTCString();
 						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
-						if(!(gameState.StartTime in history)){history[gameState.StartTime] = [];}
-						history[gameState.StartTime].W = chosenWord;
-						history[gameState.StartTime].D = isDaily;
-						history[gameState.StartTime].S = sucess;
-						history[gameState.StartTime].T = timeTaken;			
+						if(!(todayTimeZero in history)){history[todayTimeZero] = [];}
+						history[todayTimeZero].push({"W":chosenWord,"T":timeTaken,"S":sucess,"D":isDaily});		
 						for(var key in history){		
 							if((new Date(UTCString()).getTime() - new Date(key).getTime()) > (1000*60*60*24*7)){
 								delete history[key];
