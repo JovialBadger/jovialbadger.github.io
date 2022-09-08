@@ -337,7 +337,7 @@ hasfocusmode: "1"
 				var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 				var zz = "";
 				for(var key in history){
-					zz += key + ' - Wins: ' + history[key].filter(function (item) { return item.S ==1; }).length + "/" + history[key].length;
+					zz += key.split("T")[0] + ' - Wins: ' + history[key].filter(function (item) { return item.S ==1; }).length + "/" + history[key].length;
 					for(var i = 0; i<history[key].length; i++){
 						zz += "<br /><span style='color:" + (history[key][i].S ? "#0f0'" : "#f00" ) + "'>" + history[key][i].W + " - " + msToTime(history[key][i].T) + (history[key][i].D ? " - Daily" : "")  + "</span>";
 					}
