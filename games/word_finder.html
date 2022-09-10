@@ -343,7 +343,7 @@ hasfocusmode: "1"
 					}
 					zz += "<br />";
 				}
-				message(zz,"History");
+				message(zz == "" ? "-" : zz,"History");
 			}
 			function findDefinition(){
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
