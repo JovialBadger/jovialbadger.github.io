@@ -313,7 +313,7 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
-						var todayTimeZero = UTCString();
+						var todayTimeZero = gameState.StartTime.split("T")[0] + "T00:00:00Z";
 						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 						if(!(todayTimeZero in history)){history[todayTimeZero] = [];}
 						history[todayTimeZero].push({"W":chosenWord,"T":timeTaken,"S":sucess,"D":isDaily});		
@@ -368,7 +368,7 @@ hasfocusmode: "1"
 				var ctx = canvas.getContext('2d');
 				var wordlength = gameState.Words[0].split("").length;
 				var words = gameState.Words.length;
-				var size = 80;
+				var size = 100;
 				var rectWidth = size;
 				var rectHeight = size;
 				canvas.setAttribute("width", (wordlength) * rectWidth + "px");
