@@ -127,7 +127,13 @@ hasfocusmode: "1"
 					currentGuess = 0;
 					currentLetter = 0;
 					if(chosenWord == ""){
-						var x = getWords(wordLengths);
+						var x = null;
+						while (x == null) {
+							x = getWords(wordLengths);
+							if(x == undefined || x == null){
+								setTimeout(console.log("waiting"), 200);
+							}
+						}
 						//console.log(x);
 						var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
 						var today = new Date(UTCString());
