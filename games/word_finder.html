@@ -9,7 +9,7 @@ path: "Games/Word_Finder"
 breadcrumbs: "1"
 hasfocusmode: "1"
 ---
-<script src="javascript/words.js?{{ site.version_number }}"></script>
+<!-- <script src="javascript/words.js?{{ site.version_number }}"></script> -->
 <style>
 	#grid-guess>div {
 		display: grid;
@@ -127,22 +127,17 @@ hasfocusmode: "1"
 					currentGuess = 0;
 					currentLetter = 0;
 					if(chosenWord == ""){
-						var x = words.filter(function(t) {
-							return t.L == wordLengths;
-						});
-						x = x.concat(wordDelta.filter(function(t) {
-							return t.L == wordLengths;
-						}));
+						var x = getWords(wordLengths);
 						//console.log(x);
 						var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
 						var today = new Date(UTCString());
 						if(fromSeed && lastDaily.getTime() < today.getTime()){
 							isDaily = true;
-							chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths) * (x.length + 1))].W;
+							chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths) * (x.length + 1))];
 						}else{
 							fromSeed ? toastyMake("Daily Word Complete") : null;
 							isDaily = false;
-							chosenWord = x[Math.floor(Math.random() * x.length)].W;
+							chosenWord = x[Math.floor(Math.random() * x.length)];
 						}
 						gameState.StartTime = UTCString(true);
 						gameState.IsDaily = isDaily;
@@ -246,17 +241,10 @@ hasfocusmode: "1"
 								for (var b = 0; b < wordLengths; b++) {
 									word += getClass("letter-" + b,elem)[0].innerHTML;
 								}
-								if(!("Words" in gameState)){gameState.Words = [];}								
-								gameState.Words[currentGuess] = word;
+								if(!("Words" in gameState)){gameState.Words = [];}			
 								gameState.ChosenWord = window.btoa(chosenWord);
-								var x = words.filter(function(t) {
-									return t.L == wordLengths;
-								});
-								x = x.concat(wordDelta.filter(function(t) {
-									return t.L == wordLengths;
-								}));
-								var isWord = x.filter(function (item) {return item.W.toUpperCase() == word;});
-								if(isWord.length > 0){						
+								if(isWord(word)){											
+									gameState.Words[currentGuess] = word;
 									guessedLetters = guessedLetters.concat(word.split(""));
 									makeKeyBoard();
 									if(word == chosenWord.toUpperCase()){								

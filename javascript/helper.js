@@ -249,3 +249,35 @@ function msToTime(duration) {
 	x = days > 0 ? (days + "d" + hours + "h" + minutes + "m" + seconds + "s") : x;
 	return x;
 }
+
+function getWords(len, uCase){
+	uCase = uCase || "1";
+	len = len || -1;
+	var x = JSON.parse(getLocal("Words"));
+	if(x != null){
+		if(new Date(UTCString()),getTime() - new Date(x.dateTime).getTime() > 1000*60*60*24*7){delLocal("Words"); x = null;
+	}
+	if(x ==  null){
+		fetch('https://jovialbadger.co.uk/javascript/words.txt')
+			.then(response => response.text())
+			.then((data) => {
+				data = data.split("\n");//.sort();
+				var a = [];
+				for (var i = 0; i < data.length; i++){
+					if(!data[i].startsWith("//")){
+						if(!(data[i].length in a)){a[data[i].length] = [];}		
+						a[data[i].length].push(uCase == 1 ? data[i].toUpperCase() : data[i].toLowerCase())
+					}
+				}
+				setLocal("Words", JSON.stringify({"dateTime":UTCString(),"storedValue":a}))
+				return len == -1 ? a : a[len];
+			})
+	} else{
+		return len == -1 ? x.storedValue : x.storedValue[len];
+	}
+}
+
+function isWord(word){
+	var x = getWords(word.length);
+	return x.filter(function (item) {return item == word.toUpperCase();}).length > 0;
+}
