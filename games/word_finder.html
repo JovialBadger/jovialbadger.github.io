@@ -217,7 +217,7 @@ hasfocusmode: "1"
 				setLocal("wordFinderGameState",  JSON.stringify(gameState));
 			}
 			
-			function enterKey(letter){
+			async function enterKey(letter){
 				if(sucess == true){
 					toastyMake("sucess, please start new game");
 					return;
@@ -243,7 +243,7 @@ hasfocusmode: "1"
 								}
 								if(!("Words" in gameState)){gameState.Words = [];}			
 								gameState.ChosenWord = window.btoa(chosenWord);
-								if(isWord(word)){											
+								if(await isWord(word)){											
 									gameState.Words[currentGuess] = word;
 									guessedLetters = guessedLetters.concat(word.split(""));
 									makeKeyBoard();

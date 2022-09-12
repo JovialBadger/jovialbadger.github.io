@@ -276,7 +276,7 @@ async function getWords(len, uCase){
 	}
 }
 
-function isWord(word){
-	var x = getWords(word.length);
+async function isWord(word){
+	var x = await getWords(word.length);
 	return x.filter(function (item) {return item == word.toUpperCase();}).length > 0;
 }
