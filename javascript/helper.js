@@ -250,7 +250,7 @@ function msToTime(duration) {
 	return x;
 }
 
-function getWords(len, uCase){
+async function getWords(len, uCase){
 	uCase = uCase || "1";
 	len = len || -1;
 	var x = JSON.parse(getLocal("Words"));
@@ -258,20 +258,19 @@ function getWords(len, uCase){
 		if(new Date(UTCString()).getTime() - new Date(x.dateTime).getTime() > 1000*60*60*24*7){delLocal("Words"); x = null;}
 	}
 	if(x ==  null){
-		fetch('https://jovialbadger.co.uk/javascript/words.txt')
-			.then(response => response.text())
-			.then((data) => {
-				data = data.split("\n");//.sort();
-				var a = [];
-				for (var i = 0; i < data.length; i++){
-					if(!data[i].startsWith("//")){
-						if(!(data[i].length in a)){a[data[i].length] = [];}		
-						a[data[i].length].push(uCase == 1 ? data[i].toUpperCase() : data[i].toLowerCase())
-					}
-				}
-				setLocal("Words", JSON.stringify({"dateTime":UTCString(),"storedValue":a}))
-				return len == -1 ? a : a[len];
-			})
+		var dl = await fetch('https://jovialbadger.co.uk/javascript/words.txt')
+		var txt = await dl.text();
+		data = txt.split("\n");//.sort();
+		var a = [];
+		for (var i = 0; i < data.length; i++){
+			if(!data[i].startsWith("//")){
+				if(!(data[i].length in a)){a[data[i].length] = [];}		
+				a[data[i].length].push(uCase == 1 ? data[i].toUpperCase() : data[i].toLowerCase())
+			}
+		}
+		setLocal("Words", JSON.stringify({"dateTime":UTCString(),"storedValue":a}))
+		return len == -1 ? a : a[len];
+			
 	} else{
 		return len == -1 ? x.storedValue : x.storedValue[len];
 	}

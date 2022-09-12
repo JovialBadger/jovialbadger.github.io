@@ -91,7 +91,7 @@ hasfocusmode: "1"
 				}
 			}
 
-			function initWordFinder(fromSeed) {		
+			async function initWordFinder(fromSeed) {		
 				fromSeed = fromSeed || false;
 				if(resettable){
 					displayNoneByID("downloadGame");
@@ -127,7 +127,7 @@ hasfocusmode: "1"
 					currentGuess = 0;
 					currentLetter = 0;
 					if(chosenWord == ""){
-						var x =getWords(wordLengths);
+						var x =await getWords(wordLengths);
 						//console.log(x);
 						var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
 						var today = new Date(UTCString());
@@ -336,8 +336,7 @@ hasfocusmode: "1"
 			function findDefinition(){
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
-			docReady(function () {
-				getWords();
+			docReady(async function () {
 				initWordFinder(true);
 			});
 			function candown(target, type) {
