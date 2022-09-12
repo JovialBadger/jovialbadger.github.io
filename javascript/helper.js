@@ -255,7 +255,7 @@ function getWords(len, uCase){
 	len = len || -1;
 	var x = JSON.parse(getLocal("Words"));
 	if(x != null){
-		if(new Date(UTCString()),getTime() - new Date(x.dateTime).getTime() > 1000*60*60*24*7){delLocal("Words"); x = null;
+		if(new Date(UTCString()),getTime() - new Date(x.dateTime).getTime() > 1000*60*60*24*7){delLocal("Words"); x = null;}
 	}
 	if(x ==  null){
 		fetch('https://jovialbadger.co.uk/javascript/words.txt')
