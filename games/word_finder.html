@@ -337,6 +337,7 @@ hasfocusmode: "1"
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
 			docReady(function () {
+				getWords();
 				initWordFinder(true);
 			});
 			function candown(target, type) {
