@@ -128,7 +128,7 @@ hasfocusmode: "1"
 					currentLetter = 0;
 					if(chosenWord == ""){
 						var x = null;
-						while (x == null) {
+						while (x == null || x == undefined) {
 							x = getWords(wordLengths);
 							if(x == undefined || x == null){
 								setTimeout(console.log("waiting"), 200);
