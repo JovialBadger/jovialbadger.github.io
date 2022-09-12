@@ -130,10 +130,10 @@ hasfocusmode: "1"
 						var x = null;
 						
 						let interval = setInterval(() => {
-							if (x== null || x == undefined) {
-								x = getWords(wordLengths);
-							} else {
+							if (x!= null || x != undefined) {
 								clearInterval(interval);
+							} else {
+								x = getWords(wordLengths);
 							}
 						},1000);
 
