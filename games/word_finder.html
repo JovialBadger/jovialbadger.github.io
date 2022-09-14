@@ -334,7 +334,7 @@ hasfocusmode: "1"
 				message(zz == "" ? "-" : zz,"History");
 			}
 			function findDefinition(){
-				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
+				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord.toLowerCase() + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
 			docReady(async function () {
 				initWordFinder(true);
