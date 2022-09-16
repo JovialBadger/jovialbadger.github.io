@@ -39,7 +39,8 @@ hasfocusmode: "1"
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span>
-		<span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="seeHistory()">History</span> <span style="float:right;padding:10px;" id="gameStats"></span></div>
+		<span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="seeHistory()">History</span>
+		<span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="seeGameStats()">Stats</span> <!-- <span style="float:right;padding:10px;" id="gameStats"></span> --></div>
 		<hr/>
 		<div id="dailyFlag" style="text-align: center;padding-bottom: 5px;"><b><i><u>Daily Word</u></i></b></div>
 		<div onclick="focusInput()">
@@ -214,7 +215,6 @@ hasfocusmode: "1"
 				winStreak == 0 ? null : setLocal("wordFinderWinStreak" + wordLengths, winStreak);
 				totWinStreak == 0 ? null : setLocal("wordFinderTotWinStreak", totWinStreak);
 				fastestWin == 0 ? null : setLocal("wordFinderFastestWin" + wordLengths, fastestWin);
-				setLocal("wordFinderGameState",  JSON.stringify(gameState));
 			}
 			
 			async function enterKey(letter){
@@ -227,7 +227,7 @@ hasfocusmode: "1"
 					return;
 				}
 				var timeTaken = 0;
-				setResults();
+				//setResults();
 				var ok = false;
 				var letters = keyBoard.filter(function (item) {return item.L.toUpperCase() == letter;});
 				if(letters.length > 0){
@@ -319,8 +319,9 @@ hasfocusmode: "1"
 						resettable = true;
 						findDefinition();
 					}
-					setResults();
+					//setResults();
 				}
+				setLocal("wordFinderGameState",  JSON.stringify(gameState));
 			}
 			function gameStatsSet(roundID, win, msDateTime){
 				roundID = roundID || 0;
@@ -348,7 +349,7 @@ hasfocusmode: "1"
 			function gameStatsGet(){
 				return getLocal("wordFinderStats") ? JSON.parse(getLocal("wordFinderStats")) : {"round":[],"totRound":{"winStreak":0}};
 			}
-			function seeGameState(){
+			function seeGameStats(){
 				var x = gameStatsGet();
 				var totWins = 0;
 				var totLosses = 0;
@@ -357,10 +358,10 @@ hasfocusmode: "1"
 					if(x.round[key] != null){
 						totWins += x.round[key].wins;
 						totLosses += x.round[key].losses;
-						zz += "<b>Word Length " + key  + "</b><br />Wins: " + x.round[key].wins + "<br />Losses: " + x.round[key].losses + "<br />Win Streak: " + x.round[key].winStreak + "<br />Fastest Win: " + x.round[key].fastestWin + "<br />";						
+						zz += "<b>Word Length " + key  + "</b><br />Wins: " + x.round[key].wins + " | Losses: " + x.round[key].losses + "<br />Win Streak: " + x.round[key].winStreak + "<br />Fastest Win: " + msToTime(x.round[key].fastestWin) + "<br />";						
 					}
 				}
-				zz += "<b>Total</b><br />Wins: " + totWins + "<br />Losses: " + totLosses + "<br />Win Streak: " + x.totRound.winStreak + "<br />";			
+				zz += "<b>Total</b><br />Wins: " + totWins + " | Losses: " + totLosses + "<br />Win Streak: " + x.totRound.winStreak + "<br />";			
 				message(zz == "" ? "-" : zz,"Stats");	
 			}
 			function seeHistory(){
