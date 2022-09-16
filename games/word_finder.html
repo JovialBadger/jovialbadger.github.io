@@ -61,13 +61,13 @@ hasfocusmode: "1"
 			var currentGuess = 0;
 			var currentLetter = 0;
 			var guessedLetters = [];
-			var wins = 0;
-			var fastestWin = 0;
-			var losses = 0;
-			var totWins = 0;
-			var totLosses = 0;
-			var winStreak = 0;
-			var totWinStreak = 0;
+			//var wins = 0;
+			//var fastestWin = 0;
+			//var losses = 0;
+			//var totWins = 0;
+			//var totLosses = 0;
+			//var winStreak = 0;
+			//var totWinStreak = 0;
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
 			var gameState = {"state":0};
 			
@@ -81,8 +81,8 @@ hasfocusmode: "1"
 				val = val > 12 ? 12 : val
 				getElem("inpWordLength").value = val;
 				if(resettable || (currentGuess == 0 && currentLetter == 0)){
-					wins = 0;
-					losses = 0;
+					//wins = 0;
+					//losses = 0;
 					wordLengths = val;
 					resettable = true;
 					initWordFinder(true);
@@ -99,13 +99,13 @@ hasfocusmode: "1"
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
 					gameState = {"state":0};
-					losses = 0;
-					wins = 0;
-					totWins = 0;
-					totLosses = 0;
-					winStreak = 0;
-					fastestWin = 0;
-					totWinStreak = 0;
+					//losses = 0;
+					//wins = 0;
+					//totWins = 0;
+					//totLosses = 0;
+					//winStreak = 0;
+					//fastestWin = 0;
+					//totWinStreak = 0;
 					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : gameState;
 					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
@@ -113,13 +113,13 @@ hasfocusmode: "1"
 						getElem("inpWordLength").value = wordLengths;
 						isDaily = gameState.IsDaily;
 					}
-					losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
-					wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
-					totWins = getLocal("wordFinderTotWins") ? getLocal("wordFinderTotWins") : totWins;
-					totLosses = getLocal("wordFinderTotLosses") ? getLocal("wordFinderTotLosses") : totLosses;
-					winStreak = getLocal("wordFinderWinStreak" + wordLengths) ? getLocal("wordFinderWinStreak" + wordLengths) : winStreak;
-					totWinStreak = getLocal("wordFinderTotWinStreak") ? getLocal("wordFinderTotWinStreak") : totWinStreak;
-					fastestWin = getLocal("wordFinderFastestWin" + wordLengths) ? getLocal("wordFinderFastestWin" + wordLengths) : fastestWin;
+					//losses = getLocal("wordFinderLosses" + wordLengths) ? getLocal("wordFinderLosses" + wordLengths) : losses;
+					//wins = getLocal("wordFinderWins" + wordLengths) ? getLocal("wordFinderWins" + wordLengths) : wins;
+					//totWins = getLocal("wordFinderTotWins") ? getLocal("wordFinderTotWins") : totWins;
+					//totLosses = getLocal("wordFinderTotLosses") ? getLocal("wordFinderTotLosses") : totLosses;
+					//winStreak = getLocal("wordFinderWinStreak" + wordLengths) ? getLocal("wordFinderWinStreak" + wordLengths) : winStreak;
+					//totWinStreak = getLocal("wordFinderTotWinStreak") ? getLocal("wordFinderTotWinStreak") : totWinStreak;
+					//fastestWin = getLocal("wordFinderFastestWin" + wordLengths) ? getLocal("wordFinderFastestWin" + wordLengths) : fastestWin;
 					resettable = false;
 					//setResults();
 					focusInput();
@@ -130,9 +130,18 @@ hasfocusmode: "1"
 					if(chosenWord == ""){
 						var x =await getWords(wordLengths);
 						//console.log(x);
-						var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
-						var today = new Date(UTCString());
-						if(fromSeed && lastDaily.getTime() < today.getTime()){
+						
+						var dailyComplete = false;
+						//var today = new Date(UTCString());
+						//var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
+						for(var key in history){
+							if(key == UTCString()){
+								dailyComplete = history[key].filter(function (item) {return item.W.length == wordLengths && item.D;}).length > 0;
+							}
+						}
+						
+						//var lastDaily = new Date(getLocal("wordFinderLastDaily" + wordLengths) ? getLocal("wordFinderLastDaily" + wordLengths) : 0);
+						if(fromSeed && !dailyComplete){
 							isDaily = true;
 							chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths) * (x.length + 1))];
 						}else{
@@ -254,11 +263,11 @@ hasfocusmode: "1"
 										finishedGame = true;
 										sucess = true;
 										timeTaken =  new Date(UTCString(true)).getTime() - new Date(gameState.StartTime).getTime();
-										fastestWin = (timeTaken < fastestWin || fastestWin == 0) ? timeTaken : fastestWin;
-										wins++;
-										totWins++;
-										totWinStreak++;
-										winStreak++;
+										//fastestWin = (timeTaken < fastestWin || fastestWin == 0) ? timeTaken : fastestWin;
+										//wins++;
+										//totWins++;
+										//totWinStreak++;
+										//winStreak++;
 										toastyMake("Correct :)");
 									} else{			
 										var wordChars = chosenWord.toUpperCase().split("");
@@ -269,12 +278,12 @@ hasfocusmode: "1"
 										}
 										if(currentGuess == wordLengths){ 
 											finishedGame = true;
-											losses++;
-											totLosses++;
-											totWinStreak = 0;
-											winStreak = 0;
-											delLocal("wordFinderWinStreak");
-											delLocal("wordFinderTotWinStreak");
+											//losses++;
+											//totLosses++;
+											//totWinStreak = 0;
+											//winStreak = 0;
+											//delLocal("wordFinderWinStreak");
+											//delLocal("wordFinderTotWinStreak");
 											toastyMake("Failed! Word: " + chosenWord);
 										} else{
 											toastyMake("Try Again");
@@ -301,7 +310,7 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
-						gameStatsSet(wordLengths, sucess, new Date(gameState.StartTime).getTime());
+						gameStatsSet(wordLengths, sucess, timeTaken);
 						var todayTimeZero = gameState.StartTime.split("T")[0] + "T00:00:00Z";
 						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 						if(!(todayTimeZero in history)){history[todayTimeZero] = [];}
@@ -335,8 +344,7 @@ hasfocusmode: "1"
 					x.round[roundID].winStreak++;
 					x.totRound.winStreak++;
 					if(msDateTime > 0){
-						var timeTaken =  new Date(UTCString(true)).getTime() - msDateTime;
-						x.round[roundID].fastestWin = (timeTaken < x.round[roundID].fastestWin || x.round[roundID].fastestWin == 0) ? timeTaken : x.round[roundID].fastestWin;
+						x.round[roundID].fastestWin = (msDateTime < x.round[roundID].fastestWin || x.round[roundID].fastestWin == 0) ? msDateTime : x.round[roundID].fastestWin;
 					}
 				}else{
 					x.round[roundID].losses++;		
