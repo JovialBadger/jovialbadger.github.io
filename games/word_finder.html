@@ -301,6 +301,7 @@ hasfocusmode: "1"
 							break;
 					}		
 					if(finishedGame){
+						gameStatsSet(wordLengths, sucess, new Date(gameState.StartTime).getTime());
 						var todayTimeZero = gameState.StartTime.split("T")[0] + "T00:00:00Z";
 						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
 						if(!(todayTimeZero in history)){history[todayTimeZero] = [];}
@@ -320,6 +321,47 @@ hasfocusmode: "1"
 					}
 					setResults();
 				}
+			}
+			function gameStatsSet(roundID, win, msDateTime){
+				roundID = roundID || 0;
+				msDateTime = msDateTime || -1;
+				win = win || false;
+				var x = {};
+				x = gameStatsGet();
+				if(!(roundID in x.round)){x.round[roundID] = {"wins":0,"winStreak":0,"fastestWin":0,"losses":0};}		
+				if(win){
+					x.round[roundID].wins++;
+					x.round[roundID].winStreak++;
+					x.totRound.winStreak++;
+					if(msDateTime > 0){
+						var timeTaken =  new Date(UTCString(true)).getTime() - msDateTime;
+						x.round[roundID].fastestWin = (timeTaken < x.round[roundID].fastestWin || x.round[roundID].fastestWin == 0) ? timeTaken : x.round[roundID].fastestWin;
+					}
+				}else{
+					x.round[roundID].losses++;		
+					x.round[roundID].winStreak = 0;
+					x.totRound.winStreak = 0;
+				}
+				setLocal("wordFinderStats", JSON.stringify(x));
+			}
+
+			function gameStatsGet(){
+				return getLocal("wordFinderStats") ? JSON.parse(getLocal("wordFinderStats")) : {"round":[],"totRound":{"winStreak":0}};
+			}
+			function seeGameState(){
+				var x = gameStatsGet();
+				var totWins = 0;
+				var totLosses = 0;
+				var zz = "";
+				for(var key in x.round){
+					if(x.round[key] != null){
+						totWins += x.round[key].wins;
+						totLosses += x.round[key].losses;
+						zz += "<b>Word Length " + key  + "</b><br />Wins: " + x.round[key].wins + "<br />Losses: " + x.round[key].losses + "<br />Win Streak: " + x.round[key].winStreak + "<br />Fastest Win: " + x.round[key].fastestWin + "<br />";						
+					}
+				}
+				zz += "<b>Total</b><br />Wins: " + totWins + "<br />Losses: " + totLosses + "<br />Win Streak: " + x.totRound.winStreak + "<br />";			
+				message(zz == "" ? "-" : zz,"Stats");	
 			}
 			function seeHistory(){
 				var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
