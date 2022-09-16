@@ -338,7 +338,7 @@ hasfocusmode: "1"
 				win = win || false;
 				var x = {};
 				x = gameStatsGet();
-				if(!(roundID in x.round)){x.round[roundID] = {"wins":0,"winStreak":0,"fastestWin":0,"losses":0};}		
+				if(!(roundID in x.round) || x.round[roundID] == null){x.round[roundID] = {"wins":0,"winStreak":0,"fastestWin":0,"losses":0};}		
 				if(win){
 					x.round[roundID].wins++;
 					x.round[roundID].winStreak++;
