@@ -68,7 +68,7 @@ hasfocusmode: "1"
 				getElem('inputFocus').focus();
 			}
 			
-			function changeWordLength(val){
+			async function changeWordLength(val){
 				val = (val * 1) || 5;
 				val = val < 4 ? 4 : val;
 				val = val > 12 ? 12 : val
@@ -76,7 +76,7 @@ hasfocusmode: "1"
 				if(resettable || (currentGuess == 0 && currentLetter == 0)){
 					wordLengths = val;
 					resettable = true;
-					initWordFinder(true);
+					await initWordFinder(true);
 				}else{
 					getElem("inpWordLength").value = wordLengths;
 					toastyMake("Finish Game First");
@@ -169,17 +169,17 @@ hasfocusmode: "1"
 				z.innerHTML = e;			
 			}
 			
-			function keyboardCapture(e){
+			async function keyboardCapture(e){
 				var key=e.keyCode || e.which;
 				switch(key){
 					case 13:
-						enterKey(":)");
+						await enterKey(":)");
 						break;
 					case 8:
-						enterKey("<=");
+						await enterKey("<=");
 						break;
 					default:
-						enterKey(String.fromCharCode(key).toUpperCase());
+						await enterKey(String.fromCharCode(key).toUpperCase());
 						break;
 				}
 				getElem('inputFocus').value = "";
