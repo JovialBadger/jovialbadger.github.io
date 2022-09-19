@@ -148,9 +148,9 @@ hasfocusmode: "1"
 						for (var i = 0; i < gameState.Words.length; i++) {
 							var inputWordLetters = gameState.Words[i].split("");
 							for (var j = 0; j < inputWordLetters.length; j++) {
-								enterKey(inputWordLetters[j]);
+								await enterKey(inputWordLetters[j]);
 							}
-							enterKey(":)");
+							await enterKey(":)");
 						}
 					}
 				} else{
@@ -210,7 +210,8 @@ hasfocusmode: "1"
 								}
 								if(!("Words" in gameState)){gameState.Words = [];}			
 								gameState.ChosenWord = window.btoa(chosenWord);
-								if(await isWord(word)){											
+								var wordExists = await isWord(word)
+								if(wordExists){											
 									gameState.Words[currentGuess] = word;
 									guessedLetters = guessedLetters.concat(word.split(""));
 									makeKeyBoard();
@@ -333,7 +334,7 @@ hasfocusmode: "1"
 				getElem("wordFinderDefinition").innerHTML = "Find out more about the word <u><a href='https://en.wiktionary.org/wiki/" + chosenWord.toLowerCase() + "' target='definitionsJovialBadger'>" + chosenWord + "</a></u>";
 			}
 			docReady(async function () {
-				initWordFinder(true);
+				await initWordFinder(true);
 			});
 			function candown(target, type) {
 				let canvas = getElem(target);
