@@ -285,7 +285,7 @@ var showErrors = false;
 window.onerror = function (msg, url, lineNo, columnNo, error) {
 	showErrors = getLocal("ShowErrors") ? getLocal("ShowErrors") : showErrors;
 	if(showErrors){
-		toastyMake(msg + "<br /><br />" + url,0 , 30000);
+		toastyMake(msg + "<br /><br />" + url,0 , 30000,"#f00","#fff");
     }
 	return false;
 }
