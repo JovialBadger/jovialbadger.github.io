@@ -299,7 +299,6 @@ function setShowErrorsToggle(){
 	if(setErrorsToggle > 9){
 		showErrors = showErrors ? false : true;
 		setLocal("ShowErrors",  showErrors);
-	} else{
 		setErrorsToggle = 0;
 	}
 }
