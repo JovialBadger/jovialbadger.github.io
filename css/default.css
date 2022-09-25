@@ -357,6 +357,6 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 code{
-    white-space: pre-wrap; 
+    white-space: pre-line; 
 	word-wrap:anywhere;
 }
