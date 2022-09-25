@@ -280,3 +280,26 @@ async function isWord(word){
 	var x = await getWords(word.length);
 	return x.filter(function (item) {return item == word.toUpperCase();}).length > 0;
 }
+
+var showErrors = false;
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+	showErrors = getLocal("ShowErrors") ? getLocal("ShowErrors") : showErrors;
+	if(showErrors){
+		toastyMake(msg + "<br /><br />" + url,0 , 30000);
+    }
+	return false;
+}
+
+var setErrorsToggle = 0;
+function setShowErrorsToggle(){
+	setErrorsToggle++;
+	if(setErrorsToggle == 9){
+		toastyMake("Click Again To Toggle Show Errors");
+	}
+	if(setErrorsToggle > 9){
+		showErrors = showErrors ? false : true;
+		setLocal("ShowErrors",  showErrors);
+	} else{
+		setErrorsToggle = 0;
+	}
+}

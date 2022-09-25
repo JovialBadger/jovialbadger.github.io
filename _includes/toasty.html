@@ -18,6 +18,7 @@
 	position:relative;
 }
 .toastyText{
+	word-wrap: anywhere;
 	padding: 16px;
 	display: inline-block;
 }
@@ -29,11 +30,11 @@
 </style>
 <div id="toastyContainer"></div>
 <script>
-function toastyMake(txt) {
-	var close = false;
-	var bgColour = "";
-	var txtColour = "";
-	var timeClose = 0;
+function toastyMake(txt, close, timeClose, bgColour, txtColour) {
+	close = close || false;
+	bgColour = bgColour || "";
+	txtColour = txtColour || "";
+	timeClose = timeClose || 0;
 	txt = txt || "";
 	if(txt != ""){
 		var x = document.getElementById("toastyContainer");
