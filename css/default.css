@@ -355,3 +355,8 @@ input[type="color"]::-webkit-color-swatch {
 .opacity50{
 	opacity: 0.5;
 }
+
+code{
+    white-space: pre-wrap; 
+	word-wrap:anywhere;
+}
