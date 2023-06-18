@@ -250,16 +250,73 @@ function msToTime(duration) {
 	return x;
 }
 
+async function fetchData(URL, dataType, storeDataName, expirySecs){
+	storeDataName = storeDataName || "";
+	expirySecs = expirySecs || (60*60*24*7);
+	var data = null;
+	if (storeDataName != ""){
+		data = JSON.parse(getLocal(storeDataName));
+		if(data != null){
+			if(new Date(UTCString(true)).getTime() - new Date(data.dateTime).getTime() > 1000*expirySecs){delLocal(storeDataName); data = null;}
+		}
+	}
+	if(data ==  null){
+		var tempData = null;
+		var dl = await fetch(URL);
+		if(!dl.ok){return null;}
+		var processedData = null;
+		switch(dataType) {
+			case "TXT":
+			case "CSV":
+				tempData = await dl.text();
+				processedData = ((dataType == "CSV") ? csvToObject(tempData) : tempData);
+				break;
+			default:
+				processedData = await dl.text();
+		}
+		if (storeDataName != ""){
+			setLocal(storeDataName, JSON.stringify({"dateTime":UTCString(true),"storedValue":processedData}));	
+		}
+		return processedData;
+	} else{
+		return data.storedValue;
+	}
+}
+
+function csvToObject(dataString) {
+  var lines = dataString
+    .split(/\n/)
+    .map(function(lineStr) {
+        return lineStr.split(",");
+    });
+  
+  var keys = lines[0];
+
+  var objects = lines
+    .slice(1)
+    .map(function(arr) {
+      return arr.reduce(function(obj, val, i) {
+        obj[keys[i].trim()] = val; 
+        return obj;
+      }, {});
+    });
+  
+  return objects;
+}
+
+function reduceArayByKeys(arr, keysToKeep){ 
+	return arr.map(o => keysToKeep.reduce((acc, curr) => {
+	  acc[curr] = o[curr];
+	  return acc;
+	}, {}));
+}
+
 async function getWords(len, uCase){
 	uCase = uCase || "1";
 	len = len || -1;
-	var x = JSON.parse(getLocal("Words"));
+	var x = await fetchData('https://jovialbadger.co.uk/javascript/words.txt', "TXT", "Words")
+	//var x = JSON.parse(getLocal("Words"));
 	if(x != null){
-		if(new Date(UTCString()).getTime() - new Date(x.dateTime).getTime() > 1000*60*60*24*7){delLocal("Words"); x = null;}
-	}
-	if(x ==  null){
-		var dl = await fetch('https://jovialbadger.co.uk/javascript/words.txt')
-		var txt = await dl.text();
 		data = txt.split("\n");//.sort();
 		var a = [];
 		for (var i = 0; i < data.length; i++){
@@ -268,11 +325,10 @@ async function getWords(len, uCase){
 				a[data[i].length].push(uCase == 1 ? data[i].toUpperCase() : data[i].toLowerCase())
 			}
 		}
-		setLocal("Words", JSON.stringify({"dateTime":UTCString(),"storedValue":a}))
 		return len == -1 ? a : a[len];
 			
 	} else{
-		return len == -1 ? x.storedValue : x.storedValue[len];
+		return null;
 	}
 }
 
@@ -281,6 +337,15 @@ async function isWord(word){
 	return x.filter(function (item) {return item == word.toUpperCase();}).length > 0;
 }
 
+function leftJoinObjects(obj1, obj2, idArrs, insertObj){
+	return obj1.map(a => ({ ...obj2.find(b => (isMatch(a,b,idArrs))), ...a,...insertObj}));
+}
+
+function isMatch(a,b,idArrs){
+  var c = 0; 
+  idArrs.forEach(i => (!(a[i]===undefined || b[i]===undefined) && a[i] === b[i]) ? c++: null);
+  return c === idArrs.length;
+}
 var showErrors = false;
 window.onerror = function (msg, url, lineNo, columnNo, error) {
 	showErrors = getLocal("ShowErrors") ? getLocal("ShowErrors") : showErrors;
