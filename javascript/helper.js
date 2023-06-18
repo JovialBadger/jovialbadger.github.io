@@ -314,10 +314,8 @@ function reduceArayByKeys(arr, keysToKeep){
 async function getWords(len, uCase){
 	uCase = uCase || "1";
 	len = len || -1;
-	var x = await fetchData('https://jovialbadger.co.uk/javascript/words.txt', "TXT", "Words")
-	//var x = JSON.parse(getLocal("Words"));
-	if(x != null){
-		data = txt.split("\n");//.sort();
+	var data = await fetchData('https://jovialbadger.co.uk/javascript/words.txt', "TXT", "Words").split("\n");
+	if(data != null){
 		var a = [];
 		for (var i = 0; i < data.length; i++){
 			if(!data[i].startsWith("//")){
