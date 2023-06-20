@@ -107,15 +107,15 @@ function createTable(data, id, filters){
 	filters = filters || [];
 	var tableinner = "";
 	var row = data[0];
-	var filterHTML = (filters.length > 0 && filters.filter(a => a.filterType.toLowerCase() === "table").length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",-1,this.value)" id="inpTableFilter' + id + '">':"";
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
 	for(var j = 0; j < row.length; j++){
 		var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
 		tableinner += "<" + cellTag + ">" + row[j] + "</th>";
-		var isFilter = filters.filter(a => a.colName.toLowerCase() === row[j].toLowerCase())
+		var isFilter = filters.filter(a =>a.hasOwnProperty('colName') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
 		if (isFilter.length > 0){
-			switch(isFilter[0].filterType.toLowerCase()) {
+			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
 			  case "dropdown":
 				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable("' + id + '",' + j + ',this.value)">';
 				var uniqueColumnArr = [...new Set(x.map(a => a[j]))];
