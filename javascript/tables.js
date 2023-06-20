@@ -107,7 +107,7 @@ function createTable(data, id, filters){
 	filters = filters || [];
 	var tableinner = "";
 	var row = data[0];
-	var filterHTML = filters.filter(a => a.filterType.toLowerCase() === "table").length > 0 ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filterHTML = (filters.length > 0 && filters.filter(a => a.filterType.toLowerCase() === "table").length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",-1,this.value)" id="inpTableFilter' + id + '">':"";
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
 	for(var j = 0; j < row.length; j++){
