@@ -37,29 +37,36 @@ function tableCollapse(pageLoad, table){
 
 function filterTable(tableid, columnid, search, matchType) {
 	matchType = matchType || 0;
-    var filter, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow;
-    filter = search.toUpperCase();
+    var searchUpper, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow;
+    searchUpper = search.toUpperCase();
     table = getElem(tableid); 
     thead = getTags("thead", table)[0];
     columnHeaders = getTags("th", thead);
-    if (columnHeaders.length + 1 > columnid) {
+    if (columnHeaders.length + 1 > columnid && search != "") {
 		tbody = getTags("tbody", table)[0];
         trows = getTags("tr", tbody);
         for (i = 0; i < trows.length; i++) {
             cells = getTags("td", trows[i]);
-            cell = cells[columnid];
-            if (cell) {
-                txtValue = getClass("tablerowcontent", cell)[0].innerHTML || cell.textContent || cell.innerText;
-				var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
-				removeClasses(cell, classesRemove)
-                if (txtValue.toUpperCase().indexOf(filter) > -1 && search != "" && ((matchType == 0) || (matchType == 1 && txtValue.toUpperCase() == filter))) {
-                    cell.className += " FilterMatch";
-                } else if (search != "") {
-                    cell.className += " FilterNoMatch";
-                }
-            }
-			cell.className = cell.className.replace(/ +(?= )/g,'');
-            unmatchedRow = 0;
+			if(columnid > -1){
+				cell = cells[columnid];
+				if (cell) {
+					txtValue = getClass("tablerowcontent", cell)[0].innerHTML || cell.textContent || cell.innerText;
+					var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
+					removeClasses(cell, classesRemove)
+					if (txtValue.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && txtValue.toUpperCase() == searchUpper))) {
+						cell.className += " FilterMatch";
+					} else {
+						cell.className += " FilterNoMatch";
+					}
+				}
+				cell.className = cell.className.replace(/ +(?= )/g,'');
+			} else if(columnid === -1){
+				removeClasses(trows[i], ['rowNoMatch'])
+				if(!(getClass("tablerowcontent", trows[i]).filter(a => a.innerHTML.toUpperCase().indexOf(searchUpper) > -1))){
+					trows[i].className += " rowNoMatch";
+				}
+			}
+			unmatchedRow = trows[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
             for (j = 0; j < cells.length; j++) {
                 if (cells[j].className.indexOf("FilterNoMatch") > -1) {
                     unmatchedRow++;
@@ -92,19 +99,48 @@ function updateTableStriping(table){
 	}	
 }
 
-function createTable(data, id){
+//join columns: [{col1, col2, col3...},deliminator] i.e. [{"Home Team","Away Team"}," v "] => Home Team v Away Team
+//filter types: "txt", "dropdown", "range" (number), "table" (no column name only text box allowed)
+//filter input [{columnName, filterType}]
+
+function createTable(data, id, filters){
+	filters = filters || [];
 	var tableinner = "";
 	var row = data[0];
+	var filterHTML = filters.filter(a => a.filterType.toLowerCase() === "table").length > 0 ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",-1,this.value)" id="inpTableFilter' + id + '">':"";
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
 	for(var j = 0; j < row.length; j++){
 		var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
 		tableinner += "<" + cellTag + ">" + row[j] + "</th>";
+		var isFilter = filters.filter(a => a.colName.toLowerCase() === row[j].toLowerCase())
+		if (isFilter.length > 0){
+			switch(isFilter[0].filterType.toLowerCase()) {
+			  case "dropdown":
+				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable("' + id + '",' + j + ',this.value)">';
+				var uniqueColumnArr = [...new Set(x.map(a => a[j]))];
+				for(var k = 1; k < uniqueColumnArr.length; k++){
+					filterHTML += '<option value="' + uniqueColumnArr[k] + '">' + uniqueColumnArr[k] + '</option>';
+				}
+				filterHTML += '</select>';
+				break;
+			  case "range"://dependancy on slider code...html can be modified to use default input range
+				var uniqueColumnArr = JSON.stringify([...new Set(x.map(a => a[j]))]);
+				filterHTML += '<div class="rangeContainer" data-values="' + uniqueColumnArr + '" data-outputelem="spnFilter'+ id + j + '" data-outputformelem="slcFilter'+ id + j + '" data-handles="1"></div><input style="display:none;" id="slcFilter'+ id + j + '" onchange="filterTable("' + id + '",' + j + ',this.value)"><div id="spnFilter'+ id + j + '"></div>'
+				break;
+			  case "txt":
+			  default:
+				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><input class="fixed-three-quarter" value="" onkeyup="filterTable("' + id + '",' + j + ',this.value)" id="inpFilter' + id + j + '">';
+			} 
+		}
 	}
 	tableinner += "</thead>";
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
 	tableCollapse(true, getElem(id));
+	getElem(id).insertAdjacentHTML("beforebegin", filterHTML);
+	initiDropdowns();//dependancy on dropdown code
+	reinitsliders();//dependancy on slider code
 }
 
 function createTableBody(data){
