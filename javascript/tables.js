@@ -119,7 +119,7 @@ function createTable(data, id, filters){
 		if (isFilter.length > 0){
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
 			  case "dropdown":
-				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value)">';
+				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value)">';
 				var uniqueColumnArr = [...new Set(data.map(a => a[j]))];
 				for(var k = 1; k < uniqueColumnArr.length; k++){
 					filterHTML += '<option value="' + uniqueColumnArr[k] + '">' + uniqueColumnArr[k] + '</option>';
@@ -128,11 +128,11 @@ function createTable(data, id, filters){
 				break;
 			  case "range"://dependancy on slider code...html can be modified to use default input range
 				var uniqueColumnArr = JSON.stringify([...new Set(data.shift().map(a => a[j]))]);
-				filterHTML += '<div class="rangeContainer" data-values="' + uniqueColumnArr + '" data-outputelem="spnFilter'+ id + j + '" data-outputformelem="slcFilter'+ id + j + '" data-handles="1"></div><input style="display:none;" id="slcFilter'+ id + j + '" onchange="filterTable(\'' + id + '\',' + j + ',this.value)"><div id="spnFilter'+ id + j + '"></div>'
+				filterHTML += '<hr/><div class="rangeContainer" data-values="' + uniqueColumnArr + '" data-outputelem="spnFilter'+ id + j + '" data-outputformelem="slcFilter'+ id + j + '" data-handles="1"></div><input style="display:none;" id="slcFilter'+ id + j + '" onchange="filterTable(\'' + id + '\',' + j + ',this.value)"><div id="spnFilter'+ id + j + '"></div>'
 				break;
 			  case "txt":
 			  default:
-				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',' + j + ',this.value)" id="inpFilter' + id + j + '">';
+				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',' + j + ',this.value)" id="inpFilter' + id + j + '">';
 			} 
 		}
 	}
