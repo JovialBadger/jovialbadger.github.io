@@ -120,14 +120,14 @@ function createTable(data, id, filters){
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
 			  case "dropdown":
 				filterHTML += '<label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value)">';
-				var uniqueColumnArr = [...new Set(x.map(a => a[j]))];
+				var uniqueColumnArr = [...new Set(data.map(a => a[j]))];
 				for(var k = 1; k < uniqueColumnArr.length; k++){
 					filterHTML += '<option value="' + uniqueColumnArr[k] + '">' + uniqueColumnArr[k] + '</option>';
 				}
 				filterHTML += '</select>';
 				break;
 			  case "range"://dependancy on slider code...html can be modified to use default input range
-				var uniqueColumnArr = JSON.stringify([...new Set(x.map(a => a[j]))]);
+				var uniqueColumnArr = JSON.stringify([...new Set(data.shift().map(a => a[j]))]);
 				filterHTML += '<div class="rangeContainer" data-values="' + uniqueColumnArr + '" data-outputelem="spnFilter'+ id + j + '" data-outputformelem="slcFilter'+ id + j + '" data-handles="1"></div><input style="display:none;" id="slcFilter'+ id + j + '" onchange="filterTable(\'' + id + '\',' + j + ',this.value)"><div id="spnFilter'+ id + j + '"></div>'
 				break;
 			  case "txt":
