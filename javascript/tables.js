@@ -140,7 +140,7 @@ function createTable(data, id, filters){
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
 	tableCollapse(true, getElem(id));
-	getElem(id).insertAdjacentHTML("beforebegin", filterHTML);
+	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", filterHTML + "<hr/>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
 }
