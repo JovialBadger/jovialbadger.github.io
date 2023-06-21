@@ -109,7 +109,10 @@ function createTable(data, id, filters){
 	filters = filters || [];
 	var tableinner = "";
 	var row = data[0];
-	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filtersFor = getElem("filtersFor" + id);
+	filtersFor == null ? null : filtersFor.remove();
+	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<div id="filtersFor' + id + '"><label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filtersCount = filterHTML == "" ? 0 : 1;
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
 	for(var j = 0; j < row.length; j++){
@@ -117,6 +120,7 @@ function createTable(data, id, filters){
 		tableinner += "<" + cellTag + ">" + row[j] + "</th>";
 		var isFilter = filters.filter(a =>a.hasOwnProperty('colName') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
 		if (isFilter.length > 0){
+			filtersCount++;
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
 			  case "dropdown":
 				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value,1)"><option selected="" disabled=""></option>';
@@ -140,7 +144,7 @@ function createTable(data, id, filters){
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
 	tableCollapse(true, getElem(id));
-	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", filterHTML + "<hr/>") : null;
+	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
 }
