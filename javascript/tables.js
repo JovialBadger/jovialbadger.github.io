@@ -119,7 +119,7 @@ function createTable(data, id, filters){
 		if (isFilter.length > 0){
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
 			  case "dropdown":
-				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value)">';
+				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><select data-deselectable="1" id="slcFilter'+ id + j + '" class="fixed-three-quarter" value="" onchange="filterTable(\'' + id + '\',' + j + ',this.value)"><option selected="" disabled=""></option>';
 				var uniqueColumnArr = [...new Set(data.map(a => a[j]))];
 				for(var k = 1; k < uniqueColumnArr.length; k++){
 					filterHTML += '<option value="' + uniqueColumnArr[k] + '">' + uniqueColumnArr[k] + '</option>';
