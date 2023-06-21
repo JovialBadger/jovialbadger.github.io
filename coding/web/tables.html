@@ -19,7 +19,7 @@ var tableData = [["Name","Phone","Email","Supplier"],["Curtis, Oscar","07852 607
 var obj = [{"Created":"11/06/2020","Type":"Car","Make":"Honda"},{"Created":"07/12/2020","Type":"Car","Make":"Ford"},{"Created":"07/10/2020","Type":"Van","Make":"Jaguar"},{"Created":"07/10/2010","Type":"Car","Make":"Jaguar"},{"Created":"28/10/2001","Type":"Car","Make":"Mercedes-Benz"},{"Created":"28/10/2020","Type":"Van","Make":"Mercedes-Benz"},{"Created":"21/10/2020","Type":"Car","Make":"Alfa Romeo"},{"Created":"18/08/2020","Type":"Van","Make":"Alfa Romeo"}];
 docReady(function () {
 	createTable(objectToTwodArray(obj), "myTable2",[{"colName":"Make"},{"colName":"Type","filterType":"dropdown"}]);
-	createTable(tableData, "myTable");
+	createTable(tableData, "myTable", [{"filterType":"table"}]);
 });
 </script>
 <table id="myTable" class="break-table"></table>
