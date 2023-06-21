@@ -64,7 +64,7 @@ function filterTable(tableid, columnid, search, matchType) {
 				cell.className = cell.className.replace(/ +(?= )/g,'');
 			} else if(columnid === -1){
 				removeClasses(trows[i], ['rowNoMatch'])
-				if(!(getClass("tablerowcontent", trows[i]).filter(a => a.innerHTML.toUpperCase().indexOf(searchUpper) > -1))){
+				if(!(Array.from(getClass("tablerowcontent", trows[i])).filter(a => a.innerHTML.toUpperCase().indexOf(searchUpper) > -1))){
 					trows[i].className += " rowNoMatch";
 				}
 			}
