@@ -111,7 +111,7 @@ function createTable(data, id, filters){
 	var row = data[0];
 	var filtersFor = getElem("filtersFor" + id);
 	filtersFor == null ? null : filtersFor.remove();
-	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<div id="filtersFor' + id + '"><label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
 	var filtersCount = filterHTML == "" ? 0 : 1;
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
@@ -144,7 +144,7 @@ function createTable(data, id, filters){
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
 	tableCollapse(true, getElem(id));
-	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", filterHTML + "<hr/></div>") : null;
+	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
 }
