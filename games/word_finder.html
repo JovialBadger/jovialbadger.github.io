@@ -37,13 +37,26 @@ hasfocusmode: "1"
 		padding: 3px;
 	}
 	.isMulti{
-		background-color: #f80;}
+		background-color: #f80;
+		text-decoration: underline;
+		font-style: italic;
+		font-weight: bolder;
+	}		
 	.isSingle,.isCorrect{
-		background-color: #0f0;}
+		background-color: #0f0;
+		font-style: italic;
+		font-weight: bolder;
+	}		
 	.isNot{
-		background-color: #999;}
+		background-color: #999;
+		text-decoration: line-through;
+	}
 	.isInWord{
-		background-color: #ff0;}
+		background-color: #ff0;
+		font-style: italic;
+		font-weight: bolder;
+		text-decoration: line-through;
+	}		
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span>
@@ -236,7 +249,7 @@ hasfocusmode: "1"
 										for (var z = 0; z < wordLengths; z++) {
 											var letterElem = getClass("letter-" + z,elem)[0];
 											var lettercheck = letterElem.innerHTML;
-											addClasses(letterElem,[(wordChars[z] == lettercheck ? "isSingle" : (wordChars.indexOf(lettercheck) > -1 ? "isInWord" : ""))])
+											addClasses(letterElem,(wordChars[z] == lettercheck ? ["isSingle"] : (wordChars.indexOf(lettercheck) > -1 ? ["isInWord"] : [])));
 										}
 										if(currentGuess == wordLengths){ 
 											finishedGame = true;
