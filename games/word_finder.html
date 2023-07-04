@@ -36,6 +36,14 @@ hasfocusmode: "1"
 		background-color: var(--main-color);
 		padding: 3px;
 	}
+	.isMulti{
+		background-color: #f80;}
+	.isSingle,.isCorrect{
+		background-color: #0f0;}
+	.isNot{
+		background-color: #999;}
+	.isInWord{
+		background-color: #ff0;}
 </style>
 		Word Length: <input id="inpWordLength" type="number" min="4" max="12" value="5" onblur="changeWordLength(this.value)">
 		<div><span style="padding:10px;display:inline-block; background-color:#0f0;" onclick="initWordFinder()">New Game</span>
@@ -164,7 +172,7 @@ hasfocusmode: "1"
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
-					e += "<div onclick='enterKey(\"" + thisLetter + "\")' style='" + (guessedLetters.indexOf(thisLetter) > -1 ? "background-color: " + (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.toUpperCase().match(new RegExp(thisLetter, "g")) || []).length > 1 ? "#f80" : "#0f0"):"#999") + ";" : "") + (keyBoard[c].A ? "grid-area:" + keyBoard[c].A + ";" : "") + "'>" + thisLetter + "</div>";
+					e += "<div onclick='enterKey(\"" + thisLetter + "\")' class='" + (guessedLetters.indexOf(thisLetter) > -1 ? (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.toUpperCase().match(new RegExp(thisLetter, "g")) || []).length > 1 ? "isMulti" : "isSingle"):"isNot") + ";'" : "'") + (keyBoard[c].A ? "style='grid-area:" + keyBoard[c].A + ";" : "") + ">" + thisLetter + "</div>";
 				}
 				z.innerHTML = e;			
 			}
@@ -217,7 +225,7 @@ hasfocusmode: "1"
 									makeKeyBoard();
 									if(word == chosenWord.toUpperCase()){								
 										for (var y = 0; y < wordLengths;y++) {
-											getClass("letter-" + y,elem)[0].style.background = "#0f0";
+											addClasses(getClass("letter-" + y,elem)[0],["isSingle"]);
 										}
 										finishedGame = true;
 										sucess = true;
@@ -228,7 +236,7 @@ hasfocusmode: "1"
 										for (var z = 0; z < wordLengths; z++) {
 											var letterElem = getClass("letter-" + z,elem)[0];
 											var lettercheck = letterElem.innerHTML;
-											letterElem.style.background = (wordChars[z] == lettercheck ? "#0f0" : (wordChars.indexOf(lettercheck) > -1 ? "#ff0" : ""));
+											addClasses(letterElem,[(wordChars[z] == lettercheck ? "isSingle" : (wordChars.indexOf(lettercheck) > -1 ? "isInWord" : ""))])
 										}
 										if(currentGuess == wordLengths){ 
 											finishedGame = true;
