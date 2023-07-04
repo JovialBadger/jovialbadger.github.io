@@ -36,22 +36,22 @@ hasfocusmode: "1"
 		background-color: var(--main-color);
 		padding: 3px;
 	}
-	.isMulti{
+	#grid-container .isMulti{
 		background-color: #f80;
 		text-decoration: underline;
 		font-style: italic;
 		font-weight: bolder;
 	}		
-	.isSingle,.isCorrect{
+	#grid-container .isSingle,#grid-guess .isCorrect{
 		background-color: #0f0;
 		font-style: italic;
 		font-weight: bolder;
 	}		
-	.isNot{
+	#grid-container .isNot{
 		background-color: #999;
 		text-decoration: line-through;
 	}
-	.isInWord{
+	#grid-guess .isInWord{
 		background-color: #ff0;
 		font-style: italic;
 		font-weight: bolder;
@@ -185,7 +185,7 @@ hasfocusmode: "1"
 				var e = "";
 				for (var c = 0; c < keyBoard.length; c++) {
 					var thisLetter = keyBoard[c].L.toUpperCase();
-					e += "<div onclick='enterKey(\"" + thisLetter + "\")' class='" + (guessedLetters.indexOf(thisLetter) > -1 ? (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.toUpperCase().match(new RegExp(thisLetter, "g")) || []).length > 1 ? "isMulti" : "isSingle"):"isNot") + ";'" : "'") + (keyBoard[c].A ? "style='grid-area:" + keyBoard[c].A + ";'" : "") + ">" + thisLetter + "</div>";
+					e += "<div onclick='enterKey(\"" + thisLetter + "\")' class='" + (guessedLetters.indexOf(thisLetter) > -1 ? (wordChars.indexOf(thisLetter) > -1 ? ((chosenWord.toUpperCase().match(new RegExp(thisLetter, "g")) || []).length > 1 ? "isMulti" : "isSingle"):"isNot") + "'" : "'") + (keyBoard[c].A ? "style='grid-area:" + keyBoard[c].A + ";'" : "") + ">" + thisLetter + "</div>";
 				}
 				z.innerHTML = e;			
 			}
@@ -238,7 +238,7 @@ hasfocusmode: "1"
 									makeKeyBoard();
 									if(word == chosenWord.toUpperCase()){								
 										for (var y = 0; y < wordLengths;y++) {
-											addClasses(getClass("letter-" + y,elem)[0],["isSingle"]);
+											addClasses(getClass("letter-" + y,elem)[0],["isCorrect"]);
 										}
 										finishedGame = true;
 										sucess = true;
@@ -249,7 +249,7 @@ hasfocusmode: "1"
 										for (var z = 0; z < wordLengths; z++) {
 											var letterElem = getClass("letter-" + z,elem)[0];
 											var lettercheck = letterElem.innerHTML;
-											addClasses(letterElem,(wordChars[z] == lettercheck ? ["isSingle"] : (wordChars.indexOf(lettercheck) > -1 ? ["isInWord"] : [])));
+											addClasses(letterElem,(wordChars[z] == lettercheck ? ["isCorrect"] : (wordChars.indexOf(lettercheck) > -1 ? ["isInWord"] : [])));
 										}
 										if(currentGuess == wordLengths){ 
 											finishedGame = true;
