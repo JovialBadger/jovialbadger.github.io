@@ -108,7 +108,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 						if (txtValue.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && txtValue == search))) {
 							//cell = containerStart + 1 + containerEnd + cell;//.className += " FilterMatch";
 						} else {
-							table[i][columnid] = createContainer(0,containerCell) + table[i][columnid];//.className += " FilterMatch";
+							table[i][columnid] = createContainer(1,containerCell) + table[i][columnid];//.className += " FilterMatch";
 							//cell.className += " FilterNoMatch";
 						}
 					}
@@ -117,7 +117,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 			} else if(columnid === -1){
 				table[i][0] = removeContainer(table[i][0], containerRow);//table[i][columnidremoveClasses(trows[i], ['rowNoMatch'])
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
-					table[i][0] = createContainer(0,containerRow) + table[i][0];
+					table[i][0] = createContainer(1,containerRow) + table[i][0];
 					//trows[i].className += " rowNoMatch";
 				}
 			}
