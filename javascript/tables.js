@@ -90,7 +90,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
     var searchUpper, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow, containerStart,containerEnd;
     searchUpper = search.toUpperCase();
     //table = getElem(tableid);
-	table = getLocal("localTable" + tableid)
+	table = JSON.parse(getLocal("localTable" + tableid));
     //thead = getTags("thead", table)[0];
     //columnHeaders = getTags("th", thead);
     if (table[0].length + 1 > columnid) {
@@ -134,7 +134,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
             }
         }
     }
-	setLocal("localTable" + tableid, table);
+	setLocal("localTable" + tableid, JSON.stringify(table));
 	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true)).splice(0, 1);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
@@ -231,7 +231,7 @@ function sortTable(tableid, col, sortdir) {
 	sortdir = sortdir || null;
 	var table, rows, i, x, y, dir, arr = [];
 
-	table = getLocal("localTable" + tableid);//.splice(0, 1);
+	table = JSON.parse(getLocal("localTable" + tableid));//.splice(0, 1);
 	
 	dir = sortdir || 1; 
 	target.setAttribute("onclick","sortTable(\"" + tableid + "\", " + col + ", " + dir * -1 + ")");
@@ -270,7 +270,7 @@ function sortTable(tableid, col, sortdir) {
 		// //x.innerHTML += decodeURIComponent(arr[i].row);
     // }
 	//updateTableStriping(table);
-	setLocal("localTable" + tableid, table);
+	setLocal("localTable" + tableid, JSON.stringify(table));
 	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true)).splice(0, 1);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
