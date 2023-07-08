@@ -12,6 +12,17 @@ docReady(function () {
 	tableCollapse(true);
 });
 
+function viewPopOutDetails(tableID, rowID){
+	var table = JSON.parse(getLocal("localTable" + tableid))
+	row = table[rowID].map(c => removeContainer(removeContainer(c,containerCell),containerRow));
+	var header = "Additional Information";
+	var modalHTML = "";
+	row.forEach((arrayItem, index, fullArray) => {
+		modalHTML += arrayItem != "" ? table[index] + ": " + arrayItem + "<hr/>" : "";
+	})
+	message(modalHTML, header);
+}
+
 function tableToArray(id) {
   rows = getElem(id).rows;
   tableArray = [];
@@ -49,14 +60,13 @@ function tableCollapse(pageLoad, table){
     }
 }
 
-function GetBetweenStrings(strSource, strStart, strEnd)
-{
+function GetBetweenStrings(strSource, strStart, strEnd){
+	strSource = strSource.toString();
 	var Start, End;
 	if (strSource.includes(strStart) && strSource.includes(strEnd))
 	{
 		Start = strSource.indexOf(strStart) + strStart.length;
 		End = strSource.indexOf(strEnd);
-        //console.log(Start+" - "+ End)
 		return strSource.substring(Start, End);
 	}
 	else
@@ -86,54 +96,27 @@ function createContainer(txt, container) {
 
 const containerCell = "cellNoMatch";
 const containerRow = "rowNoMatch";
-function filterTable(tableid, columnid, search, matchType) {//update to use local stored data and replace html table body with filtered 2d array.
+function filterTable(tableid, columnid, search, matchType) {
 	matchType = matchType || 0;
-    var searchUpper, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow, containerStart,containerEnd;
+    var searchUpper, table, i;
     searchUpper = search.toUpperCase();
-    //table = getElem(tableid);
 	table = JSON.parse(getLocal("localTable" + tableid));
-    //thead = getTags("thead", table)[0];
-    //columnHeaders = getTags("th", thead);
     if (table[0].length + 1 > columnid) {
-		//tbody = getTags("tbody", table)[0];
-        trows = getTags("tr", tbody);
         for (i = 1; i < table.length; i++) {
-            //cells = table[i];//getTags("td", trows[i]);
 			if(columnid > -1){
-				//cell = table[i][columnid];
-				//if (cell) {
 					table[i][columnid] = removeContainer(table[i][columnid], containerCell);
-					//var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
-					//removeClasses(cell, classesRemove);
 					if(search != ""){
 						if (table[i][columnid].toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && table[i][columnid] == search))) {
-							//cell = containerStart + 1 + containerEnd + cell;//.className += " FilterMatch";
 						} else {
-							table[i][columnid] = createContainer(1,containerCell) + table[i][columnid];//.className += " FilterMatch";
-							//cell.className += " FilterNoMatch";
+							table[i][columnid] = createContainer(1,containerCell) + table[i][columnid];
 						}
 					}
-				//}
-				//cell.className = cell.className.replace(/ +(?= )/g,'');
 			} else if(columnid === -1){
-				table[i][0] = removeContainer(table[i][0], containerRow);//table[i][columnidremoveClasses(trows[i], ['rowNoMatch'])
+				table[i][0] = removeContainer(table[i][0], containerRow);
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
 					table[i][0] = createContainer(1,containerRow) + table[i][0];
-					//console.log(getContainerVal(table[i][0],containerRow));
-					//trows[i].className += " rowNoMatch";
 				}
 			}
-			// unmatchedRow = table[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
-            // for (j = 0; j < table[i].length; j++) {
-                // if (table[i][j].className.indexOf("FilterNoMatch") > -1) {
-                    // unmatchedRow++;
-                // }
-            // }
-            // if (unmatchedRow > 0) {
-                // trows[i].style.display = "none";
-            // } else {
-                // trows[i].style.display = "";
-            // }
         }
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
@@ -205,7 +188,6 @@ function createTable(data, id, filters){
 	data.splice(0,1)
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
-	//tableCollapse(true, getElem(id));
 	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
@@ -217,8 +199,6 @@ function createTableBody(data){
 		var row = data[i];
 		tablebodyinner += "<tr>";
 		for(var j = 0; j < row.length; j++){
-			//var cellTag = "td";
-			//tablebodyinner += "<" + cellTag + ">" + row[j] + "</" + cellTag + ">";
 			tablebodyinner += "<td><b class='tablrowheader'>" + data[0][j] + "</b><span class='tablerowcontent'>" + row[j] + "</span><hr /></td>";
 		}
 		tablebodyinner += "</tr>";
@@ -234,23 +214,12 @@ function sortTable(tableid, col, sortdir) {
 	sortdir = sortdir || null;
 	var table, rows, i, x, y, dir, arr = [];
 
-	table = JSON.parse(getLocal("localTable" + tableid));//.splice(0, 1);
+	table = JSON.parse(getLocal("localTable" + tableid));
 	
 	dir = sortdir || 1; 
 	target.setAttribute("onclick","sortTable(\"" + tableid + "\", " + col + ", " + dir * -1 + ")");
-	// table = document.getElementById(tableid);
-  
-    // rows = table.rows;
-	
-	// var x = table.getElementsByTagName("TBODY")[0];
-    // for (i = 1; i < rows.length ; i++) {
-		// var arrItem = {};
-		// arrItem.sort = rows[i].getElementsByTagName("TD")[col].getElementsByClassName('tablerowcontent')[0].innerHTML;
-		// arrItem.row = encodeURIComponent(rows[i].outerHTML);
-		// arr.push(arrItem);
-    // }
 	table.sort(function(a,b){
-		if (a !== table[0] && b !== table[0]) { // Check if there are not first element
+		if (a !== table[0] && b !== table[0]) {
 			sorta = a[col].toLowerCase();
 			sortb = b[col].toLowerCase();
 			if(regExCurrency.test(sorta)){sorta = StringReplaceAll(StringReplaceAll(sorta, "£", ""), ",","");}
@@ -264,15 +233,6 @@ function sortTable(tableid, col, sortdir) {
 			return 0;
 		}
 	});
-	//arr.sort((a, b) => a.sort.localeCompare(b.sort))
-	// x.innerHTML = "";
-    // for (i = 0; i < arr.length ; i++) {
-		// var node = document.createElement("tbody");
-		// node.innerHTML = decodeURIComponent(arr[i].row);
-			// x.appendChild(node.children[0]);
-		// //x.innerHTML += decodeURIComponent(arr[i].row);
-    // }
-	//updateTableStriping(table);
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
 	var displayTable = table.filter(a => (getContainerVal(a[0],containerRow) !== "1") && a.every(b => (getContainerVal(b,containerCell) !== "1"))).map(c => removeContainer(removeContainer(c,containerCell),containerRow));
