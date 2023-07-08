@@ -106,7 +106,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 					//var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
 					//removeClasses(cell, classesRemove);
 					if(search != ""){
-						if (txtValue.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && txtValue == search))) {
+						if (table[i][columnid].toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && table[i][columnid] == search))) {
 							//cell = containerStart + 1 + containerEnd + cell;//.className += " FilterMatch";
 						} else {
 							table[i][columnid] = createContainer(1,containerCell) + table[i][columnid];//.className += " FilterMatch";
