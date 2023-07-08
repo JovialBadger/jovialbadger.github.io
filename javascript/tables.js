@@ -102,14 +102,14 @@ function displayTable(table, tableid) {//remove column from data before displayi
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	var hideCols = getContainerVal(table[0][0], containerColData);
 	hideCols = hideCols == "" ? [] : hideCols.split("");
-	table.splice(0, 1);
 
 	if (hideCols.includes("0")) {
-		table.forEach((arrayItem, index, fullArray) => {
+		table = table.forEach((arrayItem, index, fullArray) => {
 			arrayItem[table[0].length] = "<span onclick='viewPopOutDetails(\"" + tableid + "\"," + index + ")'>Click Here</span>";
 			hideCols[index] == "0" ? arrayItem.splice(index, 1) : null;
 		})
 	}
+	table.splice(0, 1);
 	var displayTable = table.filter(a => !(getContainerVal(a[0], containerRowData).includes("0"))).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
@@ -172,7 +172,7 @@ function createTable(data, id, filters, hideCols){//add column hide and pop out 
 	filters = filters || [];
 	hideCols = hideCols || [];
 	hideCols = hideCols.map(e => e.toLowerCase());
-	var showCols = Array(data[0].length - 1).fill("1");
+	var showCols = Array(data[0].length).fill("1");
 	var tableinner = "";
 	var row = data[0];
 	var filtersFor = getElem("filtersFor" + id);
