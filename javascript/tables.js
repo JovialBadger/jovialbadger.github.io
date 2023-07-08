@@ -119,6 +119,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 				table[i][0] = removeContainer(table[i][0], containerRow);//table[i][columnidremoveClasses(trows[i], ['rowNoMatch'])
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
 					table[i][0] = createContainer(1,containerRow) + table[i][0];
+					console.log(getContainerVal(table[i][0],containerRow));
 					//trows[i].className += " rowNoMatch";
 				}
 			}
@@ -137,7 +138,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRow) === 1 ? false : a.filter(b => getContainerVal(b,containerCell) === 1 ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
+	var displayTable = table.filter(a => (getContainerVal(a[0],containerRow) === "1") ? false : a.filter(b => (getContainerVal(b,containerCell) === "1") ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
@@ -274,7 +275,7 @@ function sortTable(tableid, col, sortdir) {
 	//updateTableStriping(table);
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRow) === 1 ? false : a.filter(b => getContainerVal(b,containerCell) === 1 ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
+	var displayTable = table.filter(a => (getContainerVal(a[0],containerRow) === "1") ? false : a.filter(b => (getContainerVal(b,containerCell) === "1") ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
