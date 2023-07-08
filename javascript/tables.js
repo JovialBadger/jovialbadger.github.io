@@ -56,7 +56,7 @@ function GetBetweenStrings(strSource, strStart, strEnd)
 	{
 		Start = strSource.indexOf(strStart) + strStart.length;
 		End = strSource.indexOf(strEnd);
-        console.log(Start+" - "+ End)
+        //console.log(Start+" - "+ End)
 		return strSource.substring(Start, End);
 	}
 	else
@@ -119,7 +119,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 				table[i][0] = removeContainer(table[i][0], containerRow);//table[i][columnidremoveClasses(trows[i], ['rowNoMatch'])
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
 					table[i][0] = createContainer(1,containerRow) + table[i][0];
-					console.log(getContainerVal(table[i][0],containerRow));
+					//console.log(getContainerVal(table[i][0],containerRow));
 					//trows[i].className += " rowNoMatch";
 				}
 			}
