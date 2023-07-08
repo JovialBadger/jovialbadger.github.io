@@ -135,7 +135,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
         }
     }
 	setLocal("localTable" + tableid, table);
-	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true).splice(0, 1);
+	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true)).splice(0, 1);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
@@ -271,7 +271,7 @@ function sortTable(tableid, col, sortdir) {
     // }
 	//updateTableStriping(table);
 	setLocal("localTable" + tableid, table);
-	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true).splice(0, 1);
+	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true)).splice(0, 1);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
