@@ -213,16 +213,6 @@ function toggleDisplayNode(node){
 	}	
 }
 
-function getChildNodesByTag(node, tagName) {
-    var children = new Array();
-    for(var child in node.childNodes) {
-        if(node.childNodes[child].nodeName == tagName.toUpperCase()) {
-            children.push(node.childNodes[child]);
-        }
-    }
-    return children;
-}
-
 function message(txt, heading){
 	txt = txt || "";
 	heading = heading || "Alert";

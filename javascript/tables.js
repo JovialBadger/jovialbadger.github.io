@@ -12,13 +12,14 @@ docReady(function () {
 	tableCollapse(true);
 });
 
-function viewPopOutDetails(tableID, rowID){
+function viewPopOutDetails(tableid, rowID){
 	var table = JSON.parse(getLocal("localTable" + tableid))
-	row = table[rowID].map(c => removeContainer(removeContainer(c,containerCell),containerRow));
+	//row = table[rowID].forEach(c => removeContainer(c, containerRowData));
+	table[0][0] = removeContainer(table[0][0],containerColData);
 	var header = "Additional Information";
 	var modalHTML = "";
-	row.forEach((arrayItem, index, fullArray) => {
-		modalHTML += arrayItem != "" ? table[index] + ": " + arrayItem + "<hr/>" : "";
+	table[rowID].forEach((arrayItem, index, fullArray) => {
+		modalHTML += arrayItem != "" ? table[0][index] + ": " + removeContainer(arrayItem, containerRowData) + "<hr/>" : "";
 	})
 	message(modalHTML, header);
 }
@@ -97,17 +98,25 @@ function editContainer(strSource,newtxt,  container) {
 	return createContainer(newtxt, container) + strSource;
 }
 
-function displayTable(table,tableid){
+function displayTable(table, tableid) {//remove column from data before displaying //colsHide=[] array.forEach(a => hideCols.forEach(b => a.splice(b, 1)));
 	setLocal("localTable" + tableid, JSON.stringify(table));
+	var hideCols = getContainerVal(table[0][0], containerColData);
+	hideCols = hideCols == "" ? [] : hideCols.split("");
 	table.splice(0, 1);
-	var displayTable = table.filter(a => !(getContainerVal(a[0],containerRowData).includes("0"))).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
+
+	if (hideCols.includes("0")) {
+		table.forEach((arrayItem, index, fullArray) => {
+			arrayItem[table[0].length] = "<span onclick='viewPopOutDetails(\"" + tableid + "\"," + index + ")'>Click Here</span>";
+		})
+	}
+	var displayTable = table.filter(a => !(getContainerVal(a[0], containerRowData).includes("0"))).forEach(d => hideCols.forEach(b => b == "0" ? d.splice(b, 1): d)).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
 const containerRowData = "rowData";
-const containerCell = "cellNoMatch";
-const containerRow = "rowNoMatch";
-function filterTable(tableid, columnid, search, matchType) {
+const containerColData = "colData";
+function filterTable(tableid, columnid, search, matchType, hideCols) {
+	hideCols = hideCols || [];
 	matchType = matchType || 0;
     var searchUpper, table, i;
     searchUpper = search.toUpperCase();
@@ -156,12 +165,13 @@ function updateTableStriping(table){//required for hiding rows
 //join columns: [{col1, col2, col3...},deliminator] i.e. [{"Home Team","Away Team"}," v "] => Home Team v Away Team
 //filter types: "txt", "dropdown", "range" (number), "table" (no column name only text box allowed)
 //filter input [{columnName, filterType}]
+//strarray hidecols match column header name
 
-function createTable(data, id, filters){
-	var localID = "localTable" + id;
-	delLocal(localID);
-	setLocal(localID, JSON.stringify(data));
+function createTable(data, id, filters, hideCols){//add column hide and pop out code
 	filters = filters || [];
+	hideCols = hideCols || [];
+	hideCols.map(e => e.toLowerCase());
+	var showCols = Array(data[0].length - 1).fill("1");
 	var tableinner = "";
 	var row = data[0];
 	var filtersFor = getElem("filtersFor" + id);
@@ -170,9 +180,13 @@ function createTable(data, id, filters){
 	var filtersCount = filterHTML == "" ? 0 : 1;
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
-	for(var j = 0; j < row.length; j++){
-		var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
-		tableinner += "<" + cellTag + ">" + row[j] + "</th>";
+	for (var j = 0; j < row.length; j++){
+		if (hideCols.includes(row[j].toLowerCase())) {
+			showCols[j] = "0";
+		} else {
+			var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
+			tableinner += "<" + cellTag + ">" + row[j] + "</th>";
+		}
 		var isFilter = filters.filter(a =>a.hasOwnProperty('colName') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
 		if (isFilter.length > 0){
 			filtersCount++;
@@ -195,10 +209,13 @@ function createTable(data, id, filters){
 			} 
 		}
 	}
+	if (showCols.includes("0")) {
+		tableinner += "<th>Extra Info</th>";
+	}
 	tableinner += "</thead>";
-	data.splice(0,1)
-	tableinner += createTableBody(data);
+	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
 	getElem(id).innerHTML = tableinner;
+	displayTable(data, id)
 	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
