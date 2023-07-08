@@ -201,6 +201,7 @@ function createTable(data, id, filters){
 		}
 	}
 	tableinner += "</thead>";
+	data.splice(0,1)
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
 	//tableCollapse(true, getElem(id));
@@ -210,10 +211,9 @@ function createTable(data, id, filters){
 }
 
 function createTableBody(data){
-	var tablebodyinner = "";	
-	for(var i = 1; i < data.length; i++){
+	var tablebodyinner = "<tbody>";	
+	for(var i = 0; i < data.length; i++){
 		var row = data[i];
-		if(i == 1){ tablebodyinner += "<tbody>"; }
 		tablebodyinner += "<tr>";
 		for(var j = 0; j < row.length; j++){
 			//var cellTag = "td";
