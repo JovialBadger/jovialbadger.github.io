@@ -104,7 +104,7 @@ function displayTable(table, tableid) {//remove column from data before displayi
 	hideCols = hideCols == "" ? [] : hideCols.split("");
 
 	if (hideCols.includes("0")) {
-		table = table.forEach((arrayItem, index, fullArray) => {
+		table.forEach((arrayItem, index, fullArray) => {
 			arrayItem[table[0].length] = "<span onclick='viewPopOutDetails(\"" + tableid + "\"," + index + ")'>Click Here</span>";
 			for (var j = arrayItem.length - 1; j >= 0; j--){
 				hideCols[j] == "0" ? arrayItem.splice(j, 1) : null;
