@@ -121,17 +121,17 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
 					//trows[i].className += " rowNoMatch";
 				}
 			}
-			unmatchedRow = table[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
-            for (j = 0; j < table[i].length; j++) {
-                if (table[i][j].className.indexOf("FilterNoMatch") > -1) {
-                    unmatchedRow++;
-                }
-            }
-            if (unmatchedRow > 0) {
-                trows[i].style.display = "none";
-            } else {
-                trows[i].style.display = "";
-            }
+			// unmatchedRow = table[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
+            // for (j = 0; j < table[i].length; j++) {
+                // if (table[i][j].className.indexOf("FilterNoMatch") > -1) {
+                    // unmatchedRow++;
+                // }
+            // }
+            // if (unmatchedRow > 0) {
+                // trows[i].style.display = "none";
+            // } else {
+                // trows[i].style.display = "";
+            // }
         }
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
