@@ -213,7 +213,7 @@ function createTable(data, id, filters, hideCols){//add column hide and pop out 
 	if (showCols.includes("0")) {
 		tableinner += "<th>Extra Info</th>";
 	}
-	tableinner += "</thead>";
+	tableinner += "</thead><tbody></tbody>";
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
 	getElem(id).innerHTML = tableinner;
 	displayTable(data, id)
