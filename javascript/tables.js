@@ -76,11 +76,9 @@ function GetBetweenStrings(strSource, strStart, strEnd){
 }
 
 function removeContainer(strSource, container) {
-	strStart = "[" + container + "START{";
-	strEnd = "}" + container + "END]";
-	var containerVal = GetBetweenStrings(strSource, strStart, strEnd);
+	var containerVal = getContainerVal(strSource, container);
 	if (containerVal != "") {
-		return strSource.replace(strStart + containerVal + strEnd, "");
+		return strSource.replace("[" + container + "START{" + containerVal + "}" + container + "END]", "");
 	}
 	else {
 		return strSource;
@@ -125,7 +123,7 @@ function filterTable(tableid, columnid, search, matchType) {
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c,containerRowData));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
@@ -239,7 +237,7 @@ function sortTable(tableid, col, sortdir) {
 	});
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c,containerRowData));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
