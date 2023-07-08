@@ -171,7 +171,7 @@ function updateTableStriping(table){//required for hiding rows
 function createTable(data, id, filters, hideCols){//add column hide and pop out code
 	filters = filters || [];
 	hideCols = hideCols || [];
-	hideCols.map(e => e.toLowerCase());
+	hideCols = hideCols.map(e => e.toLowerCase());
 	var showCols = Array(data[0].length - 1).fill("1");
 	var tableinner = "";
 	var row = data[0];
