@@ -239,7 +239,7 @@ function sortTable(tableid, col, sortdir) {
 	});
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => (getContainerVal(a[0],containerRow) !== "1") && a.every(b => (getContainerVal(b,containerCell) !== "1"))).map(c => removeContainer(removeContainer(c,containerCell),containerRow));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c,containerRowData));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
