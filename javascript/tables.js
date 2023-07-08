@@ -100,7 +100,7 @@ function editContainer(strSource,newtxt,  container) {
 function displayTable(table,tableid){
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
+	var displayTable = table.filter(a => !(getContainerVal(a[0],containerRowData).includes("0"))).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
