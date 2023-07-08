@@ -94,6 +94,7 @@ function createContainer(txt, container) {
 	return "[" + container + "START{" + txt + "}" + container + "END]";
 }
 
+const containerRowData = "rowData";
 const containerCell = "cellNoMatch";
 const containerRow = "rowNoMatch";
 function filterTable(tableid, columnid, search, matchType) {
@@ -101,27 +102,30 @@ function filterTable(tableid, columnid, search, matchType) {
     var searchUpper, table, i;
     searchUpper = search.toUpperCase();
 	table = JSON.parse(getLocal("localTable" + tableid));
+	var matchStr = "";
     if (table[0].length + 1 > columnid) {
         for (i = 1; i < table.length; i++) {
+			matchStr = getContainerVal(table[i][0],containerRowData);
+			matchStr = matchStr == "" ? Array(table[0].length + 1).fill(1) : matchStr.split("");
 			if(columnid > -1){
-					table[i][columnid] = removeContainer(table[i][columnid], containerCell);
+					matchStr[columnid] = 1;
 					if(search != ""){
-						if (table[i][columnid].toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && table[i][columnid] == search))) {
-						} else {
-							table[i][columnid] = createContainer(1,containerCell) + table[i][columnid];
+						if (!(table[i][columnid].toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && table[i][columnid] == search)))) {
+							matchStr[columnid] = 0;
 						}
 					}
 			} else if(columnid === -1){
-				table[i][0] = removeContainer(table[i][0], containerRow);
+				matchStr[table[0].length + 1] = 1;
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
-					table[i][0] = createContainer(1,containerRow) + table[i][0];
+					matchStr[table[0].length + 1] = 0;
 				}
 			}
+			table[i][0] = createContainer(matchStr.join(""),containerRowData) + table[i][0];
         }
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => (getContainerVal(a[0],containerRow) !== "1") && a.every(b => (getContainerVal(b,containerCell) !== "1"))).map(c => removeContainer(removeContainer(c,containerCell),containerRow));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c,containerRowData));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
