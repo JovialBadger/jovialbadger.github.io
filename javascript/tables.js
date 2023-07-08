@@ -135,7 +135,9 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
         }
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
-	var displayTable = table.splice(0, 1).filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true));
+	var displayTable = table.splice(0, 1);
+	displayTable = displayTable.filter(a => getContainerVal(a,containerRow) === 0 ? false : true);
+	displayTable = displayTable.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
