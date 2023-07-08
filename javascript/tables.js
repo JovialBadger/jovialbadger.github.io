@@ -107,9 +107,10 @@ function displayTable(table, tableid) {//remove column from data before displayi
 	if (hideCols.includes("0")) {
 		table.forEach((arrayItem, index, fullArray) => {
 			arrayItem[table[0].length] = "<span onclick='viewPopOutDetails(\"" + tableid + "\"," + index + ")'>Click Here</span>";
+			hideCols[index] == "0" ? arrayItem.splice(index, 1);
 		})
 	}
-	var displayTable = table.filter(a => !(getContainerVal(a[0], containerRowData).includes("0"))).forEach(d => hideCols.forEach(b => b == "0" ? d.splice(b, 1): d)).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
+	var displayTable = table.filter(a => !(getContainerVal(a[0], containerRowData).includes("0"))).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
