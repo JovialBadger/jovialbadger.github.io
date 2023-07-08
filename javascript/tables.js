@@ -247,7 +247,7 @@ function sortTable(tableid, col, sortdir) {
 		// arr.push(arrItem);
     // }
 	table.sort(function(a,b){
-		if (a !== array[0] && b !== array[0]) { // Check if there are not first element
+		if (a !== table[0] && b !== table[0]) { // Check if there are not first element
 			sorta = a[col].toLowerCase();
 			sortb = b[col].toLowerCase();
 			if(regExCurrency.test(sorta)){sorta = StringReplaceAll(StringReplaceAll(sorta, "£", ""), ",","");}
