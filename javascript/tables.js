@@ -104,7 +104,7 @@ function filterTable(tableid, columnid, search, matchType) {
     if (table[0].length + 1 > columnid) {
         for (i = 1; i < table.length; i++) {
 			matchStr = getContainerVal(table[i][0],containerRowData);
-			matchStr = matchStr == "" ? Array(table[0].length + 1).fill(1) : matchStr.split("");
+			matchStr = matchStr == "" ? Array(table[0].length).fill(1) : matchStr.split("");
 			if(columnid > -1){
 					matchStr[columnid] = 1;
 					if(search != ""){
@@ -113,9 +113,9 @@ function filterTable(tableid, columnid, search, matchType) {
 						}
 					}
 			} else if(columnid === -1){
-				matchStr[table[0].length + 1] = 1;
+				matchStr[table[0].length] = 1;
 				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
-					matchStr[table[0].length + 1] = 0;
+					matchStr[table[0].length] = 0;
 				}
 			}
 			table[i][0] = createContainer(matchStr.join(""),containerRowData) + table[i][0];
@@ -123,7 +123,7 @@ function filterTable(tableid, columnid, search, matchType) {
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData),...c.slice(1));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
@@ -237,7 +237,7 @@ function sortTable(tableid, col, sortdir) {
 	});
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData),...c.slice(1));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
