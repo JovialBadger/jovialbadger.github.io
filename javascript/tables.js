@@ -220,8 +220,8 @@ function sortTable(tableid, col, sortdir) {
 	target.setAttribute("onclick","sortTable(\"" + tableid + "\", " + col + ", " + dir * -1 + ")");
 	table.sort(function(a,b){
 		if (a !== table[0] && b !== table[0]) {
-			sorta = a[col].toLowerCase();
-			sortb = b[col].toLowerCase();
+			sorta = a[col].toString().toLowerCase();
+			sortb = b[col].toString().toLowerCase();
 			if(regExCurrency.test(sorta)){sorta = StringReplaceAll(StringReplaceAll(sorta, "£", ""), ",","");}
 			if(regExCurrency.test(sortb)){sortb = StringReplaceAll(StringReplaceAll(sortb, "£", ""), ",","");}
 			if(!(isNaN(sorta))){sorta = sorta * 1;}
