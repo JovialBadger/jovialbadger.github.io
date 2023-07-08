@@ -54,9 +54,10 @@ function GetBetweenStrings(strSource, strStart, strEnd)
 	var Start, End;
 	if (strSource.includes(strStart) && strSource.includes(strEnd))
 	{
-		Start = strSource.indexOf(strStart, 0) + strStart.Length;
-		End = strSource.indexOf(strEnd, Start);
-		return strSource.substring(Start, End - Start);
+		Start = strSource.indexOf(strStart) + strStart.length;
+		End = strSource.indexOf(strEnd);
+        console.log(Start+" - "+ End)
+		return strSource.substring(Start, End);
 	}
 	else
 	{
@@ -136,7 +137,7 @@ function filterTable(tableid, columnid, search, matchType) {//update to use loca
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
@@ -273,7 +274,7 @@ function sortTable(tableid, col, sortdir) {
 	//updateTableStriping(table);
 	setLocal("localTable" + tableid, JSON.stringify(table));
 	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true));
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : removeContainer(removeContainer(b,containerCell),containerRow)));
 	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
