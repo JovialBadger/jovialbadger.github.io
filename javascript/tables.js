@@ -92,6 +92,11 @@ function createContainer(txt, container) {
 	return "[" + container + "START{" + txt + "}" + container + "END]";
 }
 
+function editContainer(strSource,newtxt,  container) {
+	strSource = removeContainer(strSource, container);
+	return createContainer(newtxt, container) + strSource;
+}
+
 const containerRowData = "rowData";
 const containerCell = "cellNoMatch";
 const containerRow = "rowNoMatch";
@@ -118,7 +123,7 @@ function filterTable(tableid, columnid, search, matchType) {
 					matchStr[table[0].length] = 0;
 				}
 			}
-			table[i][0] = createContainer(matchStr.join(""),containerRowData) + table[i][0];
+			table[i][0] = editContainer(table[i][0], matchStr.join(""),containerRowData);
         }
     }
 	setLocal("localTable" + tableid, JSON.stringify(table));
