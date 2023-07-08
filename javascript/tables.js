@@ -97,6 +97,13 @@ function editContainer(strSource,newtxt,  container) {
 	return createContainer(newtxt, container) + strSource;
 }
 
+function displayTable(table,tableid){
+	setLocal("localTable" + tableid, JSON.stringify(table));
+	table.splice(0, 1);
+	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
+	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
+}
+
 const containerRowData = "rowData";
 const containerCell = "cellNoMatch";
 const containerRow = "rowNoMatch";
@@ -126,10 +133,7 @@ function filterTable(tableid, columnid, search, matchType) {
 			table[i][0] = editContainer(table[i][0], matchStr.join(""),containerRowData);
         }
     }
-	setLocal("localTable" + tableid, JSON.stringify(table));
-	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData),...c.slice(1));
-	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
+	displayTable(table, tableid)
 }
 
 function updateTableStriping(table){//required for hiding rows
@@ -240,10 +244,7 @@ function sortTable(tableid, col, sortdir) {
 			return 0;
 		}
 	});
-	setLocal("localTable" + tableid, JSON.stringify(table));
-	table.splice(0, 1);
-	var displayTable = table.filter(a => getContainerVal(a[0],containerRowData).includes("0")).map(c => removeContainer(c[0],containerRowData),...c.slice(1));
-	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
+	displayTable(table, tableid)
 }
 
 function showHideColumn(id, colArr, show) {
