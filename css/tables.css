@@ -38,7 +38,7 @@ table tbody {
     padding: 0;
 }
 
-table tbody .treven {
+table tbody tr:nth-child(odd), table tbody .treven {
     background-color: var(--table-border-color);
 }
 table.break-table tr:hover {

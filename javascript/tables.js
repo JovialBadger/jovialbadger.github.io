@@ -12,6 +12,20 @@ docReady(function () {
 	tableCollapse(true);
 });
 
+function tableToArray(id) {
+  rows = getElem(id).rows;
+  tableArray = [];
+  for (var i = 0; i < rows.length; i++) {
+    cell = rows[i].children;
+    rowArray = [];
+    for (var j = 0; j < cell.length; j++) {
+      rowArray.push(cell[j].innerText);
+    }
+    tableArray.push(rowArray);
+  }
+  return tableArray;
+}
+
 function tableCollapse(pageLoad, table){
 	pageLoad = pageLoad || false;
 	table = table || null;
@@ -35,42 +49,81 @@ function tableCollapse(pageLoad, table){
     }
 }
 
-function filterTable(tableid, columnid, search, matchType) {
+function GetBetweenStrings(strSource, strStart, strEnd)
+{
+	var Start, End;
+	if (strSource.includes(strStart) && strSource.includes(strEnd))
+	{
+		Start = strSource.indexOf(strStart, 0) + strStart.Length;
+		End = strSource.indexOf(strEnd, Start);
+		return strSource.substring(Start, End - Start);
+	}
+	else
+	{
+		return "";
+	}
+}
+
+function removeContainer(strSource, container) {
+	strStart = "[" + container + "START{";
+	strEnd = "}" + container + "END]";
+	var containerVal = GetBetweenStrings(strSource, strStart, strEnd);
+	if (containerVal != "") {
+		return strSource.replace(strStart + containerVal + strEnd, "");
+	}
+	else {
+		return strSource;
+	}
+}
+function getContainerVal(strSource,container){
+	 return GetBetweenStrings(strSource, "[" + container + "START{","}" + container + "END]")
+}
+
+function createContainer(txt, container) {
+	return "[" + container + "START{" + txt + "}" + container + "END]";
+}
+
+const containerCell = "cellNoMatch";
+const containerRow = "rowNoMatch";
+function filterTable(tableid, columnid, search, matchType) {//update to use local stored data and replace html table body with filtered 2d array.
 	matchType = matchType || 0;
-    var searchUpper, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow;
+    var searchUpper, table, trows, i, j, txtValue, tbody, columnHeaders, thead, cell, cells, unmatchedRow, containerStart,containerEnd;
     searchUpper = search.toUpperCase();
-    table = getElem(tableid); 
-    thead = getTags("thead", table)[0];
-    columnHeaders = getTags("th", thead);
-    if (columnHeaders.length + 1 > columnid) {
-		tbody = getTags("tbody", table)[0];
+    //table = getElem(tableid);
+	table = getLocal("localTable" + tableid)
+    //thead = getTags("thead", table)[0];
+    //columnHeaders = getTags("th", thead);
+    if (table[0].length + 1 > columnid) {
+		//tbody = getTags("tbody", table)[0];
         trows = getTags("tr", tbody);
-        for (i = 0; i < trows.length; i++) {
-            cells = getTags("td", trows[i]);
+        for (i = 1; i < table.length; i++) {
+            //cells = table[i];//getTags("td", trows[i]);
 			if(columnid > -1){
-				cell = cells[columnid];
-				if (cell) {
-					txtValue = getClass("tablerowcontent", cell)[0].innerHTML || cell.textContent || cell.innerText;
-					var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
-					removeClasses(cell, classesRemove);
+				//cell = table[i][columnid];
+				//if (cell) {
+					table[i][columnid] = removeContainer(table[i][columnid], containerCell);
+					//var classesRemove = [ 'FilterMatch', 'UnFilter', 'FilterNoMatch' ];
+					//removeClasses(cell, classesRemove);
 					if(search != ""){
-						if (txtValue.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && txtValue.toUpperCase() == searchUpper))) {
-							cell.className += " FilterMatch";
+						if (txtValue.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && txtValue == search))) {
+							//cell = containerStart + 1 + containerEnd + cell;//.className += " FilterMatch";
 						} else {
-							cell.className += " FilterNoMatch";
+							table[i][columnid] = createContainer(0,containerCell) + table[i][columnid];//.className += " FilterMatch";
+							//cell.className += " FilterNoMatch";
 						}
 					}
-				}
-				cell.className = cell.className.replace(/ +(?= )/g,'');
+				//}
+				//cell.className = cell.className.replace(/ +(?= )/g,'');
 			} else if(columnid === -1){
-				removeClasses(trows[i], ['rowNoMatch'])
-				if(!(Array.from(getClass("tablerowcontent", trows[i])).filter(a => a.innerHTML.toUpperCase().indexOf(searchUpper) > -1)).length>0){
-					trows[i].className += " rowNoMatch";
+				table[i][0] = removeContainer(table[i][0], containerRow);//table[i][columnidremoveClasses(trows[i], ['rowNoMatch'])
+				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
+					table[i][0] = createContainer(0,containerRow) + table[i][0];
+					//trows[i].className += " rowNoMatch";
 				}
 			}
-			unmatchedRow = trows[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
-            for (j = 0; j < cells.length; j++) {
-                if (cells[j].className.indexOf("FilterNoMatch") > -1) {
+			unmatchedRow = table[i].className.indexOf("rowNoMatch") > -1 ? 1 : 0;
+            for (j = 0; j < table[i].length; j++) {
+                if (table[i][j].className.indexOf("FilterNoMatch") > -1) {
                     unmatchedRow++;
                 }
             }
@@ -81,10 +134,12 @@ function filterTable(tableid, columnid, search, matchType) {
             }
         }
     }
-	updateTableStriping(table);
+	setLocal("localTable" + tableid, table);
+	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true).splice(0, 1);
+	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
-function updateTableStriping(table){
+function updateTableStriping(table){//required for hiding rows
 	tbody = getTags("tbody", table);
 	if(tbody.length == 0){return;}
 	trows = getTags("tr", tbody[0]);
@@ -106,6 +161,9 @@ function updateTableStriping(table){
 //filter input [{columnName, filterType}]
 
 function createTable(data, id, filters){
+	var localID = "localTable" + id;
+	delLocal(localID);
+	setLocal(localID, JSON.stringify(data));
 	filters = filters || [];
 	var tableinner = "";
 	var row = data[0];
@@ -143,7 +201,7 @@ function createTable(data, id, filters){
 	tableinner += "</thead>";
 	tableinner += createTableBody(data);
 	getElem(id).innerHTML = tableinner;
-	tableCollapse(true, getElem(id));
+	//tableCollapse(true, getElem(id));
 	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
@@ -156,8 +214,9 @@ function createTableBody(data){
 		if(i == 1){ tablebodyinner += "<tbody>"; }
 		tablebodyinner += "<tr>";
 		for(var j = 0; j < row.length; j++){
-			var cellTag = "td";
-			tablebodyinner += "<" + cellTag + ">" + row[j] + "</" + cellTag + ">";
+			//var cellTag = "td";
+			//tablebodyinner += "<" + cellTag + ">" + row[j] + "</" + cellTag + ">";
+			tablebodyinner += "<td><b class='tablrowheader'>" + data[0][j] + "</b><span class='tablerowcontent'>" + row[j] + "</span><hr /></td>";
 		}
 		tablebodyinner += "</tr>";
 	}
@@ -170,43 +229,50 @@ function sortTable(tableid, col, sortdir) {
 	e.preventDefault();
 	var target = e.target;
 	sortdir = sortdir || null;
+	var table, rows, i, x, y, dir, arr = [];
 
+	table = getLocal("localTable" + tableid);//.splice(0, 1);
+	
 	dir = sortdir || 1; 
 	target.setAttribute("onclick","sortTable(\"" + tableid + "\", " + col + ", " + dir * -1 + ")");
-	var table, rows, i, x, y, dir, arr = [];
-	table = document.getElementById(tableid);
+	// table = document.getElementById(tableid);
   
-    rows = table.rows;
+    // rows = table.rows;
 	
-	var x = table.getElementsByTagName("TBODY")[0];
-    for (i = 1; i < rows.length ; i++) {
-		var arrItem = {};
-		arrItem.sort = rows[i].getElementsByTagName("TD")[col].getElementsByClassName('tablerowcontent')[0].innerHTML;
-		arrItem.row = encodeURIComponent(rows[i].outerHTML);
-		arr.push(arrItem);
-    }
-	arr.sort(function(a,b){
-		sorta = a.sort.toLowerCase();
-		sortb = b.sort.toLowerCase();
-		if(regExCurrency.test(sorta)){sorta = StringReplaceAll(StringReplaceAll(sorta, "£", ""), ",","");}
-		if(regExCurrency.test(sortb)){sortb = StringReplaceAll(StringReplaceAll(sortb, "£", ""), ",","");}
-		if(!(isNaN(sorta))){sorta = sorta * 1;}
-		if(!(isNaN(sortb))){sortb = sortb * 1;}
-		if(regExDate.test(sorta)){var aDateParts = sorta.split("/"); sorta = new Date(aDateParts[2], aDateParts[1], aDateParts[0]).getTime();}
-		if(regExDate.test(sortb)){var bDateParts = sortb.split("/"); sortb = new Date(bDateParts[2], bDateParts[1], bDateParts[0]).getTime();}
-		if(sorta < sortb){ return -1 * dir;}
-		if(sorta > sortb){ return 1 * dir;}
-		return 0;
+	// var x = table.getElementsByTagName("TBODY")[0];
+    // for (i = 1; i < rows.length ; i++) {
+		// var arrItem = {};
+		// arrItem.sort = rows[i].getElementsByTagName("TD")[col].getElementsByClassName('tablerowcontent')[0].innerHTML;
+		// arrItem.row = encodeURIComponent(rows[i].outerHTML);
+		// arr.push(arrItem);
+    // }
+	table.sort(function(a,b){
+		if (a !== array[0] && b !== array[0]) { // Check if there are not first element
+			sorta = a[col].toLowerCase();
+			sortb = b[col].toLowerCase();
+			if(regExCurrency.test(sorta)){sorta = StringReplaceAll(StringReplaceAll(sorta, "£", ""), ",","");}
+			if(regExCurrency.test(sortb)){sortb = StringReplaceAll(StringReplaceAll(sortb, "£", ""), ",","");}
+			if(!(isNaN(sorta))){sorta = sorta * 1;}
+			if(!(isNaN(sortb))){sortb = sortb * 1;}
+			if(regExDate.test(sorta)){var aDateParts = sorta.split("/"); sorta = new Date(aDateParts[2], aDateParts[1], aDateParts[0]).getTime();}
+			if(regExDate.test(sortb)){var bDateParts = sortb.split("/"); sortb = new Date(bDateParts[2], bDateParts[1], bDateParts[0]).getTime();}
+			if(sorta < sortb){ return -1 * dir;}
+			if(sorta > sortb){ return 1 * dir;}
+			return 0;
+		}
 	});
 	//arr.sort((a, b) => a.sort.localeCompare(b.sort))
-	x.innerHTML = "";
-    for (i = 0; i < arr.length ; i++) {
-		var node = document.createElement("tbody");
-		node.innerHTML = decodeURIComponent(arr[i].row);
-			x.appendChild(node.children[0]);
-		//x.innerHTML += decodeURIComponent(arr[i].row);
-    }
-	updateTableStriping(table);
+	// x.innerHTML = "";
+    // for (i = 0; i < arr.length ; i++) {
+		// var node = document.createElement("tbody");
+		// node.innerHTML = decodeURIComponent(arr[i].row);
+			// x.appendChild(node.children[0]);
+		// //x.innerHTML += decodeURIComponent(arr[i].row);
+    // }
+	//updateTableStriping(table);
+	setLocal("localTable" + tableid, table);
+	var displayTable = table.filter(a => getContainerVal(a,containerRow) === 0 ? false : a.filter(b => getContainerVal(b,containerCell) === 0 ? flase : true).splice(0, 1);
+	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
 }
 
 function showHideColumn(id, colArr, show) {
