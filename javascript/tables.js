@@ -15,11 +15,12 @@ docReady(function () {
 function viewPopOutDetails(tableid, rowID){
 	var table = JSON.parse(getLocal("localTable" + tableid))
 	//row = table[rowID].forEach(c => removeContainer(c, containerRowData));
+	var colTypes = JSON.parse(getContainerVal(table[0][0], containerColTypes)); 
 	table[0][0] = removeContainer(removeContainer(table[0][0],containerColData),containerColTypes);
 	var header = "Additional Information";
 	var modalHTML = "";
 	table[rowID].forEach((arrayItem, index, fullArray) => {
-		modalHTML += arrayItem != "" ? table[0][index] + ": " + removeContainer(arrayItem, containerRowData) + "<hr/>" : "";
+		modalHTML += arrayItem != "" ? table[0][index] + ": " + displayType(removeContainer(arrayItem, containerRowData),colTypes[index]) + "<hr/>" : "";
 	})
 	message(modalHTML, header);
 }
