@@ -111,6 +111,7 @@ function createTableBody(data, tableid){
 			tablebodyinner += "<tr>";
 			if (hideCols.includes("0")) {
 				row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
+				hideCols.push("1");
 			}
 			for(var j = 0; j < row.length; j++){
 				if(hideCols[j] == "1"){
