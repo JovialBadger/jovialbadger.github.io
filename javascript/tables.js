@@ -154,7 +154,7 @@ function filterTable(tableid, columnid, search, matchType, hideCols) {
 			table[i][0] = editContainer(table[i][0], matchStr.join(""),containerRowData);
         }
     }
-	displayTable(table, tableid)
+	createTableBody(table, tableid)
 }
 
 function updateTableStriping(table){//required for hiding rows
@@ -232,7 +232,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
 	data[0][0] = createContainer(JSON.stringify(colTypes), containerColTypes) + data[0][0];
 	getElem(id).innerHTML = tableinner;
-	displayTable(data, id)
+	createTableBody(data, id)
 	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
@@ -288,7 +288,7 @@ function sortTable(tableid, col, sortdir) {
 			return 0;
 		}
 	});
-	displayTable(table, tableid)
+	createTableBody(table, tableid)
 }
 
 function showHideColumn(id, colArr, show) {
