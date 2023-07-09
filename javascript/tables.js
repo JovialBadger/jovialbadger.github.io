@@ -106,14 +106,14 @@ function createTableBody(data, tableid){
 	data[0][0] = removeContainer(removeContainer(data[0][0], containerColData),containerColTypes);
 	hideCols = hideCols == "" ? [] : hideCols.split("");
 	var tablebodyinner = "<tbody>";	
+data[0].push("Extra Info");
 	for(var i = 1; i < data.length; i++){
 		var row = data[i];
 		if(!(getContainerVal(row[0], containerRowData).includes("0"))){
 			tablebodyinner += "<tr>";
 			if (hideCols.includes("0")) {
 				row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
-				hideCols.push("1");
-				data[0].push("Extra Info");
+				//hideCols.push("1");
 			}
 			for(var j = 0; j < row.length; j++){
 				if(hideCols[j] == "1"){
@@ -230,6 +230,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 	}
 	if (showCols.includes("0")) {
 		tableinner += "<th>Extra Info</th>";
+showCols.push("1");
 	}
 	tableinner += "</thead><tbody></tbody>";
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
