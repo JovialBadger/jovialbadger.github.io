@@ -90,7 +90,7 @@ function getContainerVal(strSource,container){
 }
 
 function createContainer(txt, container) {
-	return "[" + container + "START{" + txt + "}" + container + "END]";
+	return txt !== "" ? "[" + container + "START{" + txt + "}" + container + "END]" : "";
 }
 
 function editContainer(strSource,newtxt,  container) {
@@ -98,26 +98,35 @@ function editContainer(strSource,newtxt,  container) {
 	return createContainer(newtxt, container) + strSource;
 }
 
-function displayTable(table, tableid) {//remove column from data before displaying //colsHide=[] array.forEach(a => hideCols.forEach(b => a.splice(b, 1)));
-	setLocal("localTable" + tableid, JSON.stringify(table));
-	var hideCols = getContainerVal(table[0][0], containerColData);
+function createTableBody(data, tableid){
+	setLocal("localTable" + tableid, JSON.stringify(data));
+	var hideCols = getContainerVal(data[0][0], containerColData);
+	var colTypes = JSON.parse(getContainerVal(data[0][0], containerColTypes)); 
+	data[0][0] = removeContainer(removeContainer(data[0][0], containerColData),containerColTypes);
 	hideCols = hideCols == "" ? [] : hideCols.split("");
-
-	if (hideCols.includes("0")) {
-		table.forEach((arrayItem, index, fullArray) => {
-			arrayItem[table[0].length] = "<span onclick='viewPopOutDetails(\"" + tableid + "\"," + index + ")'>Click Here</span>";
-			for (var j = arrayItem.length - 1; j >= 0; j--){
-				hideCols[j] == "0" ? arrayItem.splice(j, 1) : null;
+	var tablebodyinner = "<tbody>";	
+	for(var i = 1; i < data.length; i++){
+		var row = data[i];
+		if(!(getContainerVal(row[0], containerRowData).includes("0"))){
+			tablebodyinner += "<tr>";
+			if (hideCols.includes("0")) {
+				row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
 			}
-		})
+			for(var j = 0; j < row.length; j++){
+				if(hideCols[j] == "0"){
+					tablebodyinner += "<td><b class='tablrowheader'>" + data[0][j] + "</b><span class='tablerowcontent'>" + displayType(removeContainer(row[j],containerRowData),colTypes[j]) + "</span><hr /></td>";
+				}
+			}
+			tablebodyinner += "</tr>";
+		}
 	}
-	table.splice(0, 1);
-	var displayTable = table.filter(a => !(getContainerVal(a[0], containerRowData).includes("0"))).map(c => [removeContainer(c[0],containerRowData),...c.slice(1)]);
-	getTags("tbody", getElem(tableid))[0].outerHTML = createTableBody(displayTable);
+	tablebodyinner += "</tbody>";
+	getTags("tbody", getElem(tableid))[0].outerHTML = tablebodyinner;
 }
 
 const containerRowData = "rowData";
 const containerColData = "colData";
+const containerColTypes = "colType";
 function filterTable(tableid, columnid, search, matchType, hideCols) {
 	hideCols = hideCols || [];
 	matchType = matchType || 0;
@@ -167,30 +176,35 @@ function updateTableStriping(table){//required for hiding rows
 
 //join columns: [{col1, col2, col3...},deliminator] i.e. [{"Home Team","Away Team"}," v "] => Home Team v Away Team
 //filter types: "txt", "dropdown", "range" (number), "table" (no column name only text box allowed)
-//filter input [{columnName, filterType}]
+//settings input [{colName, filterType, hide,colType}]
 //strarray hidecols match column header name
 
-function createTable(data, id, filters, hideCols){//add column hide and pop out code
-	filters = filters || [];
-	hideCols = hideCols || [];
-	hideCols = hideCols.map(e => e.toLowerCase());
+function createTable(data, id, settings){//add column hide and pop out code
+	settings = settings || [];
+	//hideCols = hideCols || [];
+	var hideCols = settings.filter(e => e.hasOwnProperty('colName') && e.hide == 1).map(f=> f.colName);
 	var showCols = Array(data[0].length).fill("1");
+	var colTypes = Array(data[0].length).fill("0");
 	var tableinner = "";
 	var row = data[0];
 	var filtersFor = getElem("filtersFor" + id);
 	filtersFor == null ? null : filtersFor.remove();
-	var filterHTML = (filters.length > 0 && filters.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
+	var filterHTML = (settings.length > 0 && settings.filter(a => a.hasOwnProperty('filterType') ? a.filterType.toLowerCase() === "table" : false).length > 0) ? '<label class="fixed-quarter">Whole Table Filter</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',-1,this.value)" id="inpTableFilter' + id + '">':"";
 	var filtersCount = filterHTML == "" ? 0 : 1;
 	tableinner += "<thead>";
 	tableinner += "<tr>";	
 	for (var j = 0; j < row.length; j++){
+		var colType = settings.filter(a =>a.hasOwnProperty('colType') ? a.colName.toLowerCase() === row[j].toLowerCase() : false);
+		if(colType.length > 0){
+			colTypes[j] = colType.colType;
+		}
 		if (hideCols.includes(row[j].toLowerCase())) {
 			showCols[j] = "0";
 		} else {
 			var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
 			tableinner += "<" + cellTag + ">" + row[j] + "</th>";
 		}
-		var isFilter = filters.filter(a =>a.hasOwnProperty('colName') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
+		var isFilter = settings.filter(a =>a.hasOwnProperty('filterType') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
 		if (isFilter.length > 0){
 			filtersCount++;
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
@@ -207,7 +221,6 @@ function createTable(data, id, filters, hideCols){//add column hide and pop out 
 				filterHTML += '<hr/><div class="rangeContainer" data-values="' + uniqueColumnArr + '" data-outputelem="spnFilter'+ id + j + '" data-outputformelem="slcFilter'+ id + j + '" data-handles="1"></div><input style="display:none;" id="slcFilter'+ id + j + '" onchange="filterTable(\'' + id + '\',' + j + ',this.value,1)"><div id="spnFilter'+ id + j + '"></div>'
 				break;
 			  case "txt":
-			  default:
 				filterHTML += '<hr/><label class="fixed-quarter">' + row[j] + '</label><input class="fixed-three-quarter" value="" onkeyup="filterTable(\'' + id + '\',' + j + ',this.value)" id="inpFilter' + id + j + '">';
 			} 
 		}
@@ -217,6 +230,7 @@ function createTable(data, id, filters, hideCols){//add column hide and pop out 
 	}
 	tableinner += "</thead><tbody></tbody>";
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
+	data[0][0] = createContainer(JSON.stringify(colTypes), containerColTypes) + data[0][0];
 	getElem(id).innerHTML = tableinner;
 	displayTable(data, id)
 	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
@@ -224,19 +238,29 @@ function createTable(data, id, filters, hideCols){//add column hide and pop out 
 	reinitsliders();//dependancy on slider code
 }
 
-function createTableBody(data){
-	var tablebodyinner = "<tbody>";	
-	for(var i = 0; i < data.length; i++){
-		var row = data[i];
-		tablebodyinner += "<tr>";
-		for(var j = 0; j < row.length; j++){
-			tablebodyinner += "<td><b class='tablrowheader'>" + data[0][j] + "</b><span class='tablerowcontent'>" + row[j] + "</span><hr /></td>";
-		}
-		tablebodyinner += "</tr>";
-	}
-	tablebodyinner += "</tbody>";
-	return tablebodyinner;
+function displayType(txt,type){
+	type = type || " ";
+	var href = "";
+	var html = "";
+	switch(type.toLowerCase()) {
+		case "phone":
+			href = "tel:" + txt;
+			break;
+		case "email":
+			href = "mailto:"+txt;
+		case "image":
+			href = txt.startsWith("http") ? txt : "https://"+txt;
+			txt = "<img style='max-height: 50px;max-width: 50px;' src='" + href + "'>";
+			break;
+		case "weblink":
+			href = txt.startsWith("http") ? txt : "https://"+txt;
+			break;
+		default:
+			html = txt;
+	} 
+	return (html == "" && href != "") ? "<a target='_blank' href='" + href + "'>" + txt + "</a>" : html;
 }
+
 
 function sortTable(tableid, col, sortdir) {
 	var e = e || window.event;
