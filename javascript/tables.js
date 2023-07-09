@@ -204,7 +204,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 			var cellTag = "th onclick=\"sortTable('" + id + "', " + j + ")\"";
 			tableinner += "<" + cellTag + ">" + row[j] + "</th>";
 		}
-		var isFilter = settings.filter(a =>a.hasOwnProperty('filterType') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
+		var isFilter = settings.filter(a =>a.hasOwnProperty('filterType')&&a.hasOwnProperty('colName') ? a.colName.toLowerCase() === row[j].toLowerCase() : false)
 		if (isFilter.length > 0){
 			filtersCount++;
 			switch(isFilter[0].hasOwnProperty('filterType') ? isFilter[0].filterType.toLowerCase() : "txt") {
