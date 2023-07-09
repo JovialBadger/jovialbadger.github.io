@@ -252,6 +252,7 @@ function displayType(txt,type){
 			break;
 		case "email":
 			href = "mailto:"+txt;
+break;
 		case "image":
 			href = txt.startsWith("http") ? txt : "https://"+txt;
 			txt = "<img style='max-height: 50px;max-width: 50px;' src='" + href + "'>";
