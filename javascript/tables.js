@@ -199,7 +199,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 	for (var j = 0; j < row.length; j++){
 		var colType = settings.filter(a =>a.hasOwnProperty('colType') ? a.colName.toLowerCase() === row[j].toLowerCase() : false);
 		if(colType.length > 0){
-			colTypes[j] = colType.colType;
+			colTypes[j] = colType[0];
 		}
 		if (hideCols.includes(row[j].toLowerCase())) {
 			showCols[j] = "0";
