@@ -242,7 +242,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 }
 
 function displayType(txt,type){
-	type = type || " ";
+	type = type || "txt";
 	var href = "";
 	var html = "";
 	switch(type.toLowerCase()) {
