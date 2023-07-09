@@ -15,7 +15,7 @@ docReady(function () {
 function viewPopOutDetails(tableid, rowID){
 	var table = JSON.parse(getLocal("localTable" + tableid))
 	//row = table[rowID].forEach(c => removeContainer(c, containerRowData));
-	table[0][0] = removeContainer(table[0][0],containerColData);
+	table[0][0] = removeContainer(removeContainer(table[0][0],containerColData),containerColTypes);
 	var header = "Additional Information";
 	var modalHTML = "";
 	table[rowID].forEach((arrayItem, index, fullArray) => {
@@ -112,6 +112,7 @@ function createTableBody(data, tableid){
 			if (hideCols.includes("0")) {
 				row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
 				hideCols.push("1");
+				data[0].push("Extra Info");
 			}
 			for(var j = 0; j < row.length; j++){
 				if(hideCols[j] == "1"){
