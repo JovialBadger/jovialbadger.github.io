@@ -113,7 +113,7 @@ function createTableBody(data, tableid){
 				row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
 			}
 			for(var j = 0; j < row.length; j++){
-				if(hideCols[j] == "0"){
+				if(hideCols[j] == "1"){
 					tablebodyinner += "<td><b class='tablrowheader'>" + data[0][j] + "</b><span class='tablerowcontent'>" + displayType(removeContainer(row[j],containerRowData),colTypes[j]) + "</span><hr /></td>";
 				}
 			}
