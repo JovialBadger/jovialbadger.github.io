@@ -182,7 +182,7 @@ function updateTableStriping(table){//required for hiding rows
 function createTable(data, id, settings){//add column hide and pop out code
 	settings = settings || [];
 	//hideCols = hideCols || [];
-	var hideCols = settings.filter(e => e.hasOwnProperty('colName') && e.hide == 1).map(f=> f.colName);
+	var hideCols = settings.filter(e => e.hasOwnProperty('colName') && e.hide == 1).map(f=> f.colName.toLowerCase());
 	var showCols = Array(data[0].length).fill("1");
 	var colTypes = Array(data[0].length).fill("0");
 	var tableinner = "";
