@@ -99,15 +99,16 @@ function editContainer(strSource,newtxt,  container) {
 	return createContainer(newtxt, container) + strSource;
 }
 
-function createTableBody(data, tableid){
+function createTableBody(data,tableid,page){
+	page = page || 1;
+	var rows = getElem('perPage' + tableid).value;
 	setLocal("localTable" + tableid, JSON.stringify(data));
 	var hideCols = getContainerVal(data[0][0], containerColData);
 	var colTypes = JSON.parse(getContainerVal(data[0][0], containerColTypes)); 
 	data[0][0] = removeContainer(removeContainer(data[0][0], containerColData),containerColTypes);
 	hideCols = hideCols == "" ? [] : hideCols.split("");
 	var tablebodyinner = "<tbody>";	
-data[0].push("Extra Info");
-	for(var i = 1; i < data.length; i++){
+	for(var i = (1+((rows-1) *page)); i < ((rows * page) > data.length ? data.length : (rows * page)); i++){
 		var row = data[i];
 		if(!(getContainerVal(row[0], containerRowData).includes("0"))){
 			tablebodyinner += "<tr>";
@@ -125,6 +126,7 @@ data[0].push("Extra Info");
 	}
 	tablebodyinner += "</tbody>";
 	getTags("tbody", getElem(tableid))[0].outerHTML = tablebodyinner;
+	pagingHTML(page, rows, data.length-2, "changePage(\"" + tableid + "\")",tableid)
 }
 
 const containerRowData = "rowData";
@@ -235,9 +237,11 @@ showCols.push("1");
 	tableinner += "</thead><tbody></tbody>";
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
 	data[0][0] = createContainer(JSON.stringify(colTypes), containerColTypes) + data[0][0];
-	getElem(id).innerHTML = tableinner;
+	var tableDOM = getElem(id);
+	tableDOM.innerHTML = tableinner;
+	filterHTML != "" ? tableDOM.insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
+	tableDOM.insertAdjacentHTML("beforebegin", '<label>Rows Per Page</label><select id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option value="20">20</option><option value="50">50</option><option value="250">250</option><option selected="selected" value="500">500</option><option value="1000">1000</option></select>');
 	createTableBody(data, id)
-	filterHTML != "" ? getElem(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
 }
@@ -306,4 +310,63 @@ function showHideColumn(id, colArr, show) {
 			}
 		}
     }
+}
+
+function changeRowsPerPage(tableid){
+	table = JSON.parse(getLocal("localTable" + tableid));
+	createTableBody(table, tableid);
+}
+
+function changePage(tableid){
+	var e = e || window.event;
+	e.preventDefault();
+	var target = e.target;
+	var page = target.dataset.page;
+	table = JSON.parse(getLocal("localTable" + tableid));
+	createTableBody(table, tableid,page);
+}
+
+function pagingHTML(PageNumber, RowsPerPage, TotalRows, fnString,pagingItemID){
+	var TotalPages = Math.ceil(TotalRows / RowsPerPage);
+	var Page_MinusTwo = PageNumber - 2;
+	var Page_MinusOne = PageNumber - 1;
+	var Page_PlusOne = PageNumber + 1;
+	var Page_PlusTwo = PageNumber + 2;
+	if (TotalRows == 0) { PageNumber = 0; }
+	var HTML = "<div class='pagingControls'><span>Page " + PageNumber + " of " + TotalPages + "</span><div>";
+	var onClick = "onclick='" + fnString + "'";
+	if (PageNumber > 1)
+	{
+		HTML += "<a data-page='1'  " + onClick + "><<</a>"; // first
+		HTML += "<a data-page='" + Page_MinusOne + "'  " + onClick + "><</a>"; // previous
+		if (PageNumber >= 3 && TotalPages > 3)
+		{
+				HTML += "<span>...</span>"; //ellipsis
+		}
+		if (PageNumber == TotalPages && TotalPages > 2)
+		{
+			HTML += "<a data-page='" + Page_MinusTwo + "' " + onClick + ">" + Page_MinusTwo + "</a>"; // page -2
+		}
+		HTML += "<a data-page='" + Page_MinusOne + "' " + onClick + ">" + Page_MinusOne + "</a>"; // page -1
+	}
+	HTML += "<b>" + PageNumber + "</b>"; // page
+	if (PageNumber < TotalPages)
+	{
+		HTML += "<a data-page='" + Page_PlusOne + "' " + onClick + ">" + Page_PlusOne + "</a>"; // page +1
+	}
+	if (PageNumber == 1 && TotalPages > 2)
+	{
+		HTML += "<a data-page='" + Page_PlusTwo + "' " + onClick + ">" + Page_PlusTwo + "</a>"; // page +2
+	}
+	if (TotalPages > 3 && PageNumber < (TotalPages - 1))
+	{
+		HTML += "<span>...</span>"; //ellipsis
+	}
+	if (PageNumber < TotalPages)
+	{
+		HTML += "<a data-page='" + Page_PlusOne + "' " + onClick + ">></a>"; // next
+		HTML += "<a data-page='" + TotalPages + "' " + onClick + ">>></a>"; // last
+	}
+	HTML += "</div></div>";
+	getElem(pagingItemID).insertAdjacentHTML("afterend", HTML);
 }
