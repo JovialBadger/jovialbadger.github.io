@@ -375,8 +375,11 @@ function pagingHTML(PageNumber, RowsPerPage, TotalRows, fnString,pagingItemID){
 	var Elem= getElem('paging'+pagingItemID);
 	Elem !=null? Elem.remove():null;
 	getElem(pagingItemID).insertAdjacentHTML("afterend", HTML);
-	var x = document.createElement("style");
-	x.id = "injectedStylePaging";
-	x.innerHTML+=".pagingControls a{cursor:pointer;padding:10px; display:inline-block;}";
-	document.getElementsByTagName("body")[0].appendChild(x);
+	var Elem2= getElem('injectedStylePaging'+pagingItemID);
+	if (Elem2 == null){
+		var x = document.createElement("style");
+		x.id = 'injectedStylePaging'+pagingItemID;
+		x.innerHTML+=".pagingControls a{cursor:pointer;padding:10px; display:inline-block;}";
+		document.getElementsByTagName("body")[0].appendChild(x);
+	}
 }
