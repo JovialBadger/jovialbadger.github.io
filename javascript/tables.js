@@ -241,7 +241,7 @@ showCols.push("1");
 	var tableDOM = getElem(id);
 	tableDOM.innerHTML = tableinner;
 	filterHTML != "" ? tableDOM.insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
-	tableDOM.insertAdjacentHTML("beforebegin", '<label>Rows Per Page</label><select id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option value="20">20</option><option value="50">50</option><option value="250">250</option><option selected="selected" value="500">500</option><option value="1000">1000</option></select>');
+	tableDOM.insertAdjacentHTML("beforebegin", '<label class="fixed-quarter">Rows Per Page</label><select class="fixed-three-quarter" id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option value="20">20</option><option value="50">50</option><option value="250">250</option><option selected="selected" value="500">500</option><option value="1000">1000</option></select><hr/>');
 	createTableBody(data, id)
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
@@ -328,9 +328,9 @@ function changePage(tableid){
 }
 
 function pagingHTML(PageNumber, RowsPerPage, TotalRows, fnString,pagingItemID){
-PageNumber=PageNumber*1;
-RowsPerPage=RowsPerPage*1;
-TotalRows=TotalRows *1;
+	PageNumber=PageNumber*1;
+	RowsPerPage=RowsPerPage*1;
+	TotalRows=TotalRows *1;
 	var TotalPages = Math.ceil(TotalRows / RowsPerPage);
 	var Page_MinusTwo = PageNumber - 2;
 	var Page_MinusOne = PageNumber - 1;
@@ -372,7 +372,11 @@ TotalRows=TotalRows *1;
 		HTML += "<a data-page='" + TotalPages + "' " + onClick + ">>></a>"; // last
 	}
 	HTML += "</div></div>";
-var Elem= getElem('paging'+pagingItemID);
-Elem !=null? Elem.remove():null;
+	var Elem= getElem('paging'+pagingItemID);
+	Elem !=null? Elem.remove():null;
 	getElem(pagingItemID).insertAdjacentHTML("afterend", HTML);
+	var x = document.createElement("style");
+	x.id = "injectedStylePaging";
+	x.innerHTML+=".pagingControls a{cursor:pointer;padding:10px; display:inline-block;}";
+	document.getElementsByTagName("body")[0].appendChild(x);
 }
