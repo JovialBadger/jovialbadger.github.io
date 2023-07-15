@@ -109,7 +109,7 @@ page=page*1;
 	data[0][0] = removeContainer(removeContainer(data[0][0], containerColData),containerColTypes);
 	hideCols = hideCols == "" ? [] : hideCols.split("");
 	var tablebodyinner = "<tbody>";	
-	for(var i = (1+((rows-1) *page)); i < ((rows * page) > data.length ? data.length : (rows * page)); i++){
+	for(var i = (1+((rows) *(page-1))); i < ((rows * page) > data.length ? data.length : (rows * page)); i++){
 		var row = data[i];
 		if(!(getContainerVal(row[0], containerRowData).includes("0"))){
 			tablebodyinner += "<tr>";
