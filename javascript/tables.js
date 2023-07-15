@@ -101,7 +101,8 @@ function editContainer(strSource,newtxt,  container) {
 
 function createTableBody(data,tableid,page){
 	page = page || 1;
-	var rows = getElem('perPage' + tableid).value;
+page=page*1;
+	var rows = getElem('perPage' + tableid).value *1;
 	setLocal("localTable" + tableid, JSON.stringify(data));
 	var hideCols = getContainerVal(data[0][0], containerColData);
 	var colTypes = JSON.parse(getContainerVal(data[0][0], containerColTypes)); 
@@ -327,13 +328,16 @@ function changePage(tableid){
 }
 
 function pagingHTML(PageNumber, RowsPerPage, TotalRows, fnString,pagingItemID){
+PageNumber=PageNumber*1;
+RowsPerPage=RowsPerPage*1;
+TotalRows=TotalRows *1;
 	var TotalPages = Math.ceil(TotalRows / RowsPerPage);
 	var Page_MinusTwo = PageNumber - 2;
 	var Page_MinusOne = PageNumber - 1;
 	var Page_PlusOne = PageNumber + 1;
 	var Page_PlusTwo = PageNumber + 2;
 	if (TotalRows == 0) { PageNumber = 0; }
-	var HTML = "<div class='pagingControls'><span>Page " + PageNumber + " of " + TotalPages + "</span><div>";
+	var HTML = "<div id='paging"+pagingItemID+"' class='pagingControls'><span>Page " + PageNumber + " of " + TotalPages + "</span><div>";
 	var onClick = "onclick='" + fnString + "'";
 	if (PageNumber > 1)
 	{
@@ -368,5 +372,7 @@ function pagingHTML(PageNumber, RowsPerPage, TotalRows, fnString,pagingItemID){
 		HTML += "<a data-page='" + TotalPages + "' " + onClick + ">>></a>"; // last
 	}
 	HTML += "</div></div>";
+var Elem= getElem('paging'+pagingItemID);
+Elem !=null? Elem.remove():null;
 	getElem(pagingItemID).insertAdjacentHTML("afterend", HTML);
 }
