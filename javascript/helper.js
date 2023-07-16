@@ -131,15 +131,6 @@ function getComputedStyleProperty(id, property, output){
 	return theCSSprop;
 }
 
-// function objectToTwodArray(obj){
-	// var twodArray = [];
-	// twodArray.push(Object.keys(obj[0]));
-	// for (var i = 0; i < obj.length; i++){
-		// twodArray.push(Object.values(obj[i]));
-	// }
-	// return twodArray;
-// }
-
 function objectToTwodArray(array) {
     let keys = Object.keys(Object.assign({}, ...array));
     var result = [];
