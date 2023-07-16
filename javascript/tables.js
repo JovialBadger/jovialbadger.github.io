@@ -122,7 +122,7 @@ function createTableBody(data,tableid,page){
 				}
 				for(var j = 0; j < row.length; j++){
 					if(hideCols[j] == "1"){
-						tablebodyinner += "<td><b class='tablrowheader'>" + (j > data[0].length ? "Extra Info" : data[0][j]) + "</b><span class='tablerowcontent'>" + displayType(removeContainer(row[j],containerRowData),colTypes[j]) + "</span><hr /></td>";
+						tablebodyinner += "<td><b class='tablrowheader'>" + (j === data[0].length ? "Extra Info" : data[0][j]) + "</b><span class='tablerowcontent'>" + displayType(removeContainer(row[j],containerRowData),colTypes[j]) + "</span><hr /></td>";
 					}
 				}
 				tablebodyinner += "</tr>";
