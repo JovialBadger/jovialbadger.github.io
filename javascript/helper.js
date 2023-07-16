@@ -154,7 +154,12 @@ function getLocal(id){
 	if (id != "" && localStorage.getItem(id) != null) {
 		return localStorage.getItem(id);
 	} else{
-		return null;
+		var x = getElem("localStorage" + id)
+		if(x != null){
+			return x.dataset.localvalue;
+		}else{
+			return null;
+		}
 	}
 }
 
@@ -163,8 +168,17 @@ function setLocal(id, value){
 	if(id == ""){
 		return 0;
 	} else{
-		value = value || null;
-		localStorage.setItem(id, value)
+		value = value || null;.
+		try{
+			localStorage.setItem(id, value)
+		} catch(e) {
+			delLocal(id);
+			var x = document.createElement("div");
+			x.id = "localStorage" + id;
+			x.setAttribute("style", "display:none !important;");
+			x.dataset.localvalue = value;
+			document.getElementsByTagName("body")[0].appendChild(x);
+		}
 		return 1;
 	}
 }
