@@ -147,9 +147,9 @@ function objectToTwodArray(array) {
     array.forEach(function (obj) {
         let item = [];
 		keys.map((k) => {
-			item.push("");
-            if (obj[k]) {item.push(obj[k]);}
-            return item
+			var tmp = "";
+            if (obj[k]) {tmp = obj[k];}
+            return item.push(tmp)
         });
         result.push(item);
 	});
