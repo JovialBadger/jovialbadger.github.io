@@ -269,6 +269,10 @@ function displayType(txt,type){
 		case "weblink":
 			href = txt.startsWith("http") ? txt : "https://"+txt;
 			break;
+		case "maskedurl":
+			href = txt.startsWith("http") ? txt : "https://"+txt;
+			txt = "Click Here";
+			break;
 		default:
 			html = txt;
 	} 
