@@ -185,6 +185,8 @@ function setLocal(id, value){
 
 function delLocal(id){
 	localStorage.removeItem(id);
+	var x = getElem("localStorage" + id);
+	x != null ? x.remove() : null;
 }
 
 function cyrb128(str) {
