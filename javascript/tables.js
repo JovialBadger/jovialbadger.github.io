@@ -101,7 +101,7 @@ function editContainer(strSource,newtxt,  container) {
 
 function createTableBody(data,tableid,page){
 	page = page || 1;
-page=page*1;
+	page=page*1;
 	var rows = getElem('perPage' + tableid).value *1;
 	setLocal("localTable" + tableid, JSON.stringify(data));
 	var hideCols = getContainerVal(data[0][0], containerColData);
@@ -118,7 +118,7 @@ page=page*1;
 				tablebodyinner += "<tr>";
 				if (hideCols.includes("0")) {
 					row.push("<span onclick='viewPopOutDetails(\"" + tableid + "\"," + i + ")'>Click Here</span>");
-					//hideCols.push("1");
+					rowsCount == 1 ? data[0].push("Extra Info") : null;
 				}
 				for(var j = 0; j < row.length; j++){
 					if(hideCols[j] == "1"){
@@ -237,7 +237,7 @@ function createTable(data, id, settings){//add column hide and pop out code
 	}
 	if (showCols.includes("0")) {
 		tableinner += "<th>Extra Info</th>";
-showCols.push("1");
+		showCols.push("1");
 	}
 	tableinner += "</thead><tbody></tbody>";
 	data[0][0] = createContainer(showCols.join(""), containerColData) + data[0][0];
@@ -245,7 +245,7 @@ showCols.push("1");
 	var tableDOM = getElem(id);
 	tableDOM.innerHTML = tableinner;
 	filterHTML != "" ? tableDOM.insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
-	tableDOM.insertAdjacentHTML("beforebegin", '<label class="fixed-quarter">Rows Per Page</label><select class="fixed-three-quarter" id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option value="20">20</option><option value="50">50</option><option value="250">250</option><option selected="selected" value="500">500</option><option value="1000">1000</option></select><hr/>');
+	tableDOM.insertAdjacentHTML("beforebegin", '<label class="fixed-quarter">Rows Per Page</label><select class="fixed-three-quarter" id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option selected="selected" value="20">20</option><option value="50">50</option><option value="250">250</option><option value="500">500</option><option value="1000">1000</option></select><hr/>');
 	createTableBody(data, id)
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
@@ -261,7 +261,7 @@ function displayType(txt,type){
 			break;
 		case "email":
 			href = "mailto:"+txt;
-break;
+			break;
 		case "image":
 			href = txt.startsWith("http") ? txt : "https://"+txt;
 			txt = "<img style='max-height: 50px;max-width: 50px;' src='" + href + "'>";
