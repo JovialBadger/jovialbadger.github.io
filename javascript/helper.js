@@ -142,14 +142,17 @@ function getComputedStyleProperty(id, property, output){
 
 function objectToTwodArray(array) {
     let keys = Object.keys(Object.assign({}, ...array));
-    var result = keys.join(",") + "\n";
+    var result = [];
+	result.push(keys);
     array.forEach(function (obj) {
-        result += keys.map((k) => {
-            let item = "";
-            if (obj[k]) item = obj[k]; 
+        let item = [];
+		keys.map((k) => {
+			item.push("");
+            if (obj[k]) {item.push(obj[k]);}
             return item
-        }).join(",") + "\n";
-    });
+        });
+        result.push(item);
+	});
     return result;
 }
 
