@@ -3,6 +3,15 @@ layout: blank
 ---
 //Version {{ site.version_number }}
 //{{ site.urllive }}
+
+function docReady(fn) {
+  if (document.readyState !== 'loading') {
+    fn();
+    return;
+  }
+  document.addEventListener('DOMContentLoaded', fn);
+}
+
 function getElem(id) {
 	return document.getElementById(id) || null;
 }
