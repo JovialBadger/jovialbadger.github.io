@@ -168,7 +168,7 @@ function setLocal(id, value){
 	if(id == ""){
 		return 0;
 	} else{
-		value = value || null;.
+		value = value || null;
 		try{
 			localStorage.setItem(id, value)
 		} catch(e) {
