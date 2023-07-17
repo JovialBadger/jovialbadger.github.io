@@ -244,8 +244,8 @@ function createTable(data, id, settings){//add column hide and pop out code
 	data[0][0] = createContainer(JSON.stringify(colTypes), containerColTypes) + data[0][0];
 	var tableDOM = getElem(id);
 	tableDOM.innerHTML = tableinner;
+	filterHTML += '<hr/><label class="fixed-quarter">Rows Per Page</label><select class="fixed-three-quarter" id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option selected="selected" value="20">20</option><option value="50">50</option><option value="250">250</option><option value="500">500</option><option value="1000">1000</option></select>';
 	filterHTML != "" ? tableDOM.insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filterHTML + "<hr/></div>") : null;
-	tableDOM.insertAdjacentHTML("beforebegin", '<label class="fixed-quarter">Rows Per Page</label><select class="fixed-three-quarter" id="perPage' + id + '" onchange="changeRowsPerPage(\'' + id + '\')"><option selected="selected" value="20">20</option><option value="50">50</option><option value="250">250</option><option value="500">500</option><option value="1000">1000</option></select><hr/>');
 	createTableBody(data, id)
 	initiDropdowns();//dependancy on dropdown code
 	reinitsliders();//dependancy on slider code
