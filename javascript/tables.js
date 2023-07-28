@@ -151,7 +151,8 @@ function filterTable(tableid, columnid, search, matchType, hideCols) {
 			if(columnid > -1){
 					matchStr[columnid] = 1;
 					if(search != ""){
-						if (!(table[i][columnid].toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && table[i][columnid] == search)))) {
+						var x = removeContainer(table[i][columnid], containerRowData)
+						if (!(x.toUpperCase().indexOf(searchUpper) > -1 && ((matchType == 0) || (matchType == 1 && x == search)))) {
 							matchStr[columnid] = 0;
 						}
 					}
