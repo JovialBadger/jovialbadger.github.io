@@ -319,7 +319,7 @@ function csvToObject(dataString) {
   var lines = dataString
     .split(/\n/)
     .map(function(lineStr) {
-        return lineStr.split(",");
+        return lineStr.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);//(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     });
   
   var keys = lines[0];
