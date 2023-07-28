@@ -317,7 +317,7 @@ async function fetchData(URL, dataType, storeDataName, expirySecs){
 
 function csvToObject(dataString) {
   var lines = dataString
-    .split(/\n/)
+    .split(/[\n\r]+/)//[\n\r]+
     .map(function(lineStr) {
         return lineStr.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);//(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     });
