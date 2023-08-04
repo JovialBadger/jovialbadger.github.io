@@ -10,7 +10,6 @@ breadcrumbs: "1"
 hasfocusmode: "1"
 ---
 
-<h3>Mental Health Tracker</h3>
 <h3 style="font-family: Tahoma, sans-serif; font-size:50px;color:#005e9e;text-align:center;margin:0"><b>How Are You Feeling Today?</b></h3>
 <div id="SmileyRange">
 	<svg viewBox="0 0 24 24" class="svg-happy2"></svg>
@@ -21,7 +20,9 @@ hasfocusmode: "1"
 </div>
 <style>
 	#SmileyRange svg {
-		width: calc((100vw / 5) - 10px);
+		width: calc((100% / 5) - 10px);
+		fill: unset;
+		height:unset;
 	}
 </style>
 Graph Data:
@@ -52,8 +53,8 @@ Graph Data:
 	window.addEventListener("resize", preDraw);
 
 	function draw(data, xData) {
-		var height = (window.innerHeight * 0.75) - ((window.innerWidth / 5) - 100)
-		context.canvas.width = window.innerWidth * .95;
+		var height = (window.innerHeight * 0.75) - ((getElem('SmileyRange').offsetWidth / 5) - 100)
+		context.canvas.width = getElem('SmileyRange').offsetWidth * .95;
 		context.canvas.height = height < 300 ? 300 : height;
 		var paddingRight = 35;
 		var miny = rounddown(Math.min(...data));
