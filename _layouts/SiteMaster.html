@@ -57,7 +57,7 @@
 		<svg id="navOpenContainer" style="background-color: black;" xmlns="http://www.w3.org/2000/svg" onclick="toggleModal('navContainer');" viewBox="0 0 24 24"><path d="M4 22h-4v-4h4v4zm0-12h-4v4h4v-4zm0-8h-4v4h4v-4zm3 0v4h17v-4h-17zm0 12h17v-4h-17v4zm0 8h17v-4h-17v4z"/></svg>
 		<div id="navContainer" style="width: 0px;"></div>
 		<main id="pageContainer">
-			<div id="pageContent">			
+			<div {% if page.forcealwaysfullwidth == "1" %}{% else %}id="pageContent"{% endif %}>			
 				{% if page.breadcrumbs == "1" %}
 					<script>
 						docReady(function () {
@@ -96,6 +96,7 @@
 					<h2>Sub-Projects</h2>
 					<div id="projectLinks"></div>
 				{% endif %}
+				
 				{{ content }}
 			</div>
 		</main>
