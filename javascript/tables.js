@@ -103,7 +103,7 @@ function createTableBody(data,tableid,page){
 	page = page || 1;
 	page=page*1;
 	var rows = getElem('perPage' + tableid).value *1;
-	setLocal("localTable" + tableid, JSON.stringify(data));
+	setLocal("localTable" + tableid, JSON.stringify(data),true);
 	var hideCols = getContainerVal(data[0][0], containerColData);
 	var colTypes = JSON.parse(getContainerVal(data[0][0], containerColTypes)); 
 	data[0][0] = removeContainer(removeContainer(data[0][0], containerColData),containerColTypes);

@@ -179,21 +179,24 @@ function getLocal(id){
 	}
 }
 
-function setLocal(id, value){
+function setLocal(id, value,forceHTMLStore = false){
 	id = id || "";
 	if(id == ""){
 		return 0;
 	} else{
 		value = value || null;
 		try{
-			localStorage.setItem(id, value)
+			forceHTMLStore ? null : localStorage.setItem(id, value);
 		} catch(e) {
+			forceHTMLStore = true;
+		}
+		if (forceHTMLStore){
 			delLocal(id);
 			var x = document.createElement("div");
 			x.id = "localStorage" + id;
 			x.setAttribute("style", "display:none !important;");
 			x.dataset.localvalue = value;
-			document.getElementsByTagName("body")[0].appendChild(x);
+			document.getElementsByTagName("body")[0].appendChild(x);			
 		}
 		return 1;
 	}
