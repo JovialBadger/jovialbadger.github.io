@@ -158,7 +158,7 @@ function filterTable(tableid, columnid, search, matchType, hideCols) {
 					}
 			} else if(columnid === -1){
 				matchStr[table[0].length] = 1;
-				if(!(table[i].filter(a => a.toUpperCase().indexOf(searchUpper) > -1)).length>0){
+				if(!(table[i].filter(a => String(a).toUpperCase().indexOf(searchUpper) > -1)).length>0){
 					matchStr[table[0].length] = 0;
 				}
 			}
