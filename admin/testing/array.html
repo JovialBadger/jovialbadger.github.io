@@ -1,0 +1,53 @@
+<html lang="en"><head>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="robots" content="index,follow">
+	<title>Jovial Badger</title>
+	<meta name="description" content="###">
+	<meta name="keywords" content="###">	
+<script src="https://jovialbadger.co.uk/admin/testing/array.js"></script>	
+
+</head>
+
+<body>
+<link rel="stylesheet" type="text/css" href="https://jovialbadger.co.uk/css/tables.css?0.3">
+<div id="test"></div>
+<style>html{background:black;color:#eee}</style>
+<ul id="display"></ul>
+<script>
+
+//start test code
+async function getDataArr(){
+	var x = [];
+	await fetch('https://jsonplaceholder.typicode.com/posts', { cache: "force-cache" })
+		.then(response => response.json())
+		.then(json => x = json)
+	x[0].title = {AdressLine1:"sd",AddressLine2:"11qwd1"}
+	return x;
+	//return  JSON.parse(localStorage.getItem("arr_test"));
+}
+const y = {"getArrFunction":"getDataArr","id":"test","display":"table","sort":["id"],"page":[1,33],"colData":["settings","filter",{"col":"body","hide":1,"filter":"txt"},{"col":"id","hide":"2"},{"col":"userId","filter":"txt","hide":"2"},{"col":"title","type":"object"}]};
+(arrAdjust(y));
+//document.getElementById('display').innerHTML = arrDisplayList(y)
+//end test code
+</script>
+<style>
+	.arrSettings{left:0;width:100vw;height:100%;position:fixed;top:0;z-index: 99;background: #777;overflow:auto;}
+	*{box-sizing: border-box;}
+	html{padding:15px}
+	.paging{
+		text-align:center;
+		user-select: none;
+	}
+	.paging a{
+		padding: 5px;
+		margin: 0 5px;
+		border: 1px solid white;
+	}
+	label{display:block;width:100%;margin:5px 0}
+	label span{display:inline-block;width:25%;padding:5px;}
+	label input{width:75%;padding:5px;}
+	input[type="button"]{width:100%;padding:5px;}
+</style>
+</body></html>
