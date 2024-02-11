@@ -282,9 +282,12 @@ function buildTable(id, arr, breakTable, displayid = ""){
 	html += "</tr></thead><tbody>";
 	arr.forEach((item,i,array) => {
 		html += "<tr>";
-		Object.entries(item).forEach(([key, value]) => {
-			html+="<td><b class='tablrowheader'>" + key + "</b><span class='tablerowcontent'>"+ (value ?? "-") +"</span><hr></td>"
+		keys.forEach((itm, j, a) => {
+			html+="<td><b class='tablrowheader'>" + itm + "</b><span class='tablerowcontent'>"+ (item?.[itm] ?? "-") +"</span><hr></td>"
 		});
+		//Object.entries(item).forEach(([key, value]) => {
+		//	html+="<td><b class='tablrowheader'>" + key + "</b><span class='tablerowcontent'>"+ (value ?? "-") +"</span><hr></td>"
+		//});
 		html += "</tr>";
 	});
 	document.getElementById(displayid == "" ? id : displayid).innerHTML = html + "</tbody></table>"
