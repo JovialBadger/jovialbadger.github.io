@@ -293,7 +293,7 @@ function buildTable(id, arr, breakTable, displayid = ""){
 	document.getElementById(displayid == "" ? id : displayid).innerHTML = html + "</tbody></table>"
 }
 
-function objectToTwodArray(array) {
+function objectToTwoDArray(array) {
     let keys = Object.keys(Object.assign({}, ...array));
     var result = [];
 	result.push(keys);
@@ -308,7 +308,7 @@ function objectToTwodArray(array) {
 	});
     return result;
 }
-function CSVToArray (CSV_string, delimiter = ",") {
+function CSVToObj(CSV_string, delimiter = ",",output="array") {
    var pattern = new RegExp(
      (
        "(\\" + delimiter + "|\\r?\\n|\\r|^)" +
@@ -333,9 +333,36 @@ function CSVToArray (CSV_string, delimiter = ",") {
        }
        rows[rows.length - 1].push(matched_value);
    }
-   return rows;
+   var returnVal = null
+   if(output == "object"){
+	   returnVal = arrayToObject(rows[0],rows.slice(1));
+   } else{
+	   returnVal=  rows
+   }
+   return returnVal;
+}
+function arrayToObject(keys, values) {
+	const returnVal = []
+
+	values.forEach((element, index) => {
+		const obj = {};
+		keys.forEach((elem,i) =>{
+			obj[elem] = element?.[i] ?? "";
+		})
+		returnVal.push(obj)
+	});
+
+	return returnVal;
+}
+function leftJoinObjects(obj1, obj2, idArrs, insertObj){
+	return obj1.map(a => ({ ...obj2.find(b => (isMatch(a,b,idArrs))), ...a,...insertObj}));
 }
 
+function isMatch(a,b,idArrs){
+  var c = 0; 
+  idArrs.forEach(i => (!(a[i]===undefined || b[i]===undefined) && a[i] === b[i]) ? c++: null);
+  return c === idArrs.length;
+}
 var pageRowOpts = [20,50,250];
 function pagingHTML(currPage, pageRows, totRows, id){
 	currPage=Number(currPage);

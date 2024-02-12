@@ -225,11 +225,13 @@ function cyrb128(str) {
     return [(h1^h2^h3^h4)>>>0, (h2^h1)>>>0, (h3^h1)>>>0, (h4^h1)>>>0];
 }
 
-function randSeed(seed){	
+function randSeed(seed,iteration=0){	
+	if(iteration > 50000){return null;}
 	// Create cyrb128 state:
 	var seed = cyrb128(seed);
 	// Four 32-bit component hashes provide the seed for sfc32.
 	var rand = sfc32(seed[0], seed[1], seed[2], seed[3]);
+	for (var j=0;j<iteration;j++){ rand();}
 	return rand();
 }
 
