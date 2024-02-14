@@ -476,7 +476,7 @@ async function fetchData(URL, dataType, storeDataName = "", expirySecs = (60*60*
 	}
 	var cache = await caches.open("my-cache");
 	var dl = useCache ? await cache.match(URL) : await fetch(URL);
-	dl = (!dl.ok) ? await fetch(URL) : dl;
+	dl = (!dl?.ok) ? await fetch(URL) : dl;
 	if(!dl.ok){return null;}
 	cache.put(URL, dl.clone());
 	var processedData = null;
