@@ -478,6 +478,9 @@ async function fetchData(URL, dataType, storeDataName = "", expirySecs = (60*60*
 		case "CSV":
 			processedData = CSVToObj(await dl.text());
 			break;
+		case "OBJECT":
+			processedData = CSVToObj(await dl.text(),",","object");
+			break;
 		case "TXT":
 		default:
 			processedData = await dl.text();
