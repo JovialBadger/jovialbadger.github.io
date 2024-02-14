@@ -179,15 +179,15 @@ async function arrAdjust(setting){
 					var currFilterVal = (currFilters.hasOwnProperty(item.col) ? currFilters[item.col][0] : "")
 					switch(item.filter) {
 						case "dropdown":
-							tempStr += '<select data-deselectable="1" id="slcFilter'+ item.col + '" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option selected="" disabled=""></option>';
+							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var uniqueArr = [...new Set(clone.map(a => a[item.col]))].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
-								tempStr += '<option value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
+								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
 							}
 							tempStr += '</select>';
 							break;
 						case "txt":
-							tempStr += '<input value="' + currFilterVal + '" onkeyup="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'contains\')" id="inpFilter' + id + '">';
+							tempStr += '<input value="' + currFilterVal + '" onkeyup="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'contains\')">';
 					} 
 					filtersHTML += tempStr == "" ? "" : '<label><span>' + item.col + '</span>' + tempStr + '</label>';
 				}
@@ -210,7 +210,7 @@ async function arrAdjust(setting){
 	filtersHTML != "" ? document.getElementById(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filtersHTML + "<hr/></div>") : null;
 	return arr;
 }
-function arrMoreInfo(id, index){buildTable(id,[JSON.parse(localStorage.getItem("arrCurrPage_"+id))[index]])}
+function arrMoreInfo(id, index){message(arrDisplayList(JSON.parse(localStorage.getItem("arrCurrPage_"+id))[index]),"More Info")}
 function changeFiltering(id,key,val="",type="", resetAll = false){
 	var setting = JSON.parse(localStorage.getItem("arrSettings_"+id));
 	if(setting.hasOwnProperty('page')){setting.page[0] = 1;}
@@ -285,9 +285,6 @@ function buildTable(id, arr, breakTable, displayid = ""){
 		keys.forEach((itm, j, a) => {
 			html+="<td><b class='tablrowheader'>" + itm + "</b><span class='tablerowcontent'>"+ (item?.[itm] ?? "-") +"</span><hr></td>"
 		});
-		//Object.entries(item).forEach(([key, value]) => {
-		//	html+="<td><b class='tablrowheader'>" + key + "</b><span class='tablerowcontent'>"+ (value ?? "-") +"</span><hr></td>"
-		//});
 		html += "</tr>";
 	});
 	document.getElementById(displayid == "" ? id : displayid).innerHTML = html + "</tbody></table>"
@@ -450,4 +447,85 @@ function arrDisplayList(obj){
 		}
 	}
 	return html;
+}
+
+function leftJoinObjects(obj1, obj2, idArrs, insertObj){
+	return obj1.map(a => ({ ...obj2.find(b => (isMatch(a,b,idArrs))), ...a,...insertObj}));
+}
+
+function isMatch(a,b,idArrs){
+  var c = 0; 
+  idArrs.forEach(i => (!(a[i]===undefined || b[i]===undefined) && a[i] === b[i]) ? c++: null);
+  return c === idArrs.length;
+}
+
+async function fetchData(URL, dataType, storeDataName = "", expirySecs = (60*60*24*7)){
+	var data = null;
+	var cacheType = "force-cache";
+	if (storeDataName != ""){
+		data = getLocal(storeDataName);
+		if(data != null){
+			if(new Date(UTCString(true)).getTime() - new Date(data).getTime() > 1000*expirySecs){
+				delLocal(storeDataName); 
+				cacheType = "no-cache";
+			}
+		}
+	}
+	var dl = await fetch(URL, { cache: cacheType });
+	if(!dl.ok){return null;}
+	var processedData = null;
+	switch(dataType) {
+		case "CSV":
+			processedData = CSVToObj(await dl.text());
+			break;
+		case "TXT":
+		default:
+			processedData = await dl.text();
+	}
+	if (storeDataName != ""){
+		setLocal(storeDataName, UTCString(true));	
+	}
+	return processedData;
+}
+function getLocal(id){
+	id = id || ""
+	if (id != "" && localStorage.getItem(id) != null) {
+		return localStorage.getItem(id);
+	} else{
+		var x = getElem("localStorage" + id)
+		if(x != null){
+			return x.dataset.localvalue;
+		}else{
+			return null;
+		}
+	}
+}
+
+function setLocal(id, value,forceHTMLStore = false){
+	id = id || "";
+	if(id == ""){
+		return 0;
+	} else{
+		value = value || null;
+		try{
+			forceHTMLStore ? null : localStorage.setItem(id, value);
+		} catch(e) {
+			forceHTMLStore = true;
+		}
+		if (forceHTMLStore){
+			delLocal(id);
+			var x = document.createElement("div");
+			x.id = "localStorage" + id;
+			x.setAttribute("style", "display:none !important;");
+			x.dataset.localvalue = value;
+			document.getElementsByTagName("body")[0].appendChild(x);			
+		}
+		return 1;
+	}
+}
+
+function delLocal(id){
+	localStorage.removeItem(id);
+	var x = getElem("localStorage" + id);
+	x != null ? x.remove() : null;
 }

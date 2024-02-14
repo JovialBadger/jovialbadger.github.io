@@ -165,48 +165,7 @@ function StringReplaceAll(str, search, replacement) {
     return str.replace(new RegExp(search, 'g'), replacement);
 }
 
-function getLocal(id){
-	id = id || ""
-	if (id != "" && localStorage.getItem(id) != null) {
-		return localStorage.getItem(id);
-	} else{
-		var x = getElem("localStorage" + id)
-		if(x != null){
-			return x.dataset.localvalue;
-		}else{
-			return null;
-		}
-	}
-}
 
-function setLocal(id, value,forceHTMLStore = false){
-	id = id || "";
-	if(id == ""){
-		return 0;
-	} else{
-		value = value || null;
-		try{
-			forceHTMLStore ? null : localStorage.setItem(id, value);
-		} catch(e) {
-			forceHTMLStore = true;
-		}
-		if (forceHTMLStore){
-			delLocal(id);
-			var x = document.createElement("div");
-			x.id = "localStorage" + id;
-			x.setAttribute("style", "display:none !important;");
-			x.dataset.localvalue = value;
-			document.getElementsByTagName("body")[0].appendChild(x);			
-		}
-		return 1;
-	}
-}
-
-function delLocal(id){
-	localStorage.removeItem(id);
-	var x = getElem("localStorage" + id);
-	x != null ? x.remove() : null;
-}
 
 function cyrb128(str) {
     let h1 = 1779033703, h2 = 3144134277,
@@ -287,59 +246,7 @@ function msToTime(duration) {
 	return x;
 }
 
-async function fetchData(URL, dataType, storeDataName, expirySecs){
-	storeDataName = storeDataName || "";
-	expirySecs = expirySecs || (60*60*24*7);
-	var data = null;
-	if (storeDataName != ""){
-		data = JSON.parse(getLocal(storeDataName));
-		if(data != null){
-			if(new Date(UTCString(true)).getTime() - new Date(data.dateTime).getTime() > 1000*expirySecs){delLocal(storeDataName); data = null;}
-		}
-	}
-	if(data ==  null){
-		var tempData = null;
-		var dl = await fetch(URL);
-		if(!dl.ok){return null;}
-		var processedData = null;
-		switch(dataType) {
-			case "TXT":
-			case "CSV":
-				tempData = await dl.text();
-				processedData = ((dataType == "CSV") ? csvToObject(tempData) : tempData);
-				break;
-			default:
-				processedData = await dl.text();
-		}
-		if (storeDataName != ""){
-			setLocal(storeDataName, JSON.stringify({"dateTime":UTCString(true),"storedValue":processedData}));	
-		}
-		return processedData;
-	} else{
-		return data.storedValue;
-	}
-}
 
-function csvToObject(dataString) {
-  var lines = dataString
-    .split(/[\n\r]+/)//[\n\r]+
-    .map(function(lineStr) {
-        return lineStr.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);//(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-    });
-  
-  var keys = lines[0];
-
-  var objects = lines
-    .slice(1)
-    .map(function(arr) {
-      return arr.reduce(function(obj, val, i) {
-        obj[keys[i].trim()] = val; 
-        return obj;
-      }, {});
-    });
-  
-  return objects;
-}
 
 function reduceArayByKeys(arr, keysToKeep){ 
 	return arr.map(o => keysToKeep.reduce((acc, curr) => {
@@ -373,15 +280,6 @@ async function isWord(word){
 	return x.filter(function (item) {return item == word.toUpperCase();}).length > 0;
 }
 
-function leftJoinObjects(obj1, obj2, idArrs, insertObj){
-	return obj1.map(a => ({ ...obj2.find(b => (isMatch(a,b,idArrs))), ...a,...insertObj}));
-}
-
-function isMatch(a,b,idArrs){
-  var c = 0; 
-  idArrs.forEach(i => (!(a[i]===undefined || b[i]===undefined) && a[i] === b[i]) ? c++: null);
-  return c === idArrs.length;
-}
 var showErrors = false;
 window.onerror = function (msg, url, lineNo, columnNo, error) {
 	showErrors = getLocal("ShowErrors") ? getLocal("ShowErrors") : showErrors;

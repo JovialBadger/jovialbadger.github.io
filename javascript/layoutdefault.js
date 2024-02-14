@@ -213,17 +213,7 @@ function toggleDisplayNode(node){
 	}	
 }
 
-function message(txt, heading){
-	txt = txt || "";
-	heading = heading || "Alert";
-	var messageElem = getElem('divMessageModal');
-	messageElem.style.display = 'none';
-	getClass("messageHeading",messageElem)[0].innerHTML = heading;
-	getClass("messageText",messageElem)[0].innerHTML = txt;
-	if(txt !=""){
-		messageElem.style.display = 'block';
-	}
-}
+
 
 function rangeGenerator(start, end, step){
 	start = start || 0;
