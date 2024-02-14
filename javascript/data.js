@@ -461,18 +461,24 @@ function isMatch(a,b,idArrs){
 
 async function fetchData(URL, dataType, storeDataName = "", expirySecs = (60*60*24*7)){
 	var data = null;
-	var cacheType = "force-cache";
+	var useCache = true;
 	if (storeDataName != ""){
 		data = getLocal(storeDataName);
 		if(data != null){
 			if(new Date(UTCString(true)).getTime() - new Date(data).getTime() > 1000*expirySecs){
 				delLocal(storeDataName); 
-				cacheType = "no-cache";
+				useCache =false;
 			}
+		} else{
+			delLocal(storeDataName); 
+			useCache =false;			
 		}
 	}
-	var dl = await fetch(URL, { cache: cacheType });
+	var cache = await caches.open("my-cache");
+	var dl = useCache ? await cache.match(URL) : await fetch(URL);
+	dl = (!dl.ok) ? await fetch(URL) : dl;
 	if(!dl.ok){return null;}
+	cache.put(URL, dl.clone());
 	var processedData = null;
 	switch(dataType) {
 		case "CSV":
@@ -485,11 +491,12 @@ async function fetchData(URL, dataType, storeDataName = "", expirySecs = (60*60*
 		default:
 			processedData = await dl.text();
 	}
-	if (storeDataName != ""){
+	if (storeDataName != "" && !useCache){
 		setLocal(storeDataName, UTCString(true));	
 	}
 	return processedData;
 }
+
 function getLocal(id){
 	id = id || ""
 	if (id != "" && localStorage.getItem(id) != null) {
