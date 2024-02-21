@@ -403,20 +403,20 @@ async function showSettings(id){//filter type, hide status, column display type
 		var filter = thisCol?.filter ?? "-1";
 		var hide = thisCol?.hide ?? "-1";
 		var type = thisCol?.type ?? "-1";
-		html+="Field: " + item + "<br>";
-		html+="Filter Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"filter\",this.value)'><option value=''>none</option>";
+		html+="<div><div style='text-align: center;'>Field: " + item + "</div>";
+		html+="<label>Filter Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"filter\",this.value)'><option value=''>none</option>";
 		filterTypes.forEach((itm, j, arr) => {html+="<option value='" + itm + "' " + (itm == filter ? "selected=selected" : "") + ">" + itm + "</option>";});
-		html+="</select><br>";
-		html+="Field Hide Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"hide\",this.value)'><option value=''>none</option>";
+		html+="</select></label>";
+		html+="<label>Field Hide Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"hide\",this.value)'><option value=''>none</option>";
 		hideTypes.forEach((itm, j, arr) => {html+="<option value='" + itm + "' " + (itm == hide ? "selected=selected" : "") + ">" + itm + "</option>";});
-		html+="</select><br>";
-		html+="Display Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"type\",this.value)'><option value=''>none</option>";
+		html+="</select></label>";
+		html+="<label>Display Type: <select onchange='changeColData(\"" + id + "\",\""+item+"\",\"type\",this.value)'><option value=''>none</option>";
 		displayTypes.forEach((itm, j, arr) => {html+="<option value='" + itm + "' " + (itm == type ? "selected=selected" : "") + ">" + itm + "</option>";});
-		html+="</select><hr>";
+		html+="</select></label></div>";
 	});
 	html+="<button onclick='hideSettings(\"" + id + "\")'>Close Settings</button>";
 	var elem = document.getElementById("settings-" + id)
-	elem == null ? document.getElementById(id).insertAdjacentHTML("beforebegin", "<div class='arrSettings' id='settings-" + id + "'>" +html + "</div>") : elem.innerHTML = html;
+	elem == null ? document.getElementById(id).insertAdjacentHTML("beforebegin", "<div class='arrSettings modal' style='width: 100%;padding: 10px;color: white;' id='settings-" + id + "'>" +html + "</div>") : elem.innerHTML = html;
 }
 function hideSettings(id){
 	var setting = JSON.parse(localStorage.getItem("arrSettings_"+id));
