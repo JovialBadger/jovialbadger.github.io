@@ -270,7 +270,8 @@ function changeColData(id,colName,key,val = ""){
 	}
 	setting["colData"].filter(item => item.hasOwnProperty("col") && item.col == colName).length > 0 ? null : setting["colData"].push({col:colName});
 	setting["colData"].forEach((item, i) => { if (item.hasOwnProperty("col") && item.col == colName) {item[key] = val;} });
-	document.getElementById("filtersFor" + id)?.remove();
+	var x = document.getElementById("filtersFor" + id); 
+	x == null ? null : x.remove();
 	localStorage.setItem("arrSettings_"+id, JSON.stringify(setting));
 }
 
