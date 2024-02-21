@@ -133,7 +133,7 @@ async function arrAdjust(setting){
 	var arr = null;
 	var filtersHTML = "";
 	if(!setting.hasOwnProperty('getArrFunction')){return;}else{arr=await runFnByName(setting.getArrFunction);}//function must return an array of objects
-	const clone = structuredClone(arr);
+	const clone = typeof structuredClone === 'function' ? structuredClone(arr) : parse(stringify(arr));
 	if(!setting.hasOwnProperty('id')){return;}else{id=setting.id;}
 	localStorage.setItem("arrSettings_"+id, JSON.stringify(setting));
 	var filterDOM = document.getElementById("filtersFor" + id);
