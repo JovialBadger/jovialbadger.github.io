@@ -161,9 +161,9 @@ async function arrAdjust(setting){
 			var keepArrMoreInfo = keepArr.filter(item => !removeColMoreInfoNames.includes(item));
 			if(keepArrMoreInfo.length != keepArrDisplay.length) {
 				localStorage.setItem("arrCurrPage_"+id, JSON.stringify(arrKeepKeys(arr,keepArrMoreInfo)));
-				arr = arrKeepKeys(arr,keepArrDisplay);
 				arr.forEach((item,i,array) => {item["More Info"] = "<span onclick='arrMoreInfo(\"" + id + "\"," + i + ")'>Click Here</span>";});
 			}
+			arr = arrKeepKeys(arr,keepArrDisplay);
 		}
 		if(filterDOM ==null){
 			if(setting.colData.includes('settings')){
