@@ -284,7 +284,12 @@ var showErrors = false;
 window.onerror = function (msg, url, lineNo, columnNo, error) {
 	showErrors = getLocal("ShowErrors") ? getLocal("ShowErrors") : showErrors;
 	if(showErrors){
-		toastyMake(msg + "<br /><br />" + url,0 , 30000,"#f00","#fff");
+		var line = lineNo > -1 ? lineNo : null;
+		var lineTxt = line == null ? "" : ("<br /><br />Line: " + line);
+		var col = columnNo > -1 ? columnNo : null;
+		var colTxt = col == null ? "" : ("<br /><br />Col: " + col);
+		var errString = msg + "<br /><br />" + url + lineTxt + colTxt;
+		toastyMake("<span onclick='message(" + errString + ")'>Error click here to view more details</span>",0 , 30000,"#f00","#fff");
     }
 	return false;
 }
@@ -299,5 +304,23 @@ function setShowErrorsToggle(){
 		showErrors = showErrors ? false : true;
 		setLocal("ShowErrors",  showErrors);
 		setErrorsToggle = 0;
+	}
+}
+
+function toastyMake(txt, close, timeClose, bgColour, txtColour) {
+	close = close || false;
+	bgColour = bgColour || "";
+	txtColour = txtColour || "";
+	timeClose = timeClose || 0;
+	txt = txt || "";
+	if(txt != ""){
+		var x = document.getElementById("toastyContainer");
+		var toast = document.createElement("div");
+		toast.innerHTML = "<span class='toastyText' style='" + (txtColour != "" ? "color:" + txtColour + ";" : "") +  (close ? "padding-right:50px;" : "") + "'>" + txt + "</span>" + (close ? "<span class='toastyClose' onclick='this.parentNode.remove()'>&#10005;</span>" : "");
+		toast.className = "toasty";
+		bgColour != "" ? toast.style.background = bgColour : "";
+		close ? null : toast.setAttribute("onclick","this.remove()");
+		x.appendChild(toast);
+		setTimeout(function(){ toast.remove(); }, (timeClose == 0 ? (close ? 10000 : 3000) : timeClose));
 	}
 }
