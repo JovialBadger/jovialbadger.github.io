@@ -288,7 +288,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 		var lineTxt = line == null ? "" : ("<br /><br />Line: " + line);
 		var col = columnNo > -1 ? columnNo : null;
 		var colTxt = col == null ? "" : ("<br /><br />Col: " + col);
-		var errString = msg + "<br /><br />" + url + lineTxt + colTxt;
+		var errString = msg + "<br /><br />" + url + lineTxt + colTxt + "<br><br> UA: " + navigator.userAgent;
 		toastyMake("<span onclick='message(" + errString + ")'>Error click here to view more details</span>",0 , 30000,"#f00","#fff");
     }
 	return false;
