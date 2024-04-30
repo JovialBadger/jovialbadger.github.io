@@ -84,7 +84,6 @@ hasfocusmode: "1"
 			var guessedLetters = [];
 			const keyBoard = [{"L":"q","O":1},{"L":"w","O":2},{"L":"e","O":3},{"L":"r","O":4},{"L":"t","O":5},{"L":"y","O":6},{"L":"u","O":7},{"L":"i","O":8},{"L":"o","O":9},{"L":"p","O":10},{"L":"a","O":11},{"L":"s","O":12},{"L":"d","O":13},{"L":"f","O":14},{"L":"g","O":15},{"L":"h","O":16},{"L":"j","O":17},{"L":"k","O":18},{"L":"l","O":19},{"L":":)","O":19.5,"A":"span 2"},{"L":"z","O":20},{"L":"x","O":21},{"L":"c","O":22},{"L":"v","O":23},{"L":"b","O":24},{"L":"n","O":25},{"L":"m","O":26},{"L":"<=","O":26.5, "A":"auto / span 2"}];
 			var gameState = {"state":0};
-			
 			function focusInput(){
 				getElem('inputFocus').focus();
 			}
@@ -94,14 +93,9 @@ hasfocusmode: "1"
 				val = val < 4 ? 4 : val;
 				val = val > 12 ? 12 : val
 				getElem("inpWordLength").value = val;
-				if(resettable || (currentGuess == 0 && currentLetter == 0)){
-					wordLengths = val;
-					resettable = true;
-					await initWordFinder(true);
-				}else{
-					getElem("inpWordLength").value = wordLengths;
-					toastyMake("Finish Game First");
-				}
+				wordLengths = val;
+				resettable = true;
+				await initWordFinder(true);
 			}
 
 			async function initWordFinder(fromSeed) {		
@@ -111,7 +105,8 @@ hasfocusmode: "1"
 					getElem("wordFinderDefinition").innerHTML = "";
 					chosenWord = "";
 					gameState = {"state":0};
-					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : gameState;
+					gameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState"))[wordLengths] : gameState;
+					gameState = (gameState == null || gameState == undefined) ? {"state":0} : gameState;
 					if("ChosenWord" in gameState){
 						chosenWord = window.atob(gameState.ChosenWord);
 						wordLengths = chosenWord.split("").length;
@@ -128,19 +123,21 @@ hasfocusmode: "1"
 						var x =await getWords(wordLengths);
 						var dailyComplete = false;
 						var history = getLocal("wordFinderHistory") ? JSON.parse(getLocal("wordFinderHistory")) : {};
+						var dailyLevel = 0;
 						for(var key in history){
 							if(key == UTCString()){
+								dailyLevel = history[key].length;
 								dailyComplete = history[key].filter(function (item) {return item.W.length == wordLengths && item.D;}).length > 0;
 							}
 						}
+						chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths,dailyLevel) * (x.length + 1))];
 						if(fromSeed && !dailyComplete){
 							isDaily = true;
-							chosenWord = x[Math.floor(randSeed(UTCString() + wordLengths) * (x.length + 1))];
 						}else{
-							fromSeed ? toastyMake("Daily Word Complete") : null;
 							isDaily = false;
-							chosenWord = x[Math.floor(Math.random() * x.length)];
+							//chosenWord = x[Math.floor(Math.random() * x.length)];
 						}
+						dailyLevel > 0 ? toastyMake("Daily Word Complete - Current Level: " + dailyLevel) : null;
 						gameState.StartTime = UTCString(true);
 						gameState.IsDaily = isDaily;
 					}
@@ -297,7 +294,9 @@ hasfocusmode: "1"
 						findDefinition();
 					}
 				}
-				setLocal("wordFinderGameState",  JSON.stringify(gameState));
+				var storeGameState = getLocal("wordFinderGameState") ? JSON.parse(getLocal("wordFinderGameState")) : [];
+				storeGameState[wordLengths] = gameState;
+				setLocal("wordFinderGameState",  JSON.stringify(storeGameState));
 			}
 			function gameStatsSet(roundID, win, msDateTime){
 				roundID = roundID || 0;
