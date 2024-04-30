@@ -126,7 +126,7 @@ hasfocusmode: "1"
 						var dailyLevel = 0;
 						for(var key in history){
 							if(key == UTCString()){
-								dailyLevel = history[key].length;
+								dailyLevel = history[key].filter(function (item) {return item.W.length == wordLengths}).length;
 								dailyComplete = history[key].filter(function (item) {return item.W.length == wordLengths && item.D;}).length > 0;
 							}
 						}
