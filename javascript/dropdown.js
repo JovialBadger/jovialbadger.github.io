@@ -41,7 +41,7 @@ function initiDropdowns() {
     }
     var x = getTags('select');
     for (i = 0; i < x.length; i++) {
-        selectcreate(x[i]);
+        if(x[i].id != ""){selectcreate(x[i]);}
     }
 }
 
