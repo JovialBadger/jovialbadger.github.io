@@ -3,35 +3,23 @@ layout: blank
 ---
 //Version {{ site.version_number }}
 //{{ site.urllive }}
-var target = getTags("HTML")[0];
 window.addEventListener("click", function (e) {
     e = e || window.event;
-    var newTarget = e.target;
-    if (target == newTarget) { return; }
-    var temptarget = target;
-    target = newTarget;
-    var tempNewTarget = newTarget;
-    while (!(hasClass(tempNewTarget, "custom-select"))) {
-		if(temptarget.nodeName){
-			if (tempNewTarget.nodeName == "HTML") { selectOptionsClearAll(); return; }
-			if (tempNewTarget.nodeName == "SVG") { return; }
+    var _target = e.target;
+    var customSelectParent = _target.closest(".custom-select");
+	if(customSelectParent === null){
+	    var _HTML = _target.closest("HTML");
+		if(_HTML !== null){
+			selectOptionsClearAll();
+			return;
 		}
-		if(!(tempNewTarget.parentNode)){return;}		
-        tempNewTarget = tempNewTarget.parentNode;
-    }
-    while (!(hasClass(temptarget, "custom-select"))) {
-		if(temptarget.nodeName){
-			if (temptarget.nodeName == "HTML") { return; }
-			if (temptarget.nodeName == "SVG") { return; }
+	    var _SVG = _target.closest("SVG");
+		if(_SVG !== null){
+			e.preventDefault();
 		}
-		if(!(tempNewTarget.parentNode)){return;}		
-        temptarget = temptarget.parentNode;
-    }
-    var x = temptarget.getElementsByTagName("*");
-    for (var i = 0; i < x.length; i++) {
-        if (x[i] == newTarget) { return; }
-    }
-    selectOptionsClear(temptarget)
+	}else{
+		e.preventDefault();		
+	}
 });
 
 function initiDropdowns() {
