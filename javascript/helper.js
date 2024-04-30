@@ -288,7 +288,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 		var lineTxt = line == null ? "" : ("<br /><br />Line: " + line);
 		var col = columnNo > -1 ? columnNo : null;
 		var colTxt = col == null ? "" : ("<br /><br />Col: " + col);
-		var errString = msg + "<br /><br />" + url + lineTxt + colTxt + "<br><br> UA: " + navigator.userAgent + "<hr>" + (error.stack ?? "");
+		var errString = msg + "<br /><br />" + url + lineTxt + colTxt + "<br><br> UA: " + navigator.userAgent + "<hr>" + (error?.stack ?? "");
 		toastyMake('<p onclick="message(\'' + errString.replace(/["']/g, "_") + '\')">Error click here to view more details</p>',0 , 30000,"#f00","#fff");
     }
 	return false;
