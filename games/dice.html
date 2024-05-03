@@ -10,10 +10,23 @@ breadcrumbs: "1"
 hasfocusmode: "1"
 forcealwaysfullwidth: "1"
 ---
+<div id="diceContainer">
 <style>
+    
+    #divDiceTypes div {
+        background: #333;
+        color:#fff;
+        margin: 3px;
+        padding: 3px;
+        font-size: 2.5em;
+    }
+    #diceContainer{
+        text-align: center;
+    }
     #divDiceTypes {
         display:grid;
         grid-template-columns: 1fr 1fr 1fr;
+        text-align: center;
     }
     #divRollResults{
         word-break: break-word;
@@ -43,7 +56,7 @@ forcealwaysfullwidth: "1"
         var numDie = document.getElementById("numDie").value * 1;
         var html = "";
         for(var i=0;i<diceTypes.length;i++){
-            html += "<div id='dieType" + diceTypes[i] + "' " + (diceTypes[i] == 6 ? "style='color:#0f08'" : "") + " onclick='changeDie(" + diceTypes[i] + ")'>" + diceTypes[i] + "</div>";
+            html += "<div id='dieType" + diceTypes[i] + "' " + (diceTypes[i] == 6 ? "style='color:#0f0'" : "") + " onclick='changeDie(" + diceTypes[i] + ")'>" + diceTypes[i] + "</div>";
         }
         document.getElementById("divDiceTypes").innerHTML = html;
     }
@@ -56,3 +69,4 @@ forcealwaysfullwidth: "1"
     }
     initPage();
 </script>
+</div>
