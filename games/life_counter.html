@@ -25,6 +25,7 @@ forcealwaysfullwidth: "1"
 			<label><button onclick="saveSettings()">Save Settings</button></label>
 		</div>
 		<div id="playersContainer" style="display:none;"></div>
+		<label><button id="btnQuit" style="background:#f00;" onclick="quitGame()">Quit Game</button></label>
 		<!-- <div id="settingToggle" onclick="settingToggle()">Save Settings</div> -->
 
 		<style>
@@ -91,9 +92,11 @@ forcealwaysfullwidth: "1"
 			}
 			var players = document.getElementById('playersContainer');
 			var settings = document.getElementById('settings');
+			var quitButton = document.getElementById('btnQuit');
 			if(lifeCounter.length < 1){
 				players.style.display = "none";
 				settings.style.display = "grid";
+				quitButton.style.display = "none";
 			} else{
 				startGame();
 			}
@@ -101,6 +104,8 @@ forcealwaysfullwidth: "1"
 		function startGame(){
 			var players = document.getElementById('playersContainer');
 			var settings = document.getElementById('settings');
+			var quitButton = document.getElementById('btnQuit');
+			quitButton.style.display = "";
 			players.style.display = "grid"
 			settings.style.display = "none"
 			lifeCounter = JSON.parse(getLocal("lifeCounterGameState")) ?? [];
@@ -115,7 +120,6 @@ forcealwaysfullwidth: "1"
 			var cols = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 1 : 0]);
 			var rows = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 0 : 1]);
 			html += "<style>#playersContainer {grid-template-columns: " + cols + ";grid-template-rows: " + rows + ";}</style>";
-			html += '<button style="background:#f00;" onclick="quitGame()">Quit Game</button>';
 			document.getElementById("playersContainer").innerHTML = html;
 		}
 		// function lifeChange(elem,change) {
