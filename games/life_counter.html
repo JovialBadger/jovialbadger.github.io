@@ -95,12 +95,14 @@ forcealwaysfullwidth: "1"
 				players.style.display = "none";
 				settings.style.display = "grid";
 			} else{
-				players.style.display = "grid"
-				settings.style.display = "none"
 				startGame();
 			}
 		}
 		function startGame(){
+			var players = document.getElementById('playersContainer');
+			var settings = document.getElementById('settings');
+			players.style.display = "grid"
+			settings.style.display = "none"
 			lifeCounter = JSON.parse(getLocal("lifeCounterGameState")) ?? [];
 			lifeSettings = JSON.parse(getLocal("lifeCounterSettings")) ?? lifeSettings;
 			toggleCSS('rotatedCSS',lifeSettings.rotation)
