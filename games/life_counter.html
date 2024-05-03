@@ -18,8 +18,8 @@ forcealwaysfullwidth: "1"
 				margin: auto;
 			}
 		</style>
+		<label>Rotate Life<br/><input id="rotateLife" onchange="saveSettings()" type="checkbox" /></label>
 		<div id="settings">
-			<label>Rotate Life<br/><input id="rotateLife" type="checkbox" /></label>
 			<label>Number Of Players<br/><input id="numPlayers" step="1" min="1" value="2" max="6" type="number" /></label>
 			<label>Start Life<br/><input id="startLife" step="1" min="1" value="20" type="number" /></label>
 			<label><button onclick="saveSettings()">Save Settings</button></label>
