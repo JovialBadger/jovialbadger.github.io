@@ -15,6 +15,9 @@ forcealwaysfullwidth: "1"
         display:grid;
         grid-template-columns: 1fr 1fr 1fr;
     }
+    #divRollResults{
+        word-break: break-word;
+    }
 </style>
 <label>Number Of Dice<br/><input id="numDie" step="1" min="1" value="1" type="number" /></label>
 <label style="display: none;">DiceType<br/><input id="dieType" step="1" min="1" value="6" type="number" /></label>
@@ -42,6 +45,7 @@ forcealwaysfullwidth: "1"
         for(var i=0;i<diceTypes.length;i++){
             html += "<div id='dieType" + diceTypes[i] + "' " + (diceTypes[i] == 6 ? "style='color:#0f08'" : "") + " onclick='changeDie(" + diceTypes[i] + ")'>" + diceTypes[i] + "</div>";
         }
+        document.getElementById("divDiceTypes").innerHTML = html;
     }
     function rolling(){
         var numDie = document.getElementById("numDie").value * 1;
