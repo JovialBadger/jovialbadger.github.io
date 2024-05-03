@@ -1,0 +1,54 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: SiteMaster
+nav: "1"
+title: "Dice"
+path: "Games/Dice"
+breadcrumbs: "1"
+hasfocusmode: "1"
+forcealwaysfullwidth: "1"
+---
+<style>
+    #divDiceTypes {
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+</style>
+<label>Number Of Dice<br/><input id="numDie" step="1" min="1" value="1" type="number" /></label>
+<label style="display: none;">DiceType<br/><input id="dieType" step="1" min="1" value="6" type="number" /></label>
+<div id="divDiceTypes"></div>
+<label><button style="background:#0f0;" onclick="rolling()">Roll</button></label>
+<div id="divRollResults"></div>
+<script>
+    var diceTypes = [2,4,6,8,10,12,20]
+    function dieRoll(size=6,qty=1){
+        var results = [];
+        for(var i=0;i<qty;i++){
+            results.push(randBetweenInt(1,size));
+        }
+        return results;
+    }
+    function changeDie(num){
+        document.getElementById("dieType").value = num;
+        for(var i=0;i<diceTypes.length;i++){
+            document.getElementById("dieType" + diceTypes[i]).style.color = (diceTypes[i] == num ? "#0f08" : "");
+        }
+    }
+    function initPage(){
+        var numDie = document.getElementById("numDie").value * 1;
+        var html = "";
+        for(var i=0;i<diceTypes.length;i++){
+            html += "<div id='dieType" + diceTypes[i] + "' " + (diceTypes[i] == 6 ? "style='color:#0f08'" : "") + " onclick='changeDie(" + diceTypes[i] + ")'>" + diceTypes[i] + "</div>";
+        }
+    }
+    function rolling(){
+        var numDie = document.getElementById("numDie").value * 1;
+		numDie = numDie < 1 ? 1 : numDie;
+        var dieType = document.getElementById("dieType").value * 1;
+        var rolls = dieRoll(dieType,numDie);
+        document.getElementById("divRollResults").innerHTML = JSON.stringify(rolls) +"<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls);
+    }
+    initPage();
+</script>

@@ -26,7 +26,6 @@ forcealwaysfullwidth: "1"
 		</div>
 		<div id="playersContainer" style="display:none;"></div>
 		<label><button id="btnQuit" style="background:#f00;" onclick="quitGame()">Quit Game</button></label>
-		<!-- <div id="settingToggle" onclick="settingToggle()">Save Settings</div> -->
 
 		<style>
 			.player{
@@ -43,11 +42,11 @@ forcealwaysfullwidth: "1"
 			#playersContainer {display:grid;height:100vh}
 			#settingToggle{position:fixed;bottom:0;right:0;background:black;color:white;padding:5px;}
 		</style>
-		<script>//getLocal(id)setLocal(id, value,forceHTMLStore = false)JSON.parse
+		<script>
 		var colours=["f00","0f0","00f","ff0","f0f","0ff"];
 		var fit=[[1,1],[2,1],[2,2],[2,2],[3,2],[3,2]];
 		var lifeSettings={startLife:20,rotation:false,players:2};
-		var lifeCounter = [];//[{player:0,life:19},...]
+		var lifeCounter = [];
 		function saveSettings(){			
 			var numPlayersElem = document.getElementById("numPlayers").value * 1;
 			var numPlayers = numPlayersElem > 6 ? 6 : numPlayersElem;
@@ -122,27 +121,6 @@ forcealwaysfullwidth: "1"
 			html += "<style>#playersContainer {grid-template-columns: " + cols + ";grid-template-rows: " + rows + ";}</style>";
 			document.getElementById("playersContainer").innerHTML = html;
 		}
-		// function lifeChange(elem,change) {
-		//   var lifeElem = elem.closest(".player").getElementsByClassName("life")[0];
-		//   var life = (lifeElem.innerHTML * 1) + change;
-		//   lifeElem.innerHTML = life;
-		// }
-		// function setup(){
-		// 	var playersContainer = document.getElementById("playersContainer");
-		// 	var numPlayersElem = document.getElementById("numPlayers");
-		// 	var numPlayers = numPlayersElem.value > 6 ? 6 : numPlayersElem.value;
-		// 	numPlayersElem.value = numPlayers;
-		// 	var startLife = document.getElementById("startLife").value;
-		// 	var html="";
-		// 	var isPortrait = window.innerHeight > window.innerWidth
-		// 	for(var i = 0; i<numPlayers;i++){
-		// 		html += '<div class="player" style="background-color:#' + colours[i] + '8;'+ (numPlayers == 5?(!isPortrait?(i == 2?'grid-row: span 2;':''):(i == 4?'grid-column: span 2;':'')) : '') + '"><div 	onclick="lifeChange(this,1)">/\\</div><div class="life">' + startLife + '</div><div onclick="lifeChange(this,-1)">\\/</div></div>'
-		// 	}
-		// 	var cols = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 1 : 0]);
-		// 	var rows = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 0 : 1]);
-		// 	html += "<style>#playersContainer {grid-template-columns: " + cols + ";grid-template-rows: " + rows + ";}</style>"
-		// 	playersContainer.innerHTML = html;
-		// }
 		function toggleCSS(id,active = false){
 		  var css = document.getElementById(id)
 		  if (active){
@@ -151,29 +129,5 @@ forcealwaysfullwidth: "1"
 			css.media = "max-width:1px"
 		  }
 		}
-		// function settingToggle(){
-		//   var players = document.getElementById('playersContainer')
-		//   //var settingToggle = document.getElementById('settingToggle')
-		//   var settings = document.getElementById('settings')
-		//   if (players.style.display == "none"){
-		// 	players.style.display = "grid"
-		// 	settings.style.display = "none"
-		// 	//settingToggle.innerHTML = "Settings"
-		//   } else{
-		// 	players.style.display = "none"
-		// 	settings.style.display = "grid"
-		// 	//settingToggle.innerHTML = "Save Settings"
-		//   }
-		//   setup();
-		// }
-		var diceTypes = [2,4,6,8,10,12,20]
-		function dieRoll(size=6,qty=1){
-			var results = [];
-			for(var i=0;i<qty;i++){
-				results.push(randBetweenInt(1,size));
-			}
-            return results;
-		}
-		//setup();
 		initPage();
 		</script>
