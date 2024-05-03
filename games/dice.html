@@ -68,7 +68,7 @@ forcealwaysfullwidth: "1"
         var rolls = dieRoll(dieType,numDie);
         var occurrencesHTML = "";
         var occurrencesArr = arrCountOccurrences(rolls);
-        keys(occurrencesArr).forEach(function(itm) {
+        Object.keys(occurrencesArr).forEach(function(itm) {
             occurrencesHTML += itm + ": " + occurrencesArr[itm] + "<br>";
         });
         document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Roll Summary:<br>" + + "<hr>Rolls:<br>" + JSON.stringify(rolls);
