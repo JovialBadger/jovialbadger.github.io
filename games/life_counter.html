@@ -18,7 +18,7 @@ forcealwaysfullwidth: "1"
 				margin: auto;
 			}
 		</style>
-		<label>Rotate Life<br/><input id="rotateLife" onchange="saveSettings()" type="checkbox" /></label>
+		<label style="display: none;">Rotate Life<br/><input id="rotateLife" onchange="saveSettings()" type="checkbox" /></label>
 		<div id="settings">
 			<label>Number Of Players<br/><input id="numPlayers" step="1" min="1" value="2" max="6" type="number" /></label>
 			<label>Start Life<br/><input id="startLife" step="1" min="1" value="20" type="number" /></label>
@@ -113,7 +113,7 @@ forcealwaysfullwidth: "1"
 			toggleCSS('rotatedCSS',lifeSettings.rotation)
 			var numPlayers = lifeCounter.length;
 			var html="";
-			var isPortrait = window.innerHeight > window.innerWidth
+			var isPortrait = true;// window.innerHeight > window.innerWidth
 			for(var i = 0; i<numPlayers;i++){
 				html += '<div class="player" style="background-color:#' + colours[i] + '8;'+ (numPlayers == 5?(!isPortrait?(i == 2?'grid-row: span 2;':''):(i == 4?'grid-column: span 2;':'')) : '') + '"><div 	onclick="lifeAdj(' + i + ',1)">/\\</div><div class="life">' + lifeCounter[i].life + '</div><div onclick="lifeAdj(' + i + ',-1)">\\/</div></div>'
 			}
