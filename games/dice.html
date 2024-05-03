@@ -71,7 +71,7 @@ forcealwaysfullwidth: "1"
         Object.keys(occurrencesArr).forEach(function(itm) {
             occurrencesHTML += itm + ": " + occurrencesArr[itm] + "<br>";
         });
-        document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Roll Summary:<br>" + + "<hr>Rolls:<br>" + JSON.stringify(rolls);
+        document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Roll Summary:<br>" + occurrencesArr + "<hr>Rolls:<br>" + JSON.stringify(rolls);
     }
     function arrCountOccurrences(arr){
         const counts = {};
