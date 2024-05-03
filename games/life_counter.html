@@ -114,8 +114,8 @@ forcealwaysfullwidth: "1"
 			}
 			var cols = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 1 : 0]);
 			var rows = "1fr ".repeat(fit[numPlayers-1][isPortrait ? 0 : 1]);
-			html += "<style>#playersContainer {grid-template-columns: " + cols + ";grid-template-rows: " + rows + ";}</style>"
-			html += '<div onclick="quitGame()">Quit Game</div>''
+			html += "<style>#playersContainer {grid-template-columns: " + cols + ";grid-template-rows: " + rows + ";}</style>";
+			html += '<button style="background:#f00;" onclick="quitGame()">Quit Game</button>';
 			document.getElementById("playersContainer").innerHTML = html;
 		}
 		// function lifeChange(elem,change) {
