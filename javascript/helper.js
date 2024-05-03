@@ -324,3 +324,11 @@ function toastyMake(txt, close, timeClose, bgColour, txtColour) {
 		setTimeout(function(){ toast.remove(); }, (timeClose == 0 ? (close ? 10000 : 3000) : timeClose));
 	}
 }
+
+function randBetweenInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+function sumArr(arr){
+	return arr.reduce((a, b) => (isNaN(a) ? 0 : Number(a)) + (isNaN(b) ? 0 : Number(b)), 0);
+}
+function aveArr(arr){return sumArr(arr) / arr.length }
