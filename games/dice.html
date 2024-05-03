@@ -66,7 +66,19 @@ forcealwaysfullwidth: "1"
 		numDie = numDie < 1 ? 1 : numDie;
         var dieType = document.getElementById("dieType").value * 1;
         var rolls = dieRoll(dieType,numDie);
-        document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Rolls: <br>" + JSON.stringify(rolls);
+        var occurrencesHTML = "";
+        var occurrencesArr = arrCountOccurrences(rolls);
+        keys(occurrencesArr).forEach(function(itm) {
+            occurrencesHTML += itm + ": " + occurrencesArr[itm] + "<br>";
+        });
+        document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Roll Summary:<br>" + + "<hr>Rolls:<br>" + JSON.stringify(rolls);
+    }
+    function arrCountOccurrences(arr){
+        const counts = {};
+        for (const num of arr) {
+            counts[num] = counts[num] ? counts[num] + 1 : 1;
+        }
+        return counts;
     }
     initPage();
 </script>
