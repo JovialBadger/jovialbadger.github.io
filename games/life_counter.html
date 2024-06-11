@@ -38,8 +38,9 @@ forcealwaysfullwidth: "1"
 			  justify-content: center;
 			  border-bottom:1px dotted #3333;
 			  border-top:1px dotted #3333;
+			  font-size: calc((100vh / 10) - 2px);
 			}
-			#playersContainer {display:grid;height:100vh}
+			#playersContainer {display:grid;height:100vh;font-weight: bolder;}
 			#settingToggle{position:fixed;bottom:0;right:0;background:black;color:white;padding:5px;}
 		</style>
 		<script>
@@ -114,7 +115,7 @@ forcealwaysfullwidth: "1"
 			var html="";
 			var isPortrait = true;// window.innerHeight > window.innerWidth
 			for(var i = 0; i<numPlayers;i++){
-				html += '<div class="player" style="background-color:#' + colours[i] + '8;'+ (numPlayers == 3?(i == 2?'grid-column: span 2;':'') : '') + (numPlayers == 5?(i == 4?'grid-column: span 2;':'') : '') + '"><div 	onclick="lifeAdj(' + i + ',1)">/\\</div><div class="life">' + lifeCounter[i].life + '</div><div onclick="lifeAdj(' + i + ',-1)">\\/</div></div>'
+				html += '<div class="player" style="background-color:#' + colours[i] + '8;'+ (((numPlayers == 3) && (i == 2))?'grid-column: span 2;':'') + (((numPlayers == 5)&&(i == 4))?'grid-column: span 2;':'') + '"><div 	onclick="lifeAdj(' + i + ',1)"><span style="transform: rotate(-90deg);">&gt;</span></div><div class="life">' + lifeCounter[i].life + '</div><div onclick="lifeAdj(' + i + ',-1)"><span style="transform: rotate(90deg);">&gt;</span></div></div>'
 			}
 			var cols = "1fr ".repeat(fit[numPlayers-1][1]);
 			var rows = "1fr ".repeat(fit[numPlayers-1][0]);
