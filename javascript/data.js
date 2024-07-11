@@ -1,5 +1,6 @@
 const displayTypes = ["phone","email","image-url","image-src","web-link","masked-url","object","date","time","date-time"];
 function displayType(txt,type){
+	if(txt = ""){return;}
 	type = type || "txt";
 	var href = "";
 	var html = "";
@@ -212,7 +213,12 @@ async function arrAdjust(setting){
 	filtersHTML != "" ? document.getElementById(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filtersHTML + "<hr/></div>") : null;
 	return arr;
 }
-function arrMoreInfo(id, index){message(arrDisplayList(JSON.parse(localStorage.getItem("arrCurrPage_"+id))[index]),"More Info")}
+
+function objRemoveUnusedKeys(obj) {
+	return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null && v != ""));
+}
+
+function arrMoreInfo(id, index){message(arrDisplayList(objRemoveUnusedKeys(JSON.parse(localStorage.getItem("arrCurrPage_"+id))[index])),"More Info")}
 function changeFiltering(id,key,val="",type="", resetAll = false){
 	var setting = JSON.parse(localStorage.getItem("arrSettings_"+id));
 	if(setting.hasOwnProperty('page')){setting.page[0] = 1;}
