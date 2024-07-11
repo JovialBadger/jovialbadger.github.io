@@ -1,6 +1,6 @@
 const displayTypes = ["phone","email","image-url","image-src","web-link","masked-url","object","date","time","date-time"];
 function displayType(txt,type){
-	if(txt = ""){return;}
+	if(txt == ""){return "";}
 	type = type || "txt";
 	var href = "";
 	var html = "";
