@@ -67,6 +67,7 @@ subnav: "1"
 			const proxyurl = "";//"https://cors-anywhere.herokuapp.com/";
 			var fullurl = proxyurl + 'https://script.google.com/macros/s/AKfycbzBJddka-1UO1sk8wDcUrjgISCHCtu_W40upVHQ0GtDzWevFEVvhCIfqQ/exec';
 			fetch(fullurl, {
+				redirect:'follow',
 				method: 'post',
 				headers: {
 					'Authorization': '',
