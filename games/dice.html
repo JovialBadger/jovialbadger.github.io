@@ -73,13 +73,6 @@ forcealwaysfullwidth: "1"
         });
         document.getElementById("divRollResults").innerHTML = "<hr>Total: "+ sumArr(rolls) +"<br>Average: "+ aveArr(rolls) + "<hr>Roll Summary:<br>" + occurrencesHTML + "<hr>Rolls:<br>" + JSON.stringify(rolls);
     }
-    function arrCountOccurrences(arr){
-        const counts = {};
-        for (const num of arr) {
-            counts[num] = counts[num] ? counts[num] + 1 : 1;
-        }
-        return counts;
-    }
     initPage();
 </script>
 </div>

@@ -548,3 +548,19 @@ function delLocal(id){
 	var x = getElem("localStorage" + id);
 	x != null ? x.remove() : null;
 }
+
+function arrShuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+	return arr;
+}
+
+function arrCountOccurrences(arr){
+	const counts = {};
+	for (const num of arr) {
+		counts[num] = counts[num] ? counts[num] + 1 : 1;
+	}
+	return counts;
+}
