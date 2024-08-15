@@ -201,12 +201,18 @@ async function arrAdjust(setting){
 	var displayElem = document.getElementById(id);
 	displayElem == null ? null : displayElem.innerHTML = "";
 	if(setting.hasOwnProperty('display')){
+		var displaySettings = null;
+		if(setting.hasOwnProperty('displaySettings')){displaySettings = setting.displaySettings;}
 		switch(setting.display) {
 			case "table":
 				buildTable(id, arr, false)
 				break;
 			case "table-break":
 				buildTable(id, arr, true)
+				break;
+			case "cards":
+				if(displaySettings == null){break;}
+				buildCards(id, arr, displaySettings?.idKey)
 				break;
 		}
 	}
@@ -563,4 +569,19 @@ function arrCountOccurrences(arr){
 		counts[num] = counts[num] ? counts[num] + 1 : 1;
 	}
 	return counts;
+}
+
+function buildCards(id, arr, cardTitleKey, displayid = ""){
+	var html = "";
+	html += "<div class='card-items'>";
+	arr.forEach((item,i,array) => {
+		if(item.hasOwnProperty(cardTitleKey) && item[cardTitleKey] != ""){
+			html += "<div class='card-item'><div class='card-content'>";
+			html += "<h3>" + cardTitleKey + ": " + item[cardTitleKey] + "</h3>";
+			delete item[cardTitleKey];
+			html += "<ul>" + arrDisplayList(item) + "</ul>";
+			html += "</div></div>";
+		}
+	});
+	document.getElementById(displayid == "" ? id : displayid).innerHTML = html + "</div>"
 }
