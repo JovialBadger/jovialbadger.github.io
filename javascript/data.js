@@ -577,7 +577,7 @@ function buildCards(id, arr, cardTitleKey, displayid = ""){
 	arr.forEach((item,i,array) => {
 		if(item.hasOwnProperty(cardTitleKey) && item[cardTitleKey] != ""){
 			html += "<div class='card-item'><div class='card-content'>";
-			html += "<h3>" + cardTitleKey + ": " + item[cardTitleKey] + "</h3>";
+			html += "<h5>" + cardTitleKey + ": " + item[cardTitleKey] + "</h5>";
 			delete item[cardTitleKey];
 			html += "<ul>" + arrDisplayList(item) + "</ul>";
 			html += "</div></div>";
