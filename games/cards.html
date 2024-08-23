@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+</style>
+</head>
+<body>
+<script>
+function cards(shuffle = false){
+	const cardVals = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"];
+	const cardSuits = ["H","C","D","S"];
+	var deck = [];
+	for(var i = 0; i < cardSuits.length; i++){
+		for(var j = 0; j < cardVals.length; j++){
+			deck.push({"val":cardVals[j],"suit":cardSuits[i]});
+		}
+	}
+	if(shuffle){
+		deck = arrShuffle(deck);
+	}
+	return {"draw":deck,"discard":[]};
+}
+function drawCards(stacks, num=1){
+	for(var i = 0; i < num; i++){
+		var drawCard = stacks.draw.pop();
+		stacks.discard.push(drawCard);
+	}
+	return stacks;
+}
+
+
+//following in data.js
+function arrShuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+	return array;
+}
+console.log(cards());
+console.log("shuffled");
+console.log(cards(true));
+console.log(drawCards(cards(true),10));
+</script>
+</body>
+</html>
