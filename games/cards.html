@@ -9,39 +9,52 @@ path: "Games/Cards"
 breadcrumbs: "1"
 ---
 <script>
-function cards(type, shuffle = false){
-	var deck = [];
-	switch (type){
-		case "french-suited":
-			const cardVals = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"];
-			const cardSuits = ["H","C","D","S"];
-			for(var i = 0; i < cardSuits.length; i++){
-				for(var j = 0; j < cardVals.length; j++){
-					deck.push({"val":cardVals[j],"suit":cardSuits[i]});
+	function cards(type, shuffle = false){
+		var deck = [];
+		switch (type){
+			case "french-suited":
+				const cardVals = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"];
+				const cardSuits = ["H","C","D","S"];
+				for(var i = 0; i < cardSuits.length; i++){
+					for(var j = 0; j < cardVals.length; j++){
+						deck.push({"val":cardVals[j],"suit":cardSuits[i]});
+					}
 				}
-			}
-			break;
+				break;
+		}
+		if(shuffle){
+			deck = arrShuffle(deck);
+		}
+		return {"draw":deck,"hand":[],"discard":[],"play":[],"exile":[],"stack":[]};
 	}
-	if(shuffle){
-		deck = arrShuffle(deck);
+	function shuffleCards(stacks,type="draw"){
+		stacks[type] = arrShuffle(stacks[type]);
+		return stacks;
 	}
-	return {"draw":deck,"hand":[],"discard":[],"play":[],"exile":[],"stack":[]};
-}
-function shuffleCards(stacks,type="draw"){
-	stacks[type] = arrShuffle(stacks[type]);
-	return stacks;
-}
-function drawCards(stacks,drawTo, num=1){
-	for(var i = 0; i < num; i++){
-		var drawCard = stacks.draw.pop();
-		stacks[drawTo].push(drawCard);
+	function drawCards(stacks,drawTo, num=1){
+		for(var i = 0; i < num; i++){
+			stacks = moveCard(stacks,"draw",0,drawTo);
+		}
+		return stacks;
 	}
-	return stacks;
-}
-var x = cards("french-suited");
-console.log(x);
-console.log("shuffled");
-var y = shuffleCards(x)
-console.log(y);
-console.log(drawCards(y,"hand",10));
+
+	function moveCard(stacksFrom,from,cardIndex,to,stacksTo=null){
+		if(cardIndex > -1 && stacksFrom[from].length > cardIndex){
+			var temp = stacksFrom[from][cardIndex];
+			stacksFrom[from].splice(cardIndex, 1);
+			stacksTo==null?stacksFrom[to].push(temp):stacksTo[to].push(temp);
+		}
+		return stacksTo==null? stacksFrom : [stacksFrom,stacksTo];
+	}
+
+	function getCard(stacks,stack,cardIndex){
+		return stacks[stack][cardIndex];
+	}
+
+	var x = cards("french-suited");
+	console.log(x);
+	console.log("shuffled");
+	var y = shuffleCards(x)
+	console.log(y);
+	console.log(drawCards(y,"hand",10));
 </script>
