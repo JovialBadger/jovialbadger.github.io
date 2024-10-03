@@ -57,7 +57,7 @@ function getURLQuery(param = ""){
 	const urlParams = new URLSearchParams(window.location.search);
 	return param === "" ? Object.fromEntries(urlParams.entries()): urlParams.get(param);
 }
-const filterModifyTypes = ["exact","contains","notcontain",">","<","between"];
+const filterModifyTypes = ["exact","filtercontains","contains","notcontain",">","<","between"];
 function arrFilter(arr,filters){
 	return Object.keys(filters).length > 0 ? arr.filter(obj => {
 		var count = 0;		
@@ -70,6 +70,9 @@ function arrFilter(arr,filters){
 					break;
 				case "rowcontains":
 					Object.values(obj).join("").toLowerCase().includes(String(filters[key][0]).toLowerCase()) ? null : count++;
+					break;
+				case "filtercontains":
+					String(filters[key][0]).toLowerCase().includes(String(obj[key]).toLowerCase()) ? null : count++;
 					break;
 				case "contains":
 					String(obj[key]).toLowerCase().includes(String(filters[key][0]).toLowerCase()) ? null : count++;
