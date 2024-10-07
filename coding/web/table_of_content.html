@@ -40,6 +40,7 @@ breadcrumbs: "1"
 		querySelectorPrefix: ".tocLevel-"
 	};
 	function autoTOC(settings) {
+		var hashExist = getElem(window.location.hash.substring(1)) == null? false:true;
 		var elem = document.getElementById(settings.contentID);
 		var toc = document.getElementById(settings.tocOutputID);
 		var levels = Array(settings.levels ?? 6).fill().map((element, index) => (settings.querySelectorPrefix ?? 'h') + (index + 1)).join(",");
@@ -60,6 +61,7 @@ breadcrumbs: "1"
 			html += link.outerHTML;
 		});
 		toc.innerHTML = html + "<hr>";
+		if(!hashExist){document.getElementById(window.location.hash.substring(1)).scrollIntoView({behavior: 'smooth'});}
 	}
 	autoTOC(setting);
 </script>
