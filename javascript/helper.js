@@ -332,3 +332,28 @@ function sumArr(arr){
 	return arr.reduce((a, b) => (isNaN(a) ? 0 : Number(a)) + (isNaN(b) ? 0 : Number(b)), 0);
 }
 function aveArr(arr){return sumArr(arr) / arr.length }
+
+function autoTOC(settings) {
+	var hashExist = getElem(window.location.hash.substring(1)) == null? false:true;
+	var elem = document.getElementById(settings.contentID);
+	var toc = document.getElementById(settings.tocOutputID);
+	var levels = Array(settings.levels ?? 6).fill().map((element, index) => (settings.querySelectorPrefix ?? 'h') + (index + 1)).join(",");
+	var headings = [].slice.call(elem.querySelectorAll(levels));
+	var html = "<hr><h3>Table Of Contents</h3>";
+	headings.forEach(function(heading, index) {
+		var ref = settings.contentID + "_toc-" + index;
+		if (heading.hasAttribute("id")) {
+			ref = heading.getAttribute("id");
+		} else {
+			heading.setAttribute("id", ref);
+		}
+		var level = ( + heading.tagName.split("")[1]);
+		var link = document.createElement("a");
+		link.setAttribute("href", window.location.protocol + '//' + window.location.host + window.location.pathname  + window.location.search  + "#" + ref);
+		link.setAttribute("style", "display:block;margin-left:"+((level-1)*20)+"px");
+		link.textContent = heading.textContent;
+		html += link.outerHTML;
+	});
+	toc.innerHTML = html + "<hr>";
+	if(!hashExist){document.getElementById(window.location.hash.substring(1)).scrollIntoView({behavior: 'smooth'});}
+}
