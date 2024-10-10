@@ -42,7 +42,11 @@ function displayType(txt,type){
 		default:
 			html = txt;
 	} 
-	return (href != "") ? "<a target='_blank' href='" + href + "'>" + (html==""?txt:html) + "</a>" : html;
+	const _link = document.createElement("a");
+	_link.innerHTML = (html==""?txt:html);
+	_link.target='_blank';
+	_link.href=href;
+	return (href != "") ? _link.outerHTML : html;
 }
 function changeURLQuery(obj){
 	const urlParams = new URLSearchParams(window.location.search);
