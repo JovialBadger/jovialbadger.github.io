@@ -357,3 +357,7 @@ function autoTOC(settings) {
 	toc.innerHTML = html + "<hr>";
 	if(!hashExist){document.getElementById(window.location.hash.substring(1)).scrollIntoView({behavior: 'smooth'});}
 }
+
+function copyText(txt) {
+	navigator.clipboard.writeText(txt);
+}
