@@ -150,6 +150,17 @@ async function arrAdjust(setting){
 	if(setting.hasOwnProperty('filter')){arr = arrFilter(arr,setting.filter);currFilters = setting.filter;}
 	if(setting.hasOwnProperty('sort')){arr =  arrSort(arr,setting.sort);}
 	if(setting.hasOwnProperty('page')){pagingHTML(setting.page[0],setting.page[1],arr.length,id);arr = arrPaging(arr,setting.page);}
+	if(setting.hasOwnProperty('concat')){
+		var colConcat = setting.concat
+		if(colConcat.length > 0){	
+			arr.forEach(function(item) {
+				for(const concat of colConcat){
+					item = concatKeys(item,concat);
+				}
+				return item;
+			});
+		}
+	}
 	if(setting.hasOwnProperty('colData')){
 		var colTypes = setting.colData.filter(p => p.hasOwnProperty("type"));
 		var colFilters = setting.colData.filter(p => p.hasOwnProperty("filter"));
@@ -591,4 +602,17 @@ function buildCards(id, arr, cardTitleKey, displayid = ""){
 		}
 	});
 	document.getElementById(displayid == "" ? id : displayid).innerHTML = html + "</div>"
+}
+
+function concatKeys(obj,settings){
+	if (settings["keyList"].length>0){
+    	var joinStr = "";
+    	settings["keyList"].forEach(function(item, index) {
+          joinStr += !obj.hasOwnProperty(item) ? "" : (joinStr != "" ? (!settings.hasOwnProperty("delim") ? " - " : settings["delim"]) : "") + obj[item]; 
+          delete obj[item];
+        });
+        if(!settings.hasOwnProperty("newKey")){settings["newKey"] = settings["keyList"][0]}
+        obj[settings["newKey"]] = joinStr;
+    }
+    return obj;
 }
