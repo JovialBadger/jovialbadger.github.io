@@ -192,17 +192,21 @@ Graph Data:
 	}
 
 	//settings to do summary items e.g. [{key:"hi",fn:"sum"}]
-	var groupBy = function(xs, key,settings) {
-		return xs.reduce(function(rv, x) {
+	var groupBy = function(arr, key,settings = {}) {
+		if(!settings.hasOwnProperty("removeOriginal")){} ? settings.removeOriginal : false;
+		return arr.reduce(function(rv, x) {
 			if(!rv.hasOwnProperty(x[key])){rv[x[key]] = [];}
-			rv[x[key]].push(x);
-			settings.forEach(obj => {
-				switch(obj.fn){
-					case "sum":
-						rv[x[key]]["Sum of " + obj[key]] += x[obj[key]];
-						break;
-				}
-			});
+			if(settings.length == 0){
+				!settings.removeOriginal ? rv[x[key]].push(x) : null;
+			} else{
+				settings.forEach(obj => {
+					switch(obj.fn){
+						case "sum":
+							rv[x[key]]["Sum of " + obj[key]] += x[obj[key]];
+							break;
+					}
+				});
+			}
 			//(rv[x[key]] = rv[x[key]] || []).push(x);
 			return rv;
 		}, {});
