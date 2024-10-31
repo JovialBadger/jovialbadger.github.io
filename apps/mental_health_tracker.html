@@ -190,9 +190,20 @@ Graph Data:
 			}
 		})
 	}
-	var groupBy = function(xs, key) {
+
+	//settings to do summary items e.g. [{key:"hi",fn:"sum"}]
+	var groupBy = function(xs, key,settings) {
 		return xs.reduce(function(rv, x) {
-			(rv[x[key]] = rv[x[key]] || []).push(x);
+			if(!rv.hasOwnProperty(x[key])){rv[x[key]] = [];}
+			rv[x[key]].push(x);
+			settings.forEach(obj => {
+				switch(obj.fn){
+					case "sum":
+						rv[x[key]]["Sum of " + obj[key]] += x[obj[key]];
+						break;
+				}
+			});
+			//(rv[x[key]] = rv[x[key]] || []).push(x);
 			return rv;
 		}, {});
 	};
