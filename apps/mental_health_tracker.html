@@ -193,7 +193,7 @@ Graph Data:
 
 	//settings to do summary items e.g. [{key:"hi",fn:"sum"}]
 	var groupBy = function(arr, key,settings = {}) {
-		if(!settings.hasOwnProperty("removeOriginal")){} ? settings.removeOriginal : false;
+		if(!settings.hasOwnProperty("removeOriginal")){ settings.removeOriginal = false} ;
 		return arr.reduce(function(rv, x) {
 			if(!rv.hasOwnProperty(x[key])){rv[x[key]] = [];}
 			if(settings.length == 0){
