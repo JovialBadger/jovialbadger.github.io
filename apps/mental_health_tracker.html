@@ -191,27 +191,7 @@ Graph Data:
 		})
 	}
 
-	//settings to do summary items e.g. [{key:"hi",fn:"sum"}]
-	var groupBy = function(arr, key,settings = {}) {
-		if(!settings.hasOwnProperty("removeOriginal")){ settings.removeOriginal = false;}
-		return arr.reduce(function(rv, x) {
-			if(!rv.hasOwnProperty(x[key])){rv[x[key]] = [];}
-			if(settings.length == 0){
-				!settings.removeOriginal ? rv[x[key]].push(x) : null;
-			} else{
-				settings.forEach(obj => {
-					switch(obj.fn){
-						case "sum":
-							if(!rv[x[key]].hasOwnProperty("Sum of " + obj.key)){rv[x[key]]["Sum of " + obj.key] = 0;}
-							rv[x[key]]["Sum of " + obj.key] += x[obj.key];
-							break;
-					}
-				});
-			}
-			//(rv[x[key]] = rv[x[key]] || []).push(x);
-			return rv;
-		}, {});
-	};
+
 
 	function getms(date) {
 		return new Date(date).getTime()

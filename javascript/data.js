@@ -616,3 +616,56 @@ function concatKeys(obj,settings){
     }
     return obj;
 }
+
+//settings to do summary items e.g. {groupings:{key:"hi",fn:"sum"}}
+function groupBy (arr, key,settings = {}) {
+	var removeOriginal = settings.hasOwnProperty("removeOriginal") ? settings.removeOriginal : false;
+	return arr.reduce(function(rv, x) {
+		if(!rv.hasOwnProperty(x[key])){rv[x[key]] = [];}
+		!removeOriginal ? rv[x[key]].push(x) : null;
+		if (settings.hasOwnProperty("groupings")){
+			settings.groupings.forEach(obj => {
+				switch(obj.fn){
+					case "sum":
+						if(!rv[x[key]].hasOwnProperty("Sum of " + obj.key)){
+							rv[x[key]]["Sum of " + obj.key] = +x[obj.key];
+						} else{
+							rv[x[key]]["Sum of " + obj.key] += +x[obj.key];
+						}
+						break;
+					case "count":
+						if(!rv[x[key]].hasOwnProperty("Count of " + obj.key)){
+							rv[x[key]]["Count of " + obj.key] = 1;
+						} else{
+							rv[x[key]]["Count of " + obj.key]++;
+						}
+						break;
+					case "max":
+						if(!rv[x[key]].hasOwnProperty("Max of " + obj.key)){
+							rv[x[key]]["Max of " + obj.key] = +x[obj.key];
+						} else{
+							rv[x[key]]["Max of " + obj.key] = +x[obj.key] > rv[x[key]]["Max of " + obj.key] ? +x[obj.key] : rv[x[key]]["Max of " + obj.key];
+						}
+						break;
+					case "min":
+						if(!rv[x[key]].hasOwnProperty("Min of " + obj.key)){
+							rv[x[key]]["Min of " + obj.key] = +x[obj.key];
+						} else{
+							rv[x[key]]["Min of " + obj.key] = +x[obj.key] < rv[x[key]]["Min of " + obj.key] ? +x[obj.key] : rv[x[key]]["Min of " + obj.key];
+						}
+						break;
+					case "average":
+						if(!rv[x[key]].hasOwnProperty("Average of " + obj.key)){
+							rv[x[key]]["Average of " + obj.key] = +x[obj.key];
+							rv[x[key]]["Average Size of " + obj.key] = 1;
+						} else{
+							rv[x[key]]["Average Size of " + obj.key]++;
+							rv[x[key]]["Average of " + obj.key] = rv[x[key]]["Average of " + obj.key] + ((+x[obj.key] - rv[x[key]]["Average of " + obj.key])/rv[x[key]]["Average Size of " + obj.key]);
+						}
+						break;
+				}
+			});
+		}
+		return rv;
+	}, {});
+}
