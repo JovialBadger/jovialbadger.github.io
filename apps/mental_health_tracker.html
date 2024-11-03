@@ -202,7 +202,7 @@ Graph Data:
 				settings.forEach(obj => {
 					switch(obj.fn){
 						case "sum":
-							rv[x[key]]["Sum of " + obj[key]] += x[obj[key]];
+							rv[x[key]]["Sum of " + obj.key] += x[obj[key]];
 							break;
 					}
 				});
