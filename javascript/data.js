@@ -213,10 +213,10 @@ async function arrAdjust(setting){
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'cols-exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var buildArr = [];
 							item.cols.forEach((itm,i,array) => {
-								var tempArr = [...cloneFiltered.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
+								var tempArr = [...clone.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
 								buildArr.push(...tempArr);
 							});
-							currFilterVal !== "" ? buildArr.push(currFilterVal) : null;
+							//currFilterVal !== "" ? buildArr.push(currFilterVal) : null;
 							var uniqueArr = [...new Set(buildArr)].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
 								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
@@ -225,8 +225,8 @@ async function arrAdjust(setting){
 							break;
 						case "dropdown":
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
-							var tempArr = [...cloneFiltered.map(a => a[item.col])];
-							currFilterVal !== "" ? tempArr.push(currFilterVal) : null;
+							var tempArr = [...clone.map(a => a[item.col])];
+							//currFilterVal !== "" ? tempArr.push(currFilterVal) : null;
 							var uniqueArr = [...new Set(tempArr)].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
 								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
