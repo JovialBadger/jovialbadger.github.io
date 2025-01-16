@@ -225,7 +225,7 @@ async function arrAdjust(setting){
 							break;
 						case "dropdown":
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
-							var tempArr = [...cloneFiltered.map(a => a[item.col]))];
+							var tempArr = [...cloneFiltered.map(a => a[item.col])];
 							currFilterVal !== "" ? tempArr.push(currFilterVal) : null;
 							var uniqueArr = [...new Set(tempArr)].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
