@@ -62,13 +62,20 @@ function getURLQuery(param = ""){
 	return param === "" ? Object.fromEntries(urlParams.entries()): urlParams.get(param);
 }
 const filterModifyTypes = ["exact","filtercontains","contains","notcontain",">","<","between"];
-function arrFilter(arr,filters){
+function arrFilter(arr,settings){
+	var filters = settings.filter;
 	return Object.keys(filters).length > 0 ? arr.filter(obj => {
 		var count = 0;		
 		for (const key in filters) {
 			if(count > 0 || (!obj.hasOwnProperty(key) && key.toLowerCase() != "_row-filter")){break;}// 
 			var type = (filters[key].length > 1) ? filters[key][1] : "";
 			switch (type){
+				case "cols-exact":
+					var hasMatch = false;
+					var columns = settings.colData.filter(itm =>{return itm.col === key})[0].cols;
+					columns.forEach(item => String(obj[item]) == String(filters[key][0]) ? (hasMatch = true) : null);
+					hasMatch ? null : count++;
+					break;
 				case "exact"://create or condition for multi select dropdown
 					String(obj[key]) == String(filters[key][0]) ? null : count++;
 					break;
@@ -147,7 +154,7 @@ async function arrAdjust(setting){
 	var filterDOM = document.getElementById("filtersFor" + id);
 	//logic only do changed function e.g. if sorting don't do filter again, if paging don't filter or sort
 	var currFilters = {};
-	if(setting.hasOwnProperty('filter')){arr = arrFilter(arr,setting.filter);currFilters = setting.filter;}
+	if(setting.hasOwnProperty('filter')){arr = arrFilter(arr,setting);currFilters = setting.filter;}
 	if(setting.hasOwnProperty('sort')){arr =  arrSort(arr,setting.sort);}
 	if(setting.hasOwnProperty('page')){pagingHTML(setting.page[0],setting.page[1],arr.length,id);arr = arrPaging(arr,setting.page);}
 	if(setting.hasOwnProperty('concat')){
@@ -199,6 +206,19 @@ async function arrAdjust(setting){
 					var tempStr = "";
 					var currFilterVal = (currFilters.hasOwnProperty(item.col) ? currFilters[item.col][0] : "")
 					switch(item.filter) {
+						case "cols-dropdown":
+							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'cols-exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
+							var buildArr = [];
+							item.cols.forEach((itm,i,array) => {
+								var tempArr = [...clone.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
+								buildArr.push(...tempArr);
+							});
+							var uniqueArr = [...new Set(buildArr)].sort();
+							for(var j = 0; j < uniqueArr.length; j++){
+								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
+							}
+							tempStr += '</select>';
+							break;
 						case "dropdown":
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var uniqueArr = [...new Set(clone.map(a => a[item.col]))].sort();
