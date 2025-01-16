@@ -69,7 +69,7 @@ function arrFilter(arr,settings){
 		for (const key in filters) {
 			var colData = settings.hasOwnProperty("colData") ? settings.colData.filter(itm =>{return itm.col === key})[0] : {};
 			var custom = colData.hasOwnProperty("custom");
-			if(count > 0 || (!obj.hasOwnProperty(key) && (key.toLowerCase() != "_row-filter" || !custom))){break;}// 
+			if(count > 0 || (!obj.hasOwnProperty(key) && (key.toLowerCase() != "_row-filter" && !custom))){break;}// 
 			var type = (filters[key].length > 1) ? filters[key][1] : "";
 			switch (type){
 				case "cols-exact":
