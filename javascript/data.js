@@ -157,7 +157,7 @@ async function arrAdjust(setting){
 	//logic only do changed function e.g. if sorting don't do filter again, if paging don't filter or sort
 	var currFilters = {};
 	if(setting.hasOwnProperty('filter')){arr = arrFilter(arr,setting);currFilters = setting.filter;}
-	//const cloneFiltered = typeof structuredClone === 'function' ? structuredClone(arr) : JSON.parse(JSON.stringify(arr));
+	const cloneFiltered = typeof structuredClone === 'function' ? structuredClone(arr) : JSON.parse(JSON.stringify(arr));
 	if(setting.hasOwnProperty('sort')){arr =  arrSort(arr,setting.sort);}
 	if(setting.hasOwnProperty('page')){pagingHTML(setting.page[0],setting.page[1],arr.length,id);arr = arrPaging(arr,setting.page);}
 	if(setting.hasOwnProperty('concat')){
@@ -213,9 +213,10 @@ async function arrAdjust(setting){
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'cols-exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var buildArr = [];
 							item.cols.forEach((itm,i,array) => {
-								var tempArr = [...clone.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
+								var tempArr = [...cloneFiltered.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
 								buildArr.push(...tempArr);
 							});
+							currFilterVal !== "" ? buildArr.push(currFilterVal) : null;
 							var uniqueArr = [...new Set(buildArr)].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
 								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
@@ -224,7 +225,9 @@ async function arrAdjust(setting){
 							break;
 						case "dropdown":
 							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
-							var uniqueArr = [...new Set(clone.map(a => a[item.col]))].sort();
+							var tempArr = [...cloneFiltered.map(a => a[item.col]))];
+							currFilterVal !== "" ? tempArr.push(currFilterVal) : null;
+							var uniqueArr = [...new Set(tempArr)].sort();
 							for(var j = 0; j < uniqueArr.length; j++){
 								tempStr += '<option ' + (currFilterVal == uniqueArr[j] ? 'selected=""' : '') + ' value="' + uniqueArr[j] + '">' + uniqueArr[j] + '</option>';
 							}
