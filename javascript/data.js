@@ -67,12 +67,14 @@ function arrFilter(arr,settings){
 	return Object.keys(filters).length > 0 ? arr.filter(obj => {
 		var count = 0;		
 		for (const key in filters) {
-			if(count > 0 || (!obj.hasOwnProperty(key) && key.toLowerCase() != "_row-filter")){break;}// 
+			var colData = settings.colData.filter(itm =>{return itm.col === key})[0];
+			var custom = colData.hasOwnProperty("custom");
+			if(count > 0 || (!obj.hasOwnProperty(key) && key.toLowerCase() != "_row-filter" && !custom)){break;}// 
 			var type = (filters[key].length > 1) ? filters[key][1] : "";
 			switch (type){
 				case "cols-exact":
 					var hasMatch = false;
-					var columns = settings.colData.filter(itm =>{return itm.col === key})[0].cols;
+					var columns = colData.cols;
 					columns.forEach(item => String(obj[item]) == String(filters[key][0]) ? (hasMatch = true) : null);
 					hasMatch ? null : count++;
 					break;
