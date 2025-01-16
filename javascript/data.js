@@ -280,9 +280,9 @@ function changeFiltering(id,key,val="",type="", resetAll = false){
 	}
 	if(resetAll){
 		setting.filter = {};
+		var filterDOM = document.getElementById("filtersFor" + id);
+		filterDOM == null ? null : filterDOM.remove();
 	}
-	var filterDOM = document.getElementById("filtersFor" + id);
-	filterDOM == null ? null : filterDOM.remove();
 	return arrAdjust(setting);
 }
 function changeSorting(id,key,resetAll = false){
