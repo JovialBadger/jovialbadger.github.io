@@ -288,6 +288,13 @@ function changeFiltering(id,key,val="",type="", resetAll = false){
 	}
 	return arrAdjust(setting);
 }
+function setFiltering(id,obj = {}){
+	var setting = JSON.parse(localStorage.getItem("arrSettings_"+id));
+	if(setting.hasOwnProperty('page')){setting.page[0] = 1;}
+	setting.filter = obj;
+	localStorage.setItem("arrSettings_"+id, JSON.stringify(setting));
+}
+
 function changeSorting(id,key,resetAll = false){
 	var setting = JSON.parse(localStorage.getItem("arrSettings_"+id));
 	if(setting.hasOwnProperty('page')){setting.page[0] = 1;}
