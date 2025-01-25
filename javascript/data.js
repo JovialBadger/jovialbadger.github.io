@@ -206,12 +206,13 @@ async function arrAdjust(setting){
 			}//whole table filter
 			if(colFilters.length > 0){
 				for (const i in colFilters) {
+					var filterID = "filter-" + i + "-" + id;
 					const item = colFilters[i];
 					var tempStr = "";
 					var currFilterVal = (currFilters.hasOwnProperty(item.col) ? currFilters[item.col][0] : "")
 					switch(item.filter) {
 						case "cols-dropdown":
-							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'cols-exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
+							tempStr += '<select id="' + filterID + '" data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'cols-exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var buildArr = [];
 							item.cols.forEach((itm,i,array) => {
 								var tempArr = [...clone.flatMap(a => a.hasOwnProperty(itm) ? a[itm]:[])];
@@ -225,7 +226,7 @@ async function arrAdjust(setting){
 							tempStr += '</select>';
 							break;
 						case "dropdown":
-							tempStr += '<select data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
+							tempStr += '<select id="' + filterID + '" data-deselectable="1" value="' + currFilterVal + '" onchange="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'exact\')"><option ' + (currFilterVal == "" ? 'selected=""' : '') + ' disabled=""></option>';
 							var tempArr = [...clone.map(a => a[item.col])];
 							//currFilterVal !== "" ? tempArr.push(currFilterVal) : null;
 							var uniqueArr = [...new Set(tempArr)].sort();
@@ -235,7 +236,7 @@ async function arrAdjust(setting){
 							tempStr += '</select>';
 							break;
 						case "txt":
-							tempStr += '<input value="' + currFilterVal + '" onkeyup="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'contains\')">';
+							tempStr += '<input id="' + filterID + '" value="' + currFilterVal + '" onkeyup="changeFiltering(\'' + id + '\',\'' + item.col + '\',this.value,\'contains\')">';
 					} 
 					filtersHTML += tempStr == "" ? "" : '<label><span>' + item.col + '</span>' + tempStr + '</label>';
 				}
