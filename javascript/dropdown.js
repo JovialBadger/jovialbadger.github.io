@@ -94,8 +94,9 @@ function selectOptionsCreate(id, elem) {
         var enabledCount = 0;
         for (var i = 0; i < y.length; i++) {
             if ((!(y[i].disabled)) && y[i].innerHTML != "") {
-                inner += "<li onclick='selectOptionsClick(\"" + id + "\",\"" + y[i].value + "\", this)'>" + y[i].innerHTML + "</li>";
+                inner += `<li onclick=\"selectOptionsClick(&quot;` + id + `&quot;,&quot;` + y[i].value + `&quot;, this)\">` + y[i].innerHTML + `</li>`;
                 enabledCount++;
+                //inner += "<li onclick='selectOptionsClick(\"" + id + "\",\"" + y[i].value + "\", this)'>" + y[i].innerHTML + "</li>";
             }
         }
         if (enabledCount == 0) { inner += "<li>Nothing Here</li>" }
