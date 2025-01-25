@@ -263,6 +263,7 @@ async function arrAdjust(setting){
 		}
 	}
 	filtersHTML != "" ? document.getElementById(id).insertAdjacentHTML("beforebegin", "<div id='filtersFor" + id + "'>" +filtersHTML + "<hr/></div>") : null;
+	if(!setting.hasOwnProperty('fnOnUpdate')){return;}else{await runFnByName(setting.fnOnUpdate);}
 	return arr;
 }
 
