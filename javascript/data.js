@@ -705,3 +705,17 @@ function groupBy (arr, key,settings = {}) {
 		return rv;
 	}, {});
 }
+function getMinMaxObj(arr,key,type){
+	return arr.reduce(function(prev, current) {
+		var boolOfType = null;
+		switch(type){
+			case "max":
+				boolOfType = prev[key] > current[key];
+				break;
+			case "min":
+				boolOfType = prev[key] < current[key];
+				break;
+		}
+		return (prev && boolOfType) ? prev : current
+	})
+}
