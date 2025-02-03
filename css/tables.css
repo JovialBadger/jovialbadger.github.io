@@ -40,6 +40,7 @@ table tbody {
 
 table tbody tr:nth-child(odd), table tbody .treven {
     background-color: var(--table-border-color);
+    color: var(--table-background-color);
 }
 table.break-table tr:hover {
     background-color: var(--table-text-color);
